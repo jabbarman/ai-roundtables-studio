@@ -4,7 +4,6 @@ import json
 from dataclasses import asdict
 from datetime import UTC, date, datetime
 import hashlib
-from importlib.metadata import PackageNotFoundError, version
 import os
 from pathlib import Path
 
@@ -12,6 +11,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 
 from .models import ModeratorConfig, ParticipantConfig, RoundtableConfig, TurnRecord
 from .providers import provider_adapter_for
+from ._version import __version__
 
 
 class ConfigError(ValueError):
@@ -344,7 +344,4 @@ class DraftOrchestrator:
 
 
 def package_version() -> str:
-    try:
-        return version("ai-roundtables-studio")
-    except PackageNotFoundError:
-        return "0.1.0-dev"
+    return __version__
