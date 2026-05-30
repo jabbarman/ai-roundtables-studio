@@ -21,14 +21,14 @@
     {
       "name": "Anthropic",
       "provider": "anthropic",
-      "model": "claude-opus-4-1",
+      "model": "claude-haiku-4-5-20251001",
       "prompt_file": "prompts/participant.md",
       "stance": "Cautious about epistemic overreach and user trust."
     },
     {
       "name": "Google",
       "provider": "google",
-      "model": "gemini-2.5-pro",
+      "model": "gemini-2.5-flash",
       "prompt_file": "prompts/participant.md",
       "stance": "Broadly synthetic, with an emphasis on systems behavior and edge cases."
     }

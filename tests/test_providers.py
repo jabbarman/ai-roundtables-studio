@@ -4,8 +4,12 @@ import json
 
 from ai_roundtables.models import ParticipantConfig
 from ai_roundtables.providers import (
+    AnthropicMessagesAdapter,
+    GeminiGenerateContentAdapter,
     OpenAIResponsesAdapter,
     PlaceholderProviderAdapter,
+    extract_anthropic_text,
+    extract_gemini_text,
     extract_openai_text,
     provider_adapter_for,
 )
@@ -19,6 +23,13 @@ def participant(provider: str = "openai") -> ParticipantConfig:
         prompt_file="prompts/participant.md",
         stance="Test stance.",
     )
+
+
+def header_value(api_request, header_name: str) -> str | None:
+    for key, value in api_request.headers.items():
+        if key.lower() == header_name.lower():
+            return value
+    return None
 
 
 def test_extract_openai_text_supports_known_response_shapes() -> None:
@@ -41,30 +52,53 @@ def test_extract_openai_text_supports_known_response_shapes() -> None:
     )
 
 
-def test_placeholder_provider_reports_missing_configured_key(monkeypatch) -> None:
-    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
-    adapter = PlaceholderProviderAdapter("anthropic", "ANTHROPIC_API_KEY")
+def test_extract_anthropic_text_supports_content_blocks() -> None:
+    assert (
+        extract_anthropic_text(
+            {
+                "content": [
+                    {"type": "text", "text": "First"},
+                    {"type": "text", "text": "Second"},
+                ]
+            }
+        )
+        == "First\n\nSecond"
+    )
 
-    response = adapter.generate(participant("anthropic"), "Prompt")
 
-    assert response.status == "skipped_missing_key"
-    assert "ANTHROPIC_API_KEY" in response.text
+def test_extract_gemini_text_supports_candidate_parts() -> None:
+    assert (
+        extract_gemini_text(
+            {
+                "candidates": [
+                    {
+                        "content": {
+                            "parts": [
+                                {"text": "First"},
+                                {"text": "Second"},
+                            ]
+                        }
+                    }
+                ]
+            }
+        )
+        == "First\n\nSecond"
+    )
 
 
-def test_placeholder_provider_reports_unimplemented_when_key_exists(
-    monkeypatch,
-) -> None:
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
-    adapter = PlaceholderProviderAdapter("anthropic", "ANTHROPIC_API_KEY")
+def test_placeholder_provider_reports_unimplemented() -> None:
+    adapter = PlaceholderProviderAdapter("other", None)
 
-    response = adapter.generate(participant("anthropic"), "Prompt")
+    response = adapter.generate(participant("other"), "Prompt")
 
     assert response.status == "skipped_unimplemented_provider"
     assert "not wired" in response.text
 
 
-def test_provider_adapter_selects_openai_adapter() -> None:
+def test_provider_adapter_selects_provider_adapters() -> None:
     assert isinstance(provider_adapter_for("openai"), OpenAIResponsesAdapter)
+    assert isinstance(provider_adapter_for("anthropic"), AnthropicMessagesAdapter)
+    assert isinstance(provider_adapter_for("google"), GeminiGenerateContentAdapter)
 
 
 def test_openai_adapter_posts_to_responses_api(monkeypatch) -> None:
@@ -98,3 +132,82 @@ def test_openai_adapter_posts_to_responses_api(monkeypatch) -> None:
     assert captured["timeout"] == 120
     assert captured["body"]["input"] == "Prompt text"
     assert captured["auth"] == "Bearer test-key"
+
+
+def test_anthropic_adapter_posts_to_messages_api(monkeypatch) -> None:
+    captured = {}
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, traceback):
+            return None
+
+        def read(self) -> bytes:
+            return json.dumps(
+                {"content": [{"type": "text", "text": "Anthropic turn"}]}
+            ).encode("utf-8")
+
+    def fake_urlopen(api_request, timeout):
+        captured["url"] = api_request.full_url
+        captured["timeout"] = timeout
+        captured["body"] = json.loads(api_request.data.decode("utf-8"))
+        captured["key"] = header_value(api_request, "x-api-key")
+        captured["version"] = header_value(api_request, "anthropic-version")
+        return FakeResponse()
+
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+    monkeypatch.setattr("ai_roundtables.providers.request.urlopen", fake_urlopen)
+
+    response = AnthropicMessagesAdapter().generate(
+        participant("anthropic"), "Prompt text"
+    )
+
+    assert response.status == "completed"
+    assert response.text == "Anthropic turn"
+    assert captured["url"] == "https://api.anthropic.com/v1/messages"
+    assert captured["timeout"] == 120
+    assert captured["body"]["messages"] == [{"role": "user", "content": "Prompt text"}]
+    assert captured["key"] == "test-key"
+    assert captured["version"] == "2023-06-01"
+
+
+def test_gemini_adapter_posts_to_generate_content_api(monkeypatch) -> None:
+    captured = {}
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, traceback):
+            return None
+
+        def read(self) -> bytes:
+            return json.dumps(
+                {"candidates": [{"content": {"parts": [{"text": "Gemini turn"}]}}]}
+            ).encode("utf-8")
+
+    def fake_urlopen(api_request, timeout):
+        captured["url"] = api_request.full_url
+        captured["timeout"] = timeout
+        captured["body"] = json.loads(api_request.data.decode("utf-8"))
+        captured["key"] = header_value(api_request, "x-goog-api-key")
+        return FakeResponse()
+
+    monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+    monkeypatch.setattr("ai_roundtables.providers.request.urlopen", fake_urlopen)
+
+    response = GeminiGenerateContentAdapter().generate(
+        participant("google"), "Prompt text"
+    )
+
+    assert response.status == "completed"
+    assert response.text == "Gemini turn"
+    assert (
+        captured["url"]
+        == "https://generativelanguage.googleapis.com/v1beta/models/test-model:generateContent"
+    )
+    assert captured["timeout"] == 120
+    assert "Prompt text" in captured["body"]["contents"][0]["parts"][0]["text"]
+    assert captured["key"] == "test-key"

@@ -67,13 +67,13 @@ If you are working without an editable install, the module form also works:
 PYTHONPATH=src python3 -m ai_roundtables.cli draft path/to/config.json --output-dir runs/raw/example-run
 ```
 
-This initial scaffold ships with a dry-run orchestrator that prepares prompts, manifests, and markdown transcript stubs. API adapters can be added incrementally without changing the publishing structure.
+The dry-run orchestrator prepares prompts, manifests, and markdown transcript stubs without calling model providers.
 
-For a real OpenAI-backed run:
+For a real provider-backed run:
 
 ```bash
 cp .env.example .env
-# add OPENAI_API_KEY to .env
+# add OPENAI_API_KEY, ANTHROPIC_API_KEY, and/or GEMINI_API_KEY to .env
 ai-roundtables run notes/example-config.openai-only.json --output-dir runs/raw/openai-only-run
 ```
 
@@ -81,11 +81,10 @@ ai-roundtables run notes/example-config.openai-only.json --output-dir runs/raw/o
 
 You can use this repo in stages.
 
-- `OPENAI_API_KEY` is enough for an OpenAI-only roundtable.
-- `ANTHROPIC_API_KEY` and `GEMINI_API_KEY` are only needed when you want true multi-provider runs.
+- `OPENAI_API_KEY` enables OpenAI Responses API participants.
+- `ANTHROPIC_API_KEY` enables Anthropic Messages API participants.
+- `GEMINI_API_KEY` enables Gemini `generateContent` participants.
 - If a provider is present in a config but its key is missing, the orchestrator will skip that seat and note why in the transcript and manifest.
-
-The current live integration is OpenAI-first. Anthropic and Gemini are left as placeholders until those adapters are wired in.
 
 ## First Files To Read
 
