@@ -77,6 +77,12 @@ cp .env.example .env
 ai-roundtables run notes/example-config.openai-only.json --output-dir runs/raw/openai-only-run
 ```
 
+Evaluate a run directory after draft or live generation:
+
+```bash
+ai-roundtables eval runs/raw/example-run
+```
+
 ## Provider Setup
 
 You can use this repo in stages.

@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 
+from .evaluation import evaluate_run, format_evaluation
 from .orchestrator import ConfigError, DraftOrchestrator, package_version
 
 
@@ -38,6 +40,17 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
         help="Directory where manifest.json and transcript.md will be written.",
     )
+
+    eval_parser = subparsers.add_parser(
+        "eval",
+        help="Check a run directory for manifest, transcript, and provider-status issues.",
+    )
+    eval_parser.add_argument("run_dir", help="Path to a raw or edited run directory.")
+    eval_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Write machine-readable evaluation output.",
+    )
     return parser
 
 
@@ -59,6 +72,14 @@ def main() -> int:
             orchestrator.run_live(config, Path(args.output_dir))
             print(f"Live run written to {args.output_dir}")
             return 0
+
+        if args.command == "eval":
+            evaluation = evaluate_run(Path(args.run_dir))
+            if args.json:
+                print(json.dumps(evaluation.to_dict(), indent=2))
+            else:
+                print(format_evaluation(evaluation))
+            return 0 if evaluation.passed else 1
     except ConfigError as exc:
         parser.exit(1, f"{exc}\n")
 

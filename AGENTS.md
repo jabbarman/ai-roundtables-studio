@@ -43,6 +43,12 @@ Run tests:
 pytest
 ```
 
+Evaluate generated run artifacts:
+
+```bash
+ai-roundtables eval runs/raw/example-run
+```
+
 ## Coding Style & Naming Conventions
 
 Follow the existing Python style: 4-space indentation, type annotations, `from __future__ import annotations`, dataclasses for structured records, and `pathlib.Path` for filesystem work. Keep modules small and explicit. Use snake_case for functions, variables, files, and config keys; use PascalCase for classes. Prefer JSON parsing and structured data over string manipulation for manifests and configs.

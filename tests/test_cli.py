@@ -37,3 +37,30 @@ def test_cli_version(monkeypatch, capsys) -> None:
 
     assert exc.value.code == 0
     assert "ai-roundtables " in capsys.readouterr().out
+
+
+def test_cli_eval_returns_zero_for_valid_draft_run(
+    tmp_path: Path, monkeypatch, capsys
+) -> None:
+    config_path = write_fixture_repo(tmp_path)
+    output_dir = tmp_path / "runs" / "raw" / "cli-eval"
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "ai-roundtables",
+            "draft",
+            str(config_path.relative_to(tmp_path)),
+            "--output-dir",
+            str(output_dir.relative_to(tmp_path)),
+        ],
+    )
+    assert cli.main() == 0
+
+    monkeypatch.setattr(
+        "sys.argv",
+        ["ai-roundtables", "eval", str(output_dir.relative_to(tmp_path))],
+    )
+
+    assert cli.main() == 0
+    assert "Run evaluation: PASS" in capsys.readouterr().out
