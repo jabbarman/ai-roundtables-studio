@@ -7,7 +7,13 @@ import os
 from pathlib import Path
 from urllib import error, request
 
+from jsonschema import Draft202012Validator, FormatChecker
+
 from .models import ModeratorConfig, ParticipantConfig, RoundtableConfig, TurnRecord
+
+
+class ConfigError(ValueError):
+    """Raised when a roundtable config is invalid or incomplete."""
 
 
 class DraftOrchestrator:
@@ -22,7 +28,17 @@ class DraftOrchestrator:
         self._env_loaded = False
 
     def load_config(self, config_path: Path) -> RoundtableConfig:
-        raw = json.loads(config_path.read_text())
+        try:
+            raw = json.loads(config_path.read_text())
+        except FileNotFoundError as exc:
+            raise ConfigError(f"Config file not found: {config_path}") from exc
+        except json.JSONDecodeError as exc:
+            raise ConfigError(
+                f"Invalid JSON config: {config_path}: "
+                f"line {exc.lineno} column {exc.colno}: {exc.msg}"
+            ) from exc
+        self._validate_config(raw)
+        self._validate_prompt_files(raw)
         moderator_raw = raw["moderator"]
         participants_raw = raw["participants"]
 
@@ -50,11 +66,40 @@ class DraftOrchestrator:
             format=raw["format"],
             topic=raw["topic"],
             brief=raw.get("brief", ""),
+            source_packet=raw.get("source_packet", []),
             moderator=moderator,
             participants=participants,
             editorial_goals=raw.get("editorial_goals", []),
             turns=raw.get("turns", 1),
         )
+
+    def _validate_config(self, raw: dict) -> None:
+        schema_path = self.repo_root / "schemas" / "roundtable-run.schema.json"
+        schema = json.loads(schema_path.read_text())
+        validator = Draft202012Validator(schema, format_checker=FormatChecker())
+        errors = sorted(validator.iter_errors(raw), key=lambda item: list(item.path))
+        if not errors:
+            return
+
+        messages = []
+        for validation_error in errors:
+            location = ".".join(str(part) for part in validation_error.path) or "<root>"
+            messages.append(f"{location}: {validation_error.message}")
+        raise ConfigError("Invalid roundtable config:\n- " + "\n- ".join(messages))
+
+    def _validate_prompt_files(self, raw: dict) -> None:
+        prompt_files = [raw["moderator"]["prompt_file"]]
+        prompt_files.extend(participant["prompt_file"] for participant in raw["participants"])
+        missing = [
+            prompt_file
+            for prompt_file in sorted(set(prompt_files))
+            if not (self.repo_root / prompt_file).is_file()
+        ]
+        if missing:
+            raise ConfigError(
+                "Invalid roundtable config:\n- missing prompt file(s): "
+                + ", ".join(missing)
+            )
 
     def build_turn_plan(self, config: RoundtableConfig) -> list[TurnRecord]:
         moderator_prompt = self._read_text(config.moderator.prompt_file)
@@ -92,6 +137,7 @@ class DraftOrchestrator:
             "format": config.format,
             "topic": config.topic,
             "brief": config.brief,
+            "source_packet": config.source_packet,
             "editorial_goals": config.editorial_goals,
             "turns": config.turns,
             "moderator": asdict(config.moderator),
@@ -147,6 +193,7 @@ class DraftOrchestrator:
             "format": config.format,
             "topic": config.topic,
             "brief": config.brief,
+            "source_packet": config.source_packet,
             "editorial_goals": config.editorial_goals,
             "turns": config.turns,
             "moderator": asdict(config.moderator),

@@ -3,12 +3,19 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from ai_roundtables.orchestrator import DraftOrchestrator
+from ai_roundtables.orchestrator import ConfigError, DraftOrchestrator
 
 
 def write_fixture_repo(tmp_path: Path) -> Path:
     (tmp_path / "prompts").mkdir()
     (tmp_path / "notes").mkdir()
+    (tmp_path / "schemas").mkdir()
+    schema = (
+        Path(__file__).resolve().parents[1]
+        / "schemas"
+        / "roundtable-run.schema.json"
+    ).read_text()
+    (tmp_path / "schemas" / "roundtable-run.schema.json").write_text(schema)
     (tmp_path / "prompts" / "moderator.md").write_text("Moderate firmly.\n")
     (tmp_path / "prompts" / "participant.md").write_text("Argue clearly.\n")
     config = {
@@ -55,6 +62,7 @@ def test_load_config_and_build_turn_plan(tmp_path: Path) -> None:
 
     assert config.slug == "test-roundtable"
     assert config.turns == 2
+    assert config.source_packet == []
     assert [participant.name for participant in config.participants] == [
         "OpenAI",
         "Anthropic",
@@ -75,6 +83,7 @@ def test_write_draft_run_writes_manifest_and_stub(tmp_path: Path) -> None:
     manifest = json.loads((output_dir / "manifest.json").read_text())
     transcript = (output_dir / "transcript.stub.md").read_text()
     assert manifest["slug"] == "test-roundtable"
+    assert manifest["source_packet"] == []
     assert len(manifest["planned_turn_records"]) == 4
     assert "# Test Roundtable" in transcript
     assert transcript.count("_Response pending._") == 4
@@ -98,6 +107,71 @@ def test_run_live_skips_participants_without_keys(
     assert statuses == ["skipped_missing_key"] * 4
     assert "OpenAI (openai:gpt-test, skipped_missing_key)" in transcript
     assert "Anthropic (anthropic:claude-test, skipped_missing_key)" in transcript
+
+
+def test_load_config_rejects_schema_errors(tmp_path: Path) -> None:
+    config_path = write_fixture_repo(tmp_path)
+    raw = json.loads(config_path.read_text())
+    raw["turns"] = 0
+    raw["participants"] = raw["participants"][:1]
+    raw["unknown"] = "not allowed"
+    config_path.write_text(json.dumps(raw))
+
+    orchestrator = DraftOrchestrator(repo_root=tmp_path)
+
+    try:
+        orchestrator.load_config(config_path)
+    except ConfigError as exc:
+        message = str(exc)
+    else:
+        raise AssertionError("Expected ConfigError")
+
+    assert "Invalid roundtable config" in message
+    assert "participants" in message
+    assert "turns" in message
+    assert "unknown" in message
+
+
+def test_load_config_rejects_missing_prompt_files(tmp_path: Path) -> None:
+    config_path = write_fixture_repo(tmp_path)
+    raw = json.loads(config_path.read_text())
+    raw["participants"][0]["prompt_file"] = "prompts/missing.md"
+    config_path.write_text(json.dumps(raw))
+
+    orchestrator = DraftOrchestrator(repo_root=tmp_path)
+
+    try:
+        orchestrator.load_config(config_path)
+    except ConfigError as exc:
+        message = str(exc)
+    else:
+        raise AssertionError("Expected ConfigError")
+
+    assert "missing prompt file(s): prompts/missing.md" in message
+
+
+def test_load_config_rejects_invalid_json(tmp_path: Path) -> None:
+    (tmp_path / "schemas").mkdir()
+    schema = (
+        Path(__file__).resolve().parents[1]
+        / "schemas"
+        / "roundtable-run.schema.json"
+    ).read_text()
+    (tmp_path / "schemas" / "roundtable-run.schema.json").write_text(schema)
+    config_path = tmp_path / "broken.json"
+    config_path.write_text("not json")
+
+    orchestrator = DraftOrchestrator(repo_root=tmp_path)
+
+    try:
+        orchestrator.load_config(config_path)
+    except ConfigError as exc:
+        message = str(exc)
+    else:
+        raise AssertionError("Expected ConfigError")
+
+    assert "Invalid JSON config" in message
+    assert "line 1 column 1" in message
 
 
 def test_extract_openai_text_supports_known_response_shapes(tmp_path: Path) -> None:

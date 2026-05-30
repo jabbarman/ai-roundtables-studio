@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from .orchestrator import DraftOrchestrator
+from .orchestrator import ConfigError, DraftOrchestrator
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -39,17 +39,20 @@ def main() -> int:
     repo_root = Path.cwd()
     orchestrator = DraftOrchestrator(repo_root=repo_root)
 
-    if args.command == "draft":
-        config = orchestrator.load_config(Path(args.config))
-        orchestrator.write_draft_run(config, Path(args.output_dir))
-        print(f"Draft run written to {args.output_dir}")
-        return 0
+    try:
+        if args.command == "draft":
+            config = orchestrator.load_config(Path(args.config))
+            orchestrator.write_draft_run(config, Path(args.output_dir))
+            print(f"Draft run written to {args.output_dir}")
+            return 0
 
-    if args.command == "run":
-        config = orchestrator.load_config(Path(args.config))
-        orchestrator.run_live(config, Path(args.output_dir))
-        print(f"Live run written to {args.output_dir}")
-        return 0
+        if args.command == "run":
+            config = orchestrator.load_config(Path(args.config))
+            orchestrator.run_live(config, Path(args.output_dir))
+            print(f"Live run written to {args.output_dir}")
+            return 0
+    except ConfigError as exc:
+        parser.exit(1, f"{exc}\n")
 
     parser.error(f"Unknown command: {args.command}")
     return 2

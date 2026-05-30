@@ -7,7 +7,9 @@ name = "ai-roundtables-studio"
 version = "0.1.0"
 description = "Production and publishing tools for engaging multi-model AI roundtables."
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+  "jsonschema>=4.22",
+]
 
 [project.scripts]
 ai-roundtables = "ai_roundtables.cli:main"

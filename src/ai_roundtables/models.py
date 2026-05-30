@@ -39,6 +39,7 @@ class RoundtableConfig:
     format: str
     topic: str
     brief: str = ""
+    source_packet: list[dict[str, str]] = field(default_factory=list)
     moderator: ModeratorConfig | None = None
     participants: list[ParticipantConfig] = field(default_factory=list)
     editorial_goals: list[str] = field(default_factory=list)
