@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from datetime import datetime
 
 from ai_roundtables.orchestrator import ConfigError, DraftOrchestrator
 
@@ -63,6 +64,7 @@ def test_load_config_and_build_turn_plan(tmp_path: Path) -> None:
     assert config.slug == "test-roundtable"
     assert config.turns == 2
     assert config.source_packet == []
+    assert config.config_snapshot["slug"] == "test-roundtable"
     assert [participant.name for participant in config.participants] == [
         "OpenAI",
         "Anthropic",
@@ -84,6 +86,14 @@ def test_write_draft_run_writes_manifest_and_stub(tmp_path: Path) -> None:
     transcript = (output_dir / "transcript.stub.md").read_text()
     assert manifest["slug"] == "test-roundtable"
     assert manifest["source_packet"] == []
+    assert manifest["run"]["mode"] == "draft"
+    assert manifest["run"]["slug"] == "test-roundtable"
+    assert manifest["run"]["package_version"]
+    datetime.fromisoformat(manifest["run"]["generated_at"])
+    assert manifest["config_snapshot"]["slug"] == "test-roundtable"
+    prompt_files = {item["path"]: item["sha256"] for item in manifest["prompt_files"]}
+    assert set(prompt_files) == {"prompts/moderator.md", "prompts/participant.md"}
+    assert all(len(value) == 64 for value in prompt_files.values())
     assert len(manifest["planned_turn_records"]) == 4
     assert "# Test Roundtable" in transcript
     assert transcript.count("_Response pending._") == 4
@@ -172,4 +182,3 @@ def test_load_config_rejects_invalid_json(tmp_path: Path) -> None:
 
     assert "Invalid JSON config" in message
     assert "line 1 column 1" in message
-

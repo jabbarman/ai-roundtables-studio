@@ -3,11 +3,19 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from .orchestrator import ConfigError, DraftOrchestrator
+from .orchestrator import ConfigError, DraftOrchestrator, package_version
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="AI Roundtables Studio CLI")
+    parser = argparse.ArgumentParser(
+        prog="ai-roundtables",
+        description="AI Roundtables Studio CLI",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {package_version()}",
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     draft_parser = subparsers.add_parser(

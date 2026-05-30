@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import pytest
 
 from ai_roundtables import cli
 from test_orchestrator import write_fixture_repo
@@ -26,3 +27,13 @@ def test_cli_uses_current_directory_for_project_assets(
     assert cli.main() == 0
     assert (output_dir / "manifest.json").exists()
     assert (output_dir / "transcript.stub.md").exists()
+
+
+def test_cli_version(monkeypatch, capsys) -> None:
+    monkeypatch.setattr("sys.argv", ["ai-roundtables", "--version"])
+
+    with pytest.raises(SystemExit) as exc:
+        cli.main()
+
+    assert exc.value.code == 0
+    assert "ai-roundtables " in capsys.readouterr().out

@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict
-from datetime import date
+from datetime import UTC, date, datetime
+import hashlib
+from importlib.metadata import PackageNotFoundError, version
 import os
 from pathlib import Path
 
@@ -67,6 +69,7 @@ class DraftOrchestrator:
             topic=raw["topic"],
             brief=raw.get("brief", ""),
             source_packet=raw.get("source_packet", []),
+            config_snapshot=raw,
             moderator=moderator,
             participants=participants,
             editorial_goals=raw.get("editorial_goals", []),
@@ -130,6 +133,7 @@ class DraftOrchestrator:
         plan = self.build_turn_plan(config)
 
         manifest = {
+            "run": self._run_metadata(config, output_dir, "draft"),
             "slug": config.slug,
             "title": config.title,
             "date": config.date.isoformat(),
@@ -142,6 +146,8 @@ class DraftOrchestrator:
             "turns": config.turns,
             "moderator": asdict(config.moderator),
             "participants": [asdict(participant) for participant in config.participants],
+            "config_snapshot": config.config_snapshot,
+            "prompt_files": self._prompt_file_metadata(config),
             "planned_turn_records": [asdict(record) for record in plan],
         }
         (output_dir / "manifest.json").write_text(
@@ -186,6 +192,7 @@ class DraftOrchestrator:
                 )
 
         manifest = {
+            "run": self._run_metadata(config, output_dir, "live"),
             "slug": config.slug,
             "title": config.title,
             "date": config.date.isoformat(),
@@ -198,6 +205,8 @@ class DraftOrchestrator:
             "turns": config.turns,
             "moderator": asdict(config.moderator),
             "participants": [asdict(participant) for participant in config.participants],
+            "config_snapshot": config.config_snapshot,
+            "prompt_files": self._prompt_file_metadata(config),
             "executed_turn_records": [asdict(record) for record in completed_records],
         }
         (output_dir / "manifest.json").write_text(
@@ -305,5 +314,37 @@ class DraftOrchestrator:
         response = provider_adapter_for(participant.provider).generate(participant, prompt)
         return (response.text, response.status)
 
+    def _run_metadata(
+        self, config: RoundtableConfig, output_dir: Path, mode: str
+    ) -> dict[str, str]:
+        return {
+            "mode": mode,
+            "slug": config.slug,
+            "output_dir": str(output_dir),
+            "generated_at": datetime.now(UTC).isoformat(),
+            "package_version": package_version(),
+        }
+
+    def _prompt_file_metadata(self, config: RoundtableConfig) -> list[dict[str, str]]:
+        prompt_files = [config.moderator.prompt_file]
+        prompt_files.extend(participant.prompt_file for participant in config.participants)
+        metadata = []
+        for prompt_file in sorted(set(prompt_files)):
+            content = self._read_text(prompt_file).encode("utf-8")
+            metadata.append(
+                {
+                    "path": prompt_file,
+                    "sha256": hashlib.sha256(content).hexdigest(),
+                }
+            )
+        return metadata
+
     def _read_text(self, relative_path: str) -> str:
         return (self.repo_root / relative_path).read_text()
+
+
+def package_version() -> str:
+    try:
+        return version("ai-roundtables-studio")
+    except PackageNotFoundError:
+        return "0.1.0-dev"
