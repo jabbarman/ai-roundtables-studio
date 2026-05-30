@@ -36,7 +36,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
-    repo_root = Path(__file__).resolve().parents[2]
+    repo_root = Path.cwd()
     orchestrator = DraftOrchestrator(repo_root=repo_root)
 
     if args.command == "draft":

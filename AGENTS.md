@@ -22,19 +22,25 @@ Use Python 3.11 or newer.
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -e .
+pip install -e '.[dev]'
 ```
 
 Run a dry draft that writes a manifest and transcript stub:
 
 ```bash
-PYTHONPATH=src python3 -m ai_roundtables.cli draft notes/example-config.json --output-dir runs/raw/example-run
+ai-roundtables draft notes/example-config.json --output-dir runs/raw/example-run
 ```
 
 Run the OpenAI-backed path after creating `.env` from `.env.example`:
 
 ```bash
-PYTHONPATH=src python3 -m ai_roundtables.cli run notes/example-config.openai-only.json --output-dir runs/raw/openai-only-run
+ai-roundtables run notes/example-config.openai-only.json --output-dir runs/raw/openai-only-run
+```
+
+Run tests:
+
+```bash
+pytest
 ```
 
 ## Coding Style & Naming Conventions
@@ -43,11 +49,11 @@ Follow the existing Python style: 4-space indentation, type annotations, `from _
 
 ## Testing Guidelines
 
-No committed automated test suite exists yet. For code changes, at minimum run the dry draft command above and inspect `manifest.json` plus the generated transcript stub. When adding tests, place them under `tests/`, name files `test_*.py`, and prefer pytest-style unit tests for config loading, prompt composition, and transcript rendering.
+Pytest tests live under `tests/` and should be named `test_*.py`. For code changes, run `pytest` plus the dry draft command above and inspect `manifest.json` plus the generated transcript stub. Prefer focused unit tests for config loading, prompt composition, provider skipping, and transcript rendering.
 
 ## Commit & Pull Request Guidelines
 
-This repository has no commit history yet, so use concise imperative commit messages such as `Add OpenAI run validation` or `Document transcript workflow`. Pull requests should describe the workflow impact, list manual validation commands, link any related issue or topic note, and include screenshots or transcript excerpts only when they clarify user-facing editorial output.
+Use concise imperative commit messages such as `Add OpenAI run validation` or `Document transcript workflow`. Pull requests should describe the workflow impact, list validation commands, link any related issue or topic note, and include screenshots or transcript excerpts only when they clarify user-facing editorial output.
 
 ## Security & Configuration Tips
 

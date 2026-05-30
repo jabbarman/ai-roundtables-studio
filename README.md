@@ -54,7 +54,14 @@ Each published conversation should be readable by an intelligent non-specialist 
 
 ## Quick Start
 
-Create a config file and then run:
+Install the package in editable mode, create a config file, and then run:
+
+```bash
+pip install -e .
+ai-roundtables draft path/to/config.json --output-dir runs/raw/example-run
+```
+
+If you are working without an editable install, the module form also works:
 
 ```bash
 PYTHONPATH=src python3 -m ai_roundtables.cli draft path/to/config.json --output-dir runs/raw/example-run
@@ -67,7 +74,7 @@ For a real OpenAI-backed run:
 ```bash
 cp .env.example .env
 # add OPENAI_API_KEY to .env
-PYTHONPATH=src python3 -m ai_roundtables.cli run notes/example-config.openai-only.json --output-dir runs/raw/openai-only-run
+ai-roundtables run notes/example-config.openai-only.json --output-dir runs/raw/openai-only-run
 ```
 
 ## Provider Setup

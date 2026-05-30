@@ -1,0 +1,28 @@
+from __future__ import annotations
+
+from pathlib import Path
+
+from ai_roundtables import cli
+from test_orchestrator import write_fixture_repo
+
+
+def test_cli_uses_current_directory_for_project_assets(
+    tmp_path: Path, monkeypatch
+) -> None:
+    config_path = write_fixture_repo(tmp_path)
+    output_dir = tmp_path / "runs" / "raw" / "cli"
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "ai-roundtables",
+            "draft",
+            str(config_path.relative_to(tmp_path)),
+            "--output-dir",
+            str(output_dir.relative_to(tmp_path)),
+        ],
+    )
+
+    assert cli.main() == 0
+    assert (output_dir / "manifest.json").exists()
+    assert (output_dir / "transcript.stub.md").exists()
