@@ -173,26 +173,3 @@ def test_load_config_rejects_invalid_json(tmp_path: Path) -> None:
     assert "Invalid JSON config" in message
     assert "line 1 column 1" in message
 
-
-def test_extract_openai_text_supports_known_response_shapes(tmp_path: Path) -> None:
-    orchestrator = DraftOrchestrator(repo_root=tmp_path)
-
-    assert orchestrator._extract_openai_text({"output_text": " Direct text "}) == (
-        "Direct text"
-    )
-    assert (
-        orchestrator._extract_openai_text(
-            {
-                "output": [
-                    {
-                        "type": "message",
-                        "content": [
-                            {"type": "output_text", "text": "First"},
-                            {"type": "output_text", "text": "Second"},
-                        ],
-                    }
-                ]
-            }
-        )
-        == "First\n\nSecond"
-    )

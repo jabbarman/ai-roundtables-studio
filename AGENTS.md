@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-This repository supports the full roundtable publishing pipeline: topic notes, prompts, model runs, edited transcripts, and published pieces. Python source lives in `src/ai_roundtables/`; `cli.py` defines the command-line entry point, `orchestrator.py` prepares and executes runs, and `models.py` contains dataclass configuration objects.
+This repository supports the full roundtable publishing pipeline: topic notes, prompts, model runs, edited transcripts, and published pieces. Python source lives in `src/ai_roundtables/`; `cli.py` defines the command-line entry point, `orchestrator.py` prepares and executes runs, `providers.py` contains provider adapters, and `models.py` contains dataclass configuration objects.
 
 Content and workflow assets are organized by stage:
 

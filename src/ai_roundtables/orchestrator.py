@@ -5,11 +5,11 @@ from dataclasses import asdict
 from datetime import date
 import os
 from pathlib import Path
-from urllib import error, request
 
 from jsonschema import Draft202012Validator, FormatChecker
 
 from .models import ModeratorConfig, ParticipantConfig, RoundtableConfig, TurnRecord
+from .providers import provider_adapter_for
 
 
 class ConfigError(ValueError):
@@ -302,87 +302,8 @@ class DraftOrchestrator:
     def _generate_response(
         self, participant: ParticipantConfig, prompt: str
     ) -> tuple[str, str]:
-        if participant.provider != "openai":
-            env_name = self._provider_env_var(participant.provider)
-            if env_name and not os.getenv(env_name):
-                return (
-                    f"[Skipped: no {env_name} found. This participant remains a placeholder until that provider is configured.]",
-                    "skipped_missing_key",
-                )
-            return (
-                f"[Skipped: provider '{participant.provider}' is not wired into the orchestrator yet.]",
-                "skipped_unimplemented_provider",
-            )
-
-        api_key = os.getenv("OPENAI_API_KEY")
-        if not api_key:
-            return (
-                "[Skipped: no OPENAI_API_KEY found. Add it to the environment or a local .env file to run OpenAI-backed participants.]",
-                "skipped_missing_key",
-            )
-
-        payload = {
-            "model": participant.model,
-            "instructions": (
-                "You are writing one turn in an AI roundtable transcript. "
-                "Stay in role, stay readable for an intelligent lay audience, "
-                "and do not output speaker labels or markdown headings."
-            ),
-            "input": prompt,
-        }
-        body = json.dumps(payload).encode("utf-8")
-        api_request = request.Request(
-            "https://api.openai.com/v1/responses",
-            data=body,
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json",
-            },
-            method="POST",
-        )
-        try:
-            with request.urlopen(api_request, timeout=120) as response:
-                response_json = json.loads(response.read().decode("utf-8"))
-        except error.HTTPError as exc:
-            detail = exc.read().decode("utf-8", errors="replace")
-            return (
-                f"[OpenAI request failed with HTTP {exc.code}. Details: {detail}]",
-                "error_http",
-            )
-        except error.URLError as exc:
-            return (
-                f"[OpenAI request failed before a response was received: {exc.reason}]",
-                "error_network",
-            )
-
-        text = self._extract_openai_text(response_json)
-        if not text:
-            return (
-                "[OpenAI returned a response payload, but no text could be extracted.]",
-                "error_empty_response",
-            )
-        return (text, "completed")
-
-    def _extract_openai_text(self, response_json: dict) -> str:
-        output_text = response_json.get("output_text")
-        if isinstance(output_text, str) and output_text.strip():
-            return output_text.strip()
-
-        fragments: list[str] = []
-        for item in response_json.get("output", []):
-            if item.get("type") != "message":
-                continue
-            for content in item.get("content", []):
-                if content.get("type") == "output_text" and content.get("text"):
-                    fragments.append(content["text"])
-        return "\n\n".join(fragment.strip() for fragment in fragments if fragment.strip())
-
-    def _provider_env_var(self, provider: str) -> str | None:
-        return {
-            "openai": "OPENAI_API_KEY",
-            "anthropic": "ANTHROPIC_API_KEY",
-            "google": "GEMINI_API_KEY",
-        }.get(provider)
+        response = provider_adapter_for(participant.provider).generate(participant, prompt)
+        return (response.text, response.status)
 
     def _read_text(self, relative_path: str) -> str:
         return (self.repo_root / relative_path).read_text()
