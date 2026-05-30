@@ -1,0 +1,42 @@
+{
+  "slug": "when-models-should-abstain",
+  "title": "When Should an AI Abstain Rather Than Answer?",
+  "date": "2026-04-12",
+  "audience": "intelligent_lay",
+  "format": "consensus_dissent",
+  "topic": "When should a language model decline, defer, or qualify an answer?",
+  "brief": "Keep the discussion accessible and concrete. Push for real disagreement, practical examples, and clear stakes for users.",
+  "moderator": {
+    "name": "Moderator",
+    "prompt_file": "prompts/moderator.md"
+  },
+  "participants": [
+    {
+      "name": "OpenAI",
+      "provider": "openai",
+      "model": "gpt-5.4",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Pragmatic about usefulness, but wary of overconfident answers."
+    },
+    {
+      "name": "Anthropic",
+      "provider": "anthropic",
+      "model": "claude-opus-4-1",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Cautious about epistemic overreach and user trust."
+    },
+    {
+      "name": "Google",
+      "provider": "google",
+      "model": "gemini-2.5-pro",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Broadly synthetic, with an emphasis on systems behavior and edge cases."
+    }
+  ],
+  "editorial_goals": [
+    "Make the disagreement clear early.",
+    "Use at least two concrete examples.",
+    "Avoid academic drift."
+  ],
+  "turns": 2
+}

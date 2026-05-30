@@ -1,0 +1,42 @@
+{
+  "slug": "openai-only-when-models-should-abstain",
+  "title": "When Should an AI Abstain Rather Than Answer?",
+  "date": "2026-04-12",
+  "audience": "intelligent_lay",
+  "format": "consensus_dissent",
+  "topic": "When should a language model decline, defer, or qualify an answer?",
+  "brief": "This is an OpenAI-only run used to exercise the editorial pipeline while still generating real disagreement. Keep it concrete, accessible, and lively.",
+  "moderator": {
+    "name": "Moderator",
+    "prompt_file": "prompts/moderator.md"
+  },
+  "participants": [
+    {
+      "name": "OpenAI-Pragmatist",
+      "provider": "openai",
+      "model": "gpt-5.4-mini",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Pragmatic about usefulness. Hesitant to abstain if a careful partial answer would still help."
+    },
+    {
+      "name": "OpenAI-Skeptic",
+      "provider": "openai",
+      "model": "gpt-5.4-mini",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Protective of trust. Quick to argue that overconfident answers do more damage than brief refusals."
+    },
+    {
+      "name": "OpenAI-Synthesist",
+      "provider": "openai",
+      "model": "gpt-5.4-mini",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Looks for policy-level balance, edge cases, and user-context nuance."
+    }
+  ],
+  "editorial_goals": [
+    "Make the disagreement obvious in the first turn.",
+    "Use practical examples, not just abstractions.",
+    "Keep the prose energetic and readable."
+  ],
+  "turns": 2
+}

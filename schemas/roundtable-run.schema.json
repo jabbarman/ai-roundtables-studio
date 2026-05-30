@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/roundtable-run.schema.json",
+  "title": "AI Roundtable Run",
+  "type": "object",
+  "required": [
+    "slug",
+    "title",
+    "date",
+    "audience",
+    "format",
+    "topic",
+    "participants",
+    "moderator"
+  ],
+  "properties": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "audience": {
+      "type": "string",
+      "enum": [
+        "intelligent_lay",
+        "mixed",
+        "technical"
+      ]
+    },
+    "format": {
+      "type": "string",
+      "enum": [
+        "roundtable",
+        "debate",
+        "delphi",
+        "consensus_dissent",
+        "paper_response"
+      ]
+    },
+    "topic": {
+      "type": "string",
+      "minLength": 1
+    },
+    "brief": {
+      "type": "string"
+    },
+    "source_packet": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "title",
+          "kind"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "paper",
+              "article",
+              "benchmark",
+              "note",
+              "dataset",
+              "other"
+            ]
+          },
+          "url": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "moderator": {
+      "type": "object",
+      "required": [
+        "name",
+        "prompt_file"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "prompt_file": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "participants": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "provider",
+          "model",
+          "prompt_file",
+          "stance"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "openai",
+              "anthropic",
+              "google",
+              "other"
+            ]
+          },
+          "model": {
+            "type": "string"
+          },
+          "prompt_file": {
+            "type": "string"
+          },
+          "stance": {
+            "type": "string"
+          },
+          "temperature": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "editorial_goals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "turns": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "additionalProperties": false
+}
