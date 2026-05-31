@@ -238,10 +238,27 @@ class DraftOrchestrator:
             f"Participant name: {participant.name}\n"
             f"Participant stance: {participant.stance}\n"
             f"Brief: {config.brief}\n"
+            f"Source packet:\n{self._render_source_packet(config)}\n"
             f"Editorial goals: {', '.join(config.editorial_goals) or 'none provided'}\n"
             f"Conversation so far:\n{transcript_text}\n\n"
             "Write only this participant's next contribution. Keep it between 120 and 220 words unless the prompt clearly demands brevity."
         )
+
+    def _render_source_packet(self, config: RoundtableConfig) -> str:
+        if not config.source_packet:
+            return "No source packet provided."
+        rendered = []
+        for index, source in enumerate(config.source_packet, start=1):
+            title = source.get("title", "Untitled source")
+            kind = source.get("kind", "source")
+            url = source.get("url", "")
+            notes = source.get("notes", "")
+            rendered.append(
+                f"{index}. {title} ({kind})\n"
+                f"   URL: {url or 'not provided'}\n"
+                f"   Notes: {notes or 'none'}"
+            )
+        return "\n".join(rendered)
 
     def _render_stub(
         self, config: RoundtableConfig, plan: list[TurnRecord]

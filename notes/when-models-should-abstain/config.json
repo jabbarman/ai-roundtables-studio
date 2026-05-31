@@ -1,0 +1,69 @@
+{
+  "slug": "when-models-should-abstain",
+  "title": "When Should an AI Abstain Rather Than Answer?",
+  "date": "2026-05-31",
+  "audience": "intelligent_lay",
+  "format": "consensus_dissent",
+  "topic": "When should a language model refuse, defer, ask a clarifying question, or offer a carefully qualified partial answer?",
+  "brief": "Use the source packet to ground a lively, concrete discussion. Avoid a simple safety-versus-usefulness frame. Push the tradeoff between helpfulness, user autonomy, calibrated uncertainty, and institutional risk.",
+  "source_packet": [
+    {
+      "title": "NIST AI Risk Management Framework 1.0",
+      "kind": "other",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-ai-rmf-10",
+      "notes": "Frames trustworthy AI through validity, reliability, safety, security, transparency, explainability, privacy, and fairness."
+    },
+    {
+      "title": "OpenAI Model Spec",
+      "kind": "other",
+      "url": "https://cdn.openai.com/spec/model-spec-2024-05-08.html",
+      "notes": "Describes desired assistant behavior around helpfulness, uncertainty, and refusals."
+    },
+    {
+      "title": "Anthropic Responsible Scaling Policy v3",
+      "kind": "other",
+      "url": "https://www.anthropic.com/news/responsible-scaling-policy-v3",
+      "notes": "Connects model behavior and deployment decisions to frontier risk governance."
+    },
+    {
+      "title": "Google AI Principles",
+      "kind": "other",
+      "url": "https://blog.google/technology/ai/ai-principles/",
+      "notes": "States principles for social benefit, bias avoidance, safety, accountability, and privacy."
+    }
+  ],
+  "moderator": {
+    "name": "Moderator",
+    "prompt_file": "prompts/moderator.md"
+  },
+  "participants": [
+    {
+      "name": "OpenAI",
+      "provider": "openai",
+      "model": "gpt-5.4",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Pragmatic about usefulness and user agency. Wary of refusals that hide uncertainty behind institutional caution."
+    },
+    {
+      "name": "Anthropic",
+      "provider": "anthropic",
+      "model": "claude-sonnet-4-6",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Cautious about epistemic overreach, user trust, and the downstream risks of confident-sounding partial answers."
+    },
+    {
+      "name": "Google",
+      "provider": "google",
+      "model": "gemini-3.1-pro-preview",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Systems-oriented. Focuses on product design, context, escalation paths, and how policies behave at scale."
+    }
+  ],
+  "editorial_goals": [
+    "Make the core disagreement obvious in the first turn cycle.",
+    "Use at least three concrete examples.",
+    "Separate refusal, deferral, clarification, and qualified partial answers.",
+    "End with a practical synthesis rather than bland consensus."
+  ],
+  "turns": 3
+}
