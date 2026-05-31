@@ -49,6 +49,15 @@ Evaluate generated run artifacts:
 ai-roundtables eval runs/raw/example-run
 ```
 
+Promote and publish editorial artifacts:
+
+```bash
+ai-roundtables promote runs/raw/example-run --output transcripts/example.md
+ai-roundtables publish transcripts/example.md --output published/example.md
+ai-roundtables check published/example.md
+ai-roundtables index
+```
+
 Use `"moderator_turns": "between_rounds"` in a config when the published format needs visible moderator prompts between participant rounds.
 
 ## Coding Style & Naming Conventions

@@ -64,3 +64,74 @@ def test_cli_eval_returns_zero_for_valid_draft_run(
 
     assert cli.main() == 0
     assert "Run evaluation: PASS" in capsys.readouterr().out
+
+
+def test_cli_promote_publish_check_and_index(
+    tmp_path: Path, monkeypatch, capsys
+) -> None:
+    run_dir = tmp_path / "runs" / "raw" / "editorial"
+    run_dir.mkdir(parents=True)
+    (run_dir / "manifest.json").write_text(
+        """{
+  "run": {"mode": "live"},
+  "title": "Editorial Test",
+  "date": "2026-05-31",
+  "format": "roundtable",
+  "audience": "intelligent_lay",
+  "turns": 1,
+  "moderator": {"name": "Moderator", "model": "gpt-test"},
+  "participants": [{"name": "OpenAI", "provider": "openai", "model": "gpt-test"}],
+  "executed_turn_records": [
+    {"speaker": "OpenAI", "status": "completed", "response": "A substantial answer."}
+  ]
+}
+"""
+    )
+    (run_dir / "transcript.md").write_text("# Editorial Test\n")
+    monkeypatch.chdir(tmp_path)
+
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "ai-roundtables",
+            "promote",
+            "runs/raw/editorial",
+            "--output",
+            "transcripts/editorial.md",
+        ],
+    )
+    assert cli.main() == 0
+
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "ai-roundtables",
+            "publish",
+            "transcripts/editorial.md",
+            "--output",
+            "published/editorial.md",
+        ],
+    )
+    assert cli.main() == 0
+    published = tmp_path / "published" / "editorial.md"
+    published.write_text(
+        published.read_text().replace(
+            "<!-- Add a reader-facing introduction here before publishing. -->",
+            "Intro with https://example.com/source.",
+        )
+        + "\n## Editorial Note\n\nDone.\n"
+    )
+
+    monkeypatch.setattr(
+        "sys.argv",
+        ["ai-roundtables", "check", "published/editorial.md"],
+    )
+    assert cli.main() == 0
+    assert "Editorial check: PASS" in capsys.readouterr().out
+
+    monkeypatch.setattr(
+        "sys.argv",
+        ["ai-roundtables", "index", "--published-dir", "published"],
+    )
+    assert cli.main() == 0
+    assert (tmp_path / "published" / "INDEX.md").exists()

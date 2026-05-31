@@ -83,6 +83,25 @@ Evaluate a run directory after draft or live generation:
 ai-roundtables eval runs/raw/example-run
 ```
 
+Promote a raw run into a cleaned transcript scaffold:
+
+```bash
+ai-roundtables promote runs/raw/example-run --output transcripts/example.md
+```
+
+Create a published markdown scaffold from a cleaned transcript:
+
+```bash
+ai-roundtables publish transcripts/example.md --output published/example.md
+```
+
+Check published metadata and regenerate the published index:
+
+```bash
+ai-roundtables check published/example.md
+ai-roundtables index
+```
+
 Configs can enable visible moderator turns with:
 
 ```json

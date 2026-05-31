@@ -4,6 +4,13 @@ import argparse
 import json
 from pathlib import Path
 
+from .editorial import (
+    check_published,
+    promote_run,
+    publish_transcript,
+    render_editorial_check,
+    write_published_index,
+)
 from .evaluation import evaluate_run, format_evaluation
 from .orchestrator import ConfigError, DraftOrchestrator, package_version
 
@@ -51,6 +58,49 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Write machine-readable evaluation output.",
     )
+
+    promote_parser = subparsers.add_parser(
+        "promote",
+        help="Create a cleaned transcript scaffold from a run directory.",
+    )
+    promote_parser.add_argument("run_dir", help="Path to a raw run directory.")
+    promote_parser.add_argument(
+        "--output",
+        required=True,
+        help="Transcript markdown path to write.",
+    )
+
+    publish_parser = subparsers.add_parser(
+        "publish",
+        help="Create a published markdown scaffold from a cleaned transcript.",
+    )
+    publish_parser.add_argument("transcript", help="Path to cleaned transcript.")
+    publish_parser.add_argument(
+        "--output",
+        required=True,
+        help="Published markdown path to write.",
+    )
+
+    check_parser = subparsers.add_parser(
+        "check",
+        help="Check a published markdown file for required editorial metadata.",
+    )
+    check_parser.add_argument("published_file", help="Published markdown path.")
+
+    index_parser = subparsers.add_parser(
+        "index",
+        help="Generate an index of published roundtables.",
+    )
+    index_parser.add_argument(
+        "--published-dir",
+        default="published",
+        help="Directory containing published markdown files.",
+    )
+    index_parser.add_argument(
+        "--output",
+        default="published/INDEX.md",
+        help="Index markdown path to write.",
+    )
     return parser
 
 
@@ -80,7 +130,29 @@ def main() -> int:
             else:
                 print(format_evaluation(evaluation))
             return 0 if evaluation.passed else 1
+
+        if args.command == "promote":
+            promote_run(Path(args.run_dir), Path(args.output))
+            print(f"Transcript scaffold written to {args.output}")
+            return 0
+
+        if args.command == "publish":
+            publish_transcript(Path(args.transcript), Path(args.output))
+            print(f"Published scaffold written to {args.output}")
+            return 0
+
+        if args.command == "check":
+            check = check_published(Path(args.published_file), repo_root=repo_root)
+            print(render_editorial_check(check))
+            return 0 if check.passed else 1
+
+        if args.command == "index":
+            write_published_index(Path(args.published_dir), Path(args.output))
+            print(f"Published index written to {args.output}")
+            return 0
     except ConfigError as exc:
+        parser.exit(1, f"{exc}\n")
+    except ValueError as exc:
         parser.exit(1, f"{exc}\n")
 
     parser.error(f"Unknown command: {args.command}")
