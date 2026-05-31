@@ -1,0 +1,82 @@
+{
+  "slug": "explain-reasoning-or-conclusions",
+  "title": "Should AI Systems Explain Their Reasoning, or Only Their Conclusions?",
+  "date": "2026-05-31",
+  "audience": "intelligent_lay",
+  "format": "consensus_dissent",
+  "topic": "When should an AI assistant explain its reasoning, summarize it, cite evidence, expose uncertainty, or simply provide a conclusion?",
+  "brief": "Use the source packet to create a concrete discussion about reasoning transparency. Avoid treating explanation as automatically good. Push the difference between useful auditability and persuasive rationalization.",
+  "source_packet": [
+    {
+      "title": "NIST AI Risk Management Framework 1.0",
+      "kind": "other",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-ai-rmf-10",
+      "notes": "Frames transparency, explainability, interpretability, reliability, and accountability as trustworthiness attributes."
+    },
+    {
+      "title": "OpenAI Model Spec 2025-09-12",
+      "kind": "other",
+      "url": "https://model-spec.openai.com/2025-09-12.html",
+      "notes": "Discusses hidden chain-of-thought messages and tradeoffs around exposing raw reasoning."
+    },
+    {
+      "title": "OpenAI Reasoning Models Guide",
+      "kind": "other",
+      "url": "https://platform.openai.com/docs/guides/reasoning",
+      "notes": "Describes reasoning models and reasoning summaries."
+    },
+    {
+      "title": "Anthropic: Measuring Faithfulness in Chain-of-Thought Reasoning",
+      "kind": "other",
+      "url": "https://www.anthropic.com/research/measuring-faithfulness-in-chain-of-thought-reasoning",
+      "notes": "Raises the possibility that stated chains of thought may not faithfully reflect why an answer was produced."
+    },
+    {
+      "title": "Google AI Principles",
+      "kind": "other",
+      "url": "https://blog.google/technology/ai/ai-principles/",
+      "notes": "Connects explanation design to accountability, safety, privacy, and social benefit."
+    }
+  ],
+  "moderator": {
+    "name": "Moderator",
+    "prompt_file": "prompts/moderator.md",
+    "provider": "openai",
+    "model": "gpt-5.4",
+    "output_tokens": 384
+  },
+  "moderator_turns": "between_rounds",
+  "participants": [
+    {
+      "name": "OpenAI",
+      "provider": "openai",
+      "model": "gpt-5.4",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Pragmatic about reasoning summaries, citations, and task-specific explanations. Wary of exposing raw hidden reasoning as a false transparency ritual.",
+      "output_tokens": 768
+    },
+    {
+      "name": "Anthropic",
+      "provider": "anthropic",
+      "model": "claude-sonnet-4-6",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Cautious about persuasive rationalizations and unfaithful explanations. Prioritizes calibrated uncertainty and user trust over performative transparency.",
+      "output_tokens": 768
+    },
+    {
+      "name": "Google",
+      "provider": "google",
+      "model": "gemini-2.5-pro",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Systems-oriented. Focuses on product context, evidence interfaces, citations, confidence signals, and how explanation formats shape user behavior.",
+      "output_tokens": 1024
+    }
+  ],
+  "editorial_goals": [
+    "Make the distinction between raw reasoning, reasoning summaries, citations, and conclusions explicit.",
+    "Use at least three concrete examples.",
+    "Force disagreement about whether explanations increase trust or merely persuasion.",
+    "Let the visible moderator steer the discussion between rounds."
+  ],
+  "turns": 3
+}
