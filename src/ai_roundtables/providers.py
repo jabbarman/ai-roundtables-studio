@@ -149,7 +149,14 @@ class GeminiGenerateContentAdapter(ProviderAdapter):
                 "skipped_missing_key",
             )
 
-        generation_config = {"maxOutputTokens": participant.output_tokens or 2048}
+        generation_config = {
+            "maxOutputTokens": participant.output_tokens or 2048,
+            "thinkingConfig": {
+                "thinkingBudget": participant.thinking_tokens
+                if participant.thinking_tokens is not None
+                else 512
+            },
+        }
         if participant.temperature is not None:
             generation_config["temperature"] = participant.temperature
         payload = {

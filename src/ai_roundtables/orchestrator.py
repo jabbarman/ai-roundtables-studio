@@ -61,6 +61,7 @@ class DraftOrchestrator:
                 stance=item["stance"],
                 temperature=item.get("temperature"),
                 output_tokens=item.get("output_tokens"),
+                thinking_tokens=item.get("thinking_tokens"),
             )
             for item in participants_raw
         ]

@@ -69,7 +69,8 @@
       "model": "gemini-2.5-pro",
       "prompt_file": "prompts/participant.md",
       "stance": "Systems-oriented. Focuses on product context, evidence interfaces, citations, confidence signals, and how explanation formats shape user behavior.",
-      "output_tokens": 1024
+      "output_tokens": 2048,
+      "thinking_tokens": 512
     }
   ],
   "editorial_goals": [

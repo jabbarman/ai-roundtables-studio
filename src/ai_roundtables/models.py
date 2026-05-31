@@ -14,6 +14,7 @@ class ParticipantConfig:
     stance: str
     temperature: float | None = None
     output_tokens: int | None = None
+    thinking_tokens: int | None = None
 
 
 @dataclass(slots=True)

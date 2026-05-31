@@ -15,7 +15,11 @@ from ai_roundtables.providers import (
 )
 
 
-def participant(provider: str = "openai", output_tokens: int | None = None) -> ParticipantConfig:
+def participant(
+    provider: str = "openai",
+    output_tokens: int | None = None,
+    thinking_tokens: int | None = None,
+) -> ParticipantConfig:
     return ParticipantConfig(
         name="Test",
         provider=provider,
@@ -23,6 +27,7 @@ def participant(provider: str = "openai", output_tokens: int | None = None) -> P
         prompt_file="prompts/participant.md",
         stance="Test stance.",
         output_tokens=output_tokens,
+        thinking_tokens=thinking_tokens,
     )
 
 
@@ -204,7 +209,7 @@ def test_gemini_adapter_posts_to_generate_content_api(monkeypatch) -> None:
     monkeypatch.setattr("ai_roundtables.providers.request.urlopen", fake_urlopen)
 
     response = GeminiGenerateContentAdapter().generate(
-        participant("google", output_tokens=768), "Prompt text"
+        participant("google", output_tokens=768, thinking_tokens=128), "Prompt text"
     )
 
     assert response.status == "completed"
@@ -215,5 +220,8 @@ def test_gemini_adapter_posts_to_generate_content_api(monkeypatch) -> None:
     )
     assert captured["timeout"] == 120
     assert captured["body"]["generationConfig"]["maxOutputTokens"] == 768
+    assert captured["body"]["generationConfig"]["thinkingConfig"] == {
+        "thinkingBudget": 128
+    }
     assert "Prompt text" in captured["body"]["contents"][0]["parts"][0]["text"]
     assert captured["key"] == "test-key"
