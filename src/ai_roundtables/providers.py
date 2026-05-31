@@ -53,6 +53,7 @@ class OpenAIResponsesAdapter(ProviderAdapter):
             "model": participant.model,
             "instructions": provider_instructions(),
             "input": prompt,
+            "max_output_tokens": participant.output_tokens or 512,
         }
         api_request = request.Request(
             "https://api.openai.com/v1/responses",
@@ -98,7 +99,7 @@ class AnthropicMessagesAdapter(ProviderAdapter):
 
         payload = {
             "model": participant.model,
-            "max_tokens": 512,
+            "max_tokens": participant.output_tokens or 512,
             "system": provider_instructions(),
             "messages": [{"role": "user", "content": prompt}],
         }
@@ -148,7 +149,7 @@ class GeminiGenerateContentAdapter(ProviderAdapter):
                 "skipped_missing_key",
             )
 
-        generation_config = {"maxOutputTokens": 2048}
+        generation_config = {"maxOutputTokens": participant.output_tokens or 2048}
         if participant.temperature is not None:
             generation_config["temperature"] = participant.temperature
         payload = {

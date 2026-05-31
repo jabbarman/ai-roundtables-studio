@@ -56,6 +56,7 @@ class DraftOrchestrator:
                 prompt_file=item["prompt_file"],
                 stance=item["stance"],
                 temperature=item.get("temperature"),
+                output_tokens=item.get("output_tokens"),
             )
             for item in participants_raw
         ]

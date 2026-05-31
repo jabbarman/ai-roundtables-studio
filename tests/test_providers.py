@@ -15,13 +15,14 @@ from ai_roundtables.providers import (
 )
 
 
-def participant(provider: str = "openai") -> ParticipantConfig:
+def participant(provider: str = "openai", output_tokens: int | None = None) -> ParticipantConfig:
     return ParticipantConfig(
         name="Test",
         provider=provider,
         model="test-model",
         prompt_file="prompts/participant.md",
         stance="Test stance.",
+        output_tokens=output_tokens,
     )
 
 
@@ -124,13 +125,16 @@ def test_openai_adapter_posts_to_responses_api(monkeypatch) -> None:
     monkeypatch.setenv("OPENAI_API_KEY", "test-key")
     monkeypatch.setattr("ai_roundtables.providers.request.urlopen", fake_urlopen)
 
-    response = OpenAIResponsesAdapter().generate(participant(), "Prompt text")
+    response = OpenAIResponsesAdapter().generate(
+        participant(output_tokens=768), "Prompt text"
+    )
 
     assert response.status == "completed"
     assert response.text == "Generated turn"
     assert captured["url"] == "https://api.openai.com/v1/responses"
     assert captured["timeout"] == 120
     assert captured["body"]["input"] == "Prompt text"
+    assert captured["body"]["max_output_tokens"] == 768
     assert captured["auth"] == "Bearer test-key"
 
 
@@ -161,13 +165,14 @@ def test_anthropic_adapter_posts_to_messages_api(monkeypatch) -> None:
     monkeypatch.setattr("ai_roundtables.providers.request.urlopen", fake_urlopen)
 
     response = AnthropicMessagesAdapter().generate(
-        participant("anthropic"), "Prompt text"
+        participant("anthropic", output_tokens=768), "Prompt text"
     )
 
     assert response.status == "completed"
     assert response.text == "Anthropic turn"
     assert captured["url"] == "https://api.anthropic.com/v1/messages"
     assert captured["timeout"] == 120
+    assert captured["body"]["max_tokens"] == 768
     assert captured["body"]["messages"] == [{"role": "user", "content": "Prompt text"}]
     assert captured["key"] == "test-key"
     assert captured["version"] == "2023-06-01"
@@ -199,7 +204,7 @@ def test_gemini_adapter_posts_to_generate_content_api(monkeypatch) -> None:
     monkeypatch.setattr("ai_roundtables.providers.request.urlopen", fake_urlopen)
 
     response = GeminiGenerateContentAdapter().generate(
-        participant("google"), "Prompt text"
+        participant("google", output_tokens=768), "Prompt text"
     )
 
     assert response.status == "completed"
@@ -209,5 +214,6 @@ def test_gemini_adapter_posts_to_generate_content_api(monkeypatch) -> None:
         == "https://generativelanguage.googleapis.com/v1beta/models/test-model:generateContent"
     )
     assert captured["timeout"] == 120
+    assert captured["body"]["generationConfig"]["maxOutputTokens"] == 768
     assert "Prompt text" in captured["body"]["contents"][0]["parts"][0]["text"]
     assert captured["key"] == "test-key"

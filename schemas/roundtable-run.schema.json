@@ -136,6 +136,10 @@
           },
           "temperature": {
             "type": "number"
+          },
+          "output_tokens": {
+            "type": "integer",
+            "minimum": 16
           }
         },
         "additionalProperties": false

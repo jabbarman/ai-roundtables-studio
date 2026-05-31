@@ -54,6 +54,30 @@ def test_evaluate_live_run_reports_provider_errors(tmp_path: Path) -> None:
     assert evaluation.issues == ["B ended with provider error status: error_http"]
 
 
+def test_evaluate_live_run_warns_on_short_completed_responses(tmp_path: Path) -> None:
+    run_dir = tmp_path / "runs" / "raw" / "short"
+    run_dir.mkdir(parents=True)
+    manifest = {
+        "run": {"mode": "live"},
+        "turns": 1,
+        "participants": [{"name": "A"}],
+        "executed_turn_records": [
+            {
+                "speaker": "A",
+                "status": "completed",
+                "response": "Too short.",
+            },
+        ],
+    }
+    (run_dir / "manifest.json").write_text(json.dumps(manifest))
+    (run_dir / "transcript.md").write_text("# Transcript\n")
+
+    evaluation = evaluate_run(run_dir)
+
+    assert evaluation.passed
+    assert evaluation.warnings == ["A completed with a short response (10 chars)"]
+
+
 def test_evaluate_missing_manifest_fails(tmp_path: Path) -> None:
     evaluation = evaluate_run(tmp_path / "missing")
 

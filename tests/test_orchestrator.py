@@ -38,6 +38,7 @@ def write_fixture_repo(tmp_path: Path) -> Path:
                 "model": "gpt-test",
                 "prompt_file": "prompts/participant.md",
                 "stance": "Pragmatic.",
+                "output_tokens": 640,
             },
             {
                 "name": "Anthropic",
@@ -69,6 +70,8 @@ def test_load_config_and_build_turn_plan(tmp_path: Path) -> None:
         "OpenAI",
         "Anthropic",
     ]
+    assert config.participants[0].output_tokens == 640
+    assert config.participants[1].output_tokens is None
     assert len(plan) == 4
     assert "Roundtable title: Test Roundtable" in plan[0].prompt
     assert "Conversation so far:\nNo prior turns yet." in plan[0].prompt

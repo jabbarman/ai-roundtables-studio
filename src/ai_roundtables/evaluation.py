@@ -6,6 +6,8 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
+MIN_COMPLETED_RESPONSE_CHARS = 400
+
 
 @dataclass(slots=True)
 class RunEvaluation:
@@ -78,6 +80,11 @@ def evaluate_run(run_dir: Path) -> RunEvaluation:
             warnings.append(f"{speaker} was skipped: {status}")
         elif status == "completed" and not response.strip():
             issues.append(f"{speaker} completed with an empty response")
+        elif status == "completed" and len(response.strip()) < MIN_COMPLETED_RESPONSE_CHARS:
+            warnings.append(
+                f"{speaker} completed with a short response "
+                f"({len(response.strip())} chars)"
+            )
 
     return RunEvaluation(
         run_dir=str(run_dir),

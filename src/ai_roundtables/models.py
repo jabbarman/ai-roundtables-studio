@@ -13,6 +13,7 @@ class ParticipantConfig:
     prompt_file: str
     stance: str
     temperature: float | None = None
+    output_tokens: int | None = None
 
 
 @dataclass(slots=True)
