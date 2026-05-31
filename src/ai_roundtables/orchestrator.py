@@ -47,6 +47,10 @@ class DraftOrchestrator:
         moderator = ModeratorConfig(
             name=moderator_raw["name"],
             prompt_file=moderator_raw["prompt_file"],
+            provider=moderator_raw.get("provider", "openai"),
+            model=moderator_raw.get("model", "gpt-5.4"),
+            temperature=moderator_raw.get("temperature"),
+            output_tokens=moderator_raw.get("output_tokens"),
         )
         participants = [
             ParticipantConfig(
@@ -75,6 +79,7 @@ class DraftOrchestrator:
             participants=participants,
             editorial_goals=raw.get("editorial_goals", []),
             turns=raw.get("turns", 1),
+            moderator_turns=raw.get("moderator_turns", "none"),
         )
 
     def _validate_config(self, raw: dict) -> None:
@@ -110,6 +115,20 @@ class DraftOrchestrator:
         records: list[TurnRecord] = []
 
         for turn_number in range(1, config.turns + 1):
+            if config.moderator_turns == "between_rounds":
+                prompt = self._compose_moderator_prompt(
+                    moderator_prompt=moderator_prompt,
+                    config=config,
+                    turn_number=turn_number,
+                )
+                records.append(
+                    TurnRecord(
+                        speaker=config.moderator.name,
+                        prompt=prompt,
+                        provider=config.moderator.provider,
+                        model=config.moderator.model,
+                    )
+                )
             for participant in config.participants:
                 participant_prompt = self._read_text(participant.prompt_file)
                 prompt = self._compose_prompt(
@@ -145,6 +164,7 @@ class DraftOrchestrator:
             "source_packet": config.source_packet,
             "editorial_goals": config.editorial_goals,
             "turns": config.turns,
+            "moderator_turns": config.moderator_turns,
             "moderator": asdict(config.moderator),
             "participants": [asdict(participant) for participant in config.participants],
             "config_snapshot": config.config_snapshot,
@@ -164,6 +184,33 @@ class DraftOrchestrator:
 
         moderator_prompt = self._read_text(config.moderator.prompt_file)
         for turn_number in range(1, config.turns + 1):
+            if config.moderator_turns == "between_rounds":
+                prompt = self._compose_moderator_prompt(
+                    moderator_prompt=moderator_prompt,
+                    config=config,
+                    turn_number=turn_number,
+                    transcript_entries=transcript_entries,
+                )
+                moderator_participant = self._moderator_as_participant(config)
+                record = TurnRecord(
+                    speaker=config.moderator.name,
+                    prompt=prompt,
+                    provider=config.moderator.provider,
+                    model=config.moderator.model,
+                )
+                response_text, status = self._generate_response(
+                    moderator_participant, prompt
+                )
+                record.response = response_text
+                record.status = status
+                completed_records.append(record)
+                transcript_entries.append(
+                    {
+                        "speaker": config.moderator.name,
+                        "status": status,
+                        "content": response_text,
+                    }
+                )
             for participant in config.participants:
                 participant_prompt = self._read_text(participant.prompt_file)
                 prompt = self._compose_prompt(
@@ -204,6 +251,7 @@ class DraftOrchestrator:
             "source_packet": config.source_packet,
             "editorial_goals": config.editorial_goals,
             "turns": config.turns,
+            "moderator_turns": config.moderator_turns,
             "moderator": asdict(config.moderator),
             "participants": [asdict(participant) for participant in config.participants],
             "config_snapshot": config.config_snapshot,
@@ -243,6 +291,43 @@ class DraftOrchestrator:
             f"Editorial goals: {', '.join(config.editorial_goals) or 'none provided'}\n"
             f"Conversation so far:\n{transcript_text}\n\n"
             "Write only this participant's next contribution. Keep it between 120 and 220 words unless the prompt clearly demands brevity."
+        )
+
+    def _compose_moderator_prompt(
+        self,
+        *,
+        moderator_prompt: str,
+        config: RoundtableConfig,
+        turn_number: int,
+        transcript_entries: list[dict[str, str]] | None = None,
+    ) -> str:
+        transcript_text = self._render_context(transcript_entries or [])
+        role_instruction = {
+            1: (
+                "Open the roundtable with a sharp setup and one specific question "
+                "that creates disagreement."
+            ),
+            config.turns: (
+                "Give a final challenge or synthesis prompt that forces the "
+                "participants to name the practical consequence of their disagreement."
+            ),
+        }.get(
+            turn_number,
+            "Ask a follow-up that directly pressures the prior disagreement.",
+        )
+        return (
+            f"{moderator_prompt.strip()}\n\n"
+            f"Roundtable title: {config.title}\n"
+            f"Topic: {config.topic}\n"
+            f"Audience: {config.audience}\n"
+            f"Format: {config.format}\n"
+            f"Moderator turn number: {turn_number} of {config.turns}\n"
+            f"Brief: {config.brief}\n"
+            f"Source packet:\n{self._render_source_packet(config)}\n"
+            f"Editorial goals: {', '.join(config.editorial_goals) or 'none provided'}\n"
+            f"Conversation so far:\n{transcript_text}\n\n"
+            f"{role_instruction} Write only the moderator's next contribution. "
+            "Keep it between 60 and 120 words."
         )
 
     def _render_source_packet(self, config: RoundtableConfig) -> str:
@@ -331,6 +416,17 @@ class DraftOrchestrator:
     ) -> tuple[str, str]:
         response = provider_adapter_for(participant.provider).generate(participant, prompt)
         return (response.text, response.status)
+
+    def _moderator_as_participant(self, config: RoundtableConfig) -> ParticipantConfig:
+        return ParticipantConfig(
+            name=config.moderator.name,
+            provider=config.moderator.provider,
+            model=config.moderator.model,
+            prompt_file=config.moderator.prompt_file,
+            stance="Moderator",
+            temperature=config.moderator.temperature,
+            output_tokens=config.moderator.output_tokens,
+        )
 
     def _run_metadata(
         self, config: RoundtableConfig, output_dir: Path, mode: str

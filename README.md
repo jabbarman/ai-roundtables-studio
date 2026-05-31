@@ -83,6 +83,14 @@ Evaluate a run directory after draft or live generation:
 ai-roundtables eval runs/raw/example-run
 ```
 
+Configs can enable visible moderator turns with:
+
+```json
+"moderator_turns": "between_rounds"
+```
+
+When enabled, the moderator contributes an opening or follow-up before each participant round. Keep `"moderator_turns": "none"` or omit it for participant-only transcripts.
+
 ## Provider Setup
 
 You can use this repo in stages.

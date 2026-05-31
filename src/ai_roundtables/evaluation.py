@@ -62,7 +62,10 @@ def evaluate_run(run_dir: Path) -> RunEvaluation:
     if not transcript_path.is_file():
         issues.append(f"Missing transcript: {transcript_path}")
 
-    expected_records = manifest.get("turns", 0) * len(manifest.get("participants", []))
+    records_per_turn = len(manifest.get("participants", []))
+    if manifest.get("moderator_turns") == "between_rounds":
+        records_per_turn += 1
+    expected_records = manifest.get("turns", 0) * records_per_turn
     if expected_records and len(records) != expected_records:
         issues.append(
             f"Expected {expected_records} turn records, found {len(records)}"

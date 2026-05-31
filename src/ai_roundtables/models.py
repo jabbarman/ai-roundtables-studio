@@ -20,6 +20,10 @@ class ParticipantConfig:
 class ModeratorConfig:
     name: str
     prompt_file: str
+    provider: str = "openai"
+    model: str = "gpt-5.4"
+    temperature: float | None = None
+    output_tokens: int | None = None
 
 
 @dataclass(slots=True)
@@ -47,3 +51,4 @@ class RoundtableConfig:
     participants: list[ParticipantConfig] = field(default_factory=list)
     editorial_goals: list[str] = field(default_factory=list)
     turns: int = 1
+    moderator_turns: str = "none"

@@ -89,6 +89,7 @@ def test_write_draft_run_writes_manifest_and_stub(tmp_path: Path) -> None:
     transcript = (output_dir / "transcript.stub.md").read_text()
     assert manifest["slug"] == "test-roundtable"
     assert manifest["source_packet"] == []
+    assert manifest["moderator_turns"] == "none"
     assert manifest["run"]["mode"] == "draft"
     assert manifest["run"]["slug"] == "test-roundtable"
     assert manifest["run"]["package_version"]
@@ -100,6 +101,40 @@ def test_write_draft_run_writes_manifest_and_stub(tmp_path: Path) -> None:
     assert len(manifest["planned_turn_records"]) == 4
     assert "# Test Roundtable" in transcript
     assert transcript.count("_Response pending._") == 4
+
+
+def test_write_draft_run_can_include_visible_moderator_turns(
+    tmp_path: Path,
+) -> None:
+    config_path = write_fixture_repo(tmp_path)
+    raw = json.loads(config_path.read_text())
+    raw["moderator"]["provider"] = "openai"
+    raw["moderator"]["model"] = "gpt-moderator"
+    raw["moderator"]["output_tokens"] = 256
+    raw["moderator_turns"] = "between_rounds"
+    config_path.write_text(json.dumps(raw))
+    output_dir = tmp_path / "runs" / "raw" / "moderated-draft"
+    orchestrator = DraftOrchestrator(repo_root=tmp_path)
+
+    config = orchestrator.load_config(config_path)
+    orchestrator.write_draft_run(config, output_dir)
+
+    manifest = json.loads((output_dir / "manifest.json").read_text())
+    transcript = (output_dir / "transcript.stub.md").read_text()
+    records = manifest["planned_turn_records"]
+    assert manifest["moderator_turns"] == "between_rounds"
+    assert manifest["moderator"]["model"] == "gpt-moderator"
+    assert manifest["moderator"]["output_tokens"] == 256
+    assert len(records) == 6
+    assert [record["speaker"] for record in records] == [
+        "Moderator",
+        "OpenAI",
+        "Anthropic",
+        "Moderator",
+        "OpenAI",
+        "Anthropic",
+    ]
+    assert "### Moderator" in transcript
 
 
 def test_run_live_skips_participants_without_keys(
@@ -120,6 +155,36 @@ def test_run_live_skips_participants_without_keys(
     assert statuses == ["skipped_missing_key"] * 4
     assert "OpenAI (openai:gpt-test, skipped_missing_key)" in transcript
     assert "Anthropic (anthropic:claude-test, skipped_missing_key)" in transcript
+
+
+def test_run_live_skips_visible_moderator_without_key(
+    tmp_path: Path, monkeypatch
+) -> None:
+    config_path = write_fixture_repo(tmp_path)
+    raw = json.loads(config_path.read_text())
+    raw["moderator_turns"] = "between_rounds"
+    raw["turns"] = 1
+    config_path.write_text(json.dumps(raw))
+    output_dir = tmp_path / "runs" / "raw" / "moderated-live"
+    orchestrator = DraftOrchestrator(repo_root=tmp_path)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+
+    config = orchestrator.load_config(config_path)
+    orchestrator.run_live(config, output_dir)
+
+    manifest = json.loads((output_dir / "manifest.json").read_text())
+    records = manifest["executed_turn_records"]
+    assert [record["speaker"] for record in records] == [
+        "Moderator",
+        "OpenAI",
+        "Anthropic",
+    ]
+    assert [record["status"] for record in records] == [
+        "skipped_missing_key",
+        "skipped_missing_key",
+        "skipped_missing_key",
+    ]
 
 
 def test_load_config_rejects_schema_errors(tmp_path: Path) -> None:

@@ -96,6 +96,25 @@
         },
         "prompt_file": {
           "type": "string"
+        },
+        "provider": {
+          "type": "string",
+          "enum": [
+            "openai",
+            "anthropic",
+            "google",
+            "other"
+          ]
+        },
+        "model": {
+          "type": "string"
+        },
+        "temperature": {
+          "type": "number"
+        },
+        "output_tokens": {
+          "type": "integer",
+          "minimum": 16
         }
       },
       "additionalProperties": false
@@ -154,6 +173,13 @@
     "turns": {
       "type": "integer",
       "minimum": 1
+    },
+    "moderator_turns": {
+      "type": "string",
+      "enum": [
+        "none",
+        "between_rounds"
+      ]
     }
   },
   "additionalProperties": false
