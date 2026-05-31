@@ -54,7 +54,7 @@
     {
       "name": "Google",
       "provider": "google",
-      "model": "gemini-3.1-pro-preview",
+      "model": "gemini-2.5-pro",
       "prompt_file": "prompts/participant.md",
       "stance": "Systems-oriented. Focuses on product design, context, escalation paths, and how policies behave at scale."
     }

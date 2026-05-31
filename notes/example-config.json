@@ -28,7 +28,7 @@
     {
       "name": "Google",
       "provider": "google",
-      "model": "gemini-3.1-pro-preview",
+      "model": "gemini-2.5-pro",
       "prompt_file": "prompts/participant.md",
       "stance": "Broadly synthetic, with an emphasis on systems behavior and edge cases."
     }
