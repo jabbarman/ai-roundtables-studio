@@ -21,7 +21,7 @@
     {
       "name": "Anthropic",
       "provider": "anthropic",
-      "model": "claude-haiku-4-5-20251001",
+      "model": "claude-sonnet-4-6",
       "prompt_file": "prompts/participant.md",
       "stance": "Cautious about epistemic overreach and user trust."
     },
