@@ -1,8 +1,12 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 import re
+import shutil
+import subprocess
+import tempfile
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -19,6 +23,9 @@ DEFAULT_TTS_MODEL = "eleven_multilingual_v2"
 DEFAULT_OUTPUT_FORMAT = "mp3_44100_128"
 DEFAULT_CHUNK_CHARS = 1800
 DEFAULT_PAUSE_AFTER_MS = 450
+DEFAULT_TEXT_NORMALIZATION = "auto"
+DEFAULT_CACHE_DIR = Path("audio/cache")
+DEFAULT_LOUDNESS_TARGET = -19.0
 
 INTENDED_VOICE_MAP = {
     "Moderator": {
@@ -80,6 +87,7 @@ VOICE_PROFILES = {
 }
 
 SPEAKER_PATTERN = re.compile(r"^\*\*(?P<speaker>[^:*]+):\*\*\s*(?P<text>.*)$")
+SPEAKER_HEADING_PATTERN = re.compile(r"^## (?P<speaker>[^#].+?)\s*$")
 MARKDOWN_LINK_PATTERN = re.compile(r"\[([^\]]+)\]\([^)]+\)")
 
 
@@ -141,6 +149,7 @@ def create_audio_script(
     pause_after_ms: int = DEFAULT_PAUSE_AFTER_MS,
     pronunciation_path: Path | None = None,
     voice_profile: str = "intended",
+    cast_intro: bool = True,
 ) -> AudioScript:
     script = build_audio_script(
         published_path,
@@ -151,6 +160,7 @@ def create_audio_script(
         pause_after_ms=pause_after_ms,
         pronunciation_path=pronunciation_path,
         voice_profile=voice_profile,
+        cast_intro=cast_intro,
     )
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(script.to_dict(), indent=2) + "\n")
@@ -167,6 +177,7 @@ def build_audio_script(
     pause_after_ms: int = DEFAULT_PAUSE_AFTER_MS,
     pronunciation_path: Path | None = None,
     voice_profile: str = "intended",
+    cast_intro: bool = True,
 ) -> AudioScript:
     voice_map = _voice_map_for_profile(voice_profile)
     pronunciation_map = _load_pronunciations(pronunciation_path)
@@ -187,6 +198,7 @@ def build_audio_script(
         voice_map=voice_map,
         pronunciation_map=pronunciation_map,
         intro_text=intro_text,
+        cast_intro=cast_intro,
         outro_text=outro_text,
         pause_after_ms=pause_after_ms,
     )
@@ -214,6 +226,7 @@ def build_and_render_audio(
     pause_after_ms: int = DEFAULT_PAUSE_AFTER_MS,
     pronunciation_path: Path | None = None,
     voice_profile: str = "intended",
+    cast_intro: bool = True,
     output_format: str = DEFAULT_OUTPUT_FORMAT,
     chunk_chars: int = DEFAULT_CHUNK_CHARS,
     mode: str = "dialogue",
@@ -221,6 +234,14 @@ def build_and_render_audio(
     manifest_path: Path | None = None,
     force: bool = False,
     pause_style: str = "none",
+    text_normalization: str = DEFAULT_TEXT_NORMALIZATION,
+    voice_settings_path: Path | None = None,
+    cache_dir: Path = DEFAULT_CACHE_DIR,
+    use_cache: bool = True,
+    continuity_context: bool = True,
+    postprocess: str = "none",
+    silence_ms: int = 0,
+    loudness_target: float = DEFAULT_LOUDNESS_TARGET,
 ) -> dict[str, Any]:
     create_audio_script(
         published_path,
@@ -232,6 +253,7 @@ def build_and_render_audio(
         pause_after_ms=pause_after_ms,
         pronunciation_path=pronunciation_path,
         voice_profile=voice_profile,
+        cast_intro=cast_intro,
     )
     return render_audio_script(
         script_path,
@@ -244,6 +266,14 @@ def build_and_render_audio(
         manifest_path=manifest_path,
         force=force,
         pause_style=pause_style,
+        text_normalization=text_normalization,
+        voice_settings_path=voice_settings_path,
+        cache_dir=cache_dir,
+        use_cache=use_cache,
+        continuity_context=continuity_context,
+        postprocess=postprocess,
+        silence_ms=silence_ms,
+        loudness_target=loudness_target,
     )
 
 
@@ -259,12 +289,26 @@ def render_audio_script(
     manifest_path: Path | None = None,
     force: bool = False,
     pause_style: str = "none",
+    text_normalization: str = DEFAULT_TEXT_NORMALIZATION,
+    voice_settings_path: Path | None = None,
+    cache_dir: Path = DEFAULT_CACHE_DIR,
+    use_cache: bool = True,
+    continuity_context: bool = True,
+    postprocess: str = "none",
+    silence_ms: int = 0,
+    loudness_target: float = DEFAULT_LOUDNESS_TARGET,
 ) -> dict[str, Any]:
     script = json.loads(script_path.read_text())
     segments = script.get("segments", [])
     if not segments:
         raise ValueError(f"Audio script contains no segments: {script_path}")
-    _validate_render_options(mode=mode, pause_style=pause_style)
+    _validate_render_options(
+        mode=mode,
+        pause_style=pause_style,
+        text_normalization=text_normalization,
+        postprocess=postprocess,
+    )
+    voice_settings = _load_voice_settings(voice_settings_path)
     chunks = _chunk_segments(segments, chunk_chars=chunk_chars)
 
     manifest = {
@@ -278,6 +322,17 @@ def render_audio_script(
         "estimated_requests": len(chunks) if mode == "dialogue" else len(segments),
         "chunks": len(chunks) if mode == "dialogue" else 0,
         "pause_style": pause_style,
+        "postprocess": postprocess,
+        "silence_ms": silence_ms,
+        "loudness_target": loudness_target,
+        "text_normalization": text_normalization,
+        "voice_settings": voice_settings,
+        "cache": {
+            "enabled": use_cache,
+            "dir": _repo_relative(cache_dir),
+            "hits": 0,
+            "misses": 0,
+        },
         "dry_run": dry_run,
         "parts": [],
     }
@@ -289,19 +344,46 @@ def render_audio_script(
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     if mode == "dialogue":
-        audio_parts = [
-            _create_dialogue_audio(
-                api_key=api_key,
-                inputs=[
-                    {"text": segment["text"], "voice_id": segment["voice_id"]}
-                    for segment in chunk
-                ],
-                model_id=script.get("model_id", DEFAULT_DIALOGUE_MODEL),
-                output_format=output_format,
+        chunk_paths: list[Path] = []
+        audio_parts: list[bytes] = []
+        for index, chunk in enumerate(chunks, start=1):
+            inputs = [
+                {"text": segment["text"], "voice_id": segment["voice_id"]}
+                for segment in chunk
+            ]
+            payload = {
+                "endpoint": "dialogue",
+                "inputs": inputs,
+                "model_id": script.get("model_id", DEFAULT_DIALOGUE_MODEL),
+                "output_format": output_format,
+                "text_normalization": text_normalization,
+                "voice_settings": voice_settings,
+            }
+            audio_bytes, cache_path, cache_hit = _cached_audio(
+                cache_dir=cache_dir,
+                use_cache=use_cache,
+                force=force,
+                payload=payload,
+                create_audio=lambda: _create_dialogue_audio(
+                    api_key=api_key,
+                    inputs=inputs,
+                    model_id=script.get("model_id", DEFAULT_DIALOGUE_MODEL),
+                    output_format=output_format,
+                    text_normalization=text_normalization,
+                    voice_settings=voice_settings,
+                ),
             )
-            for chunk in chunks
-        ]
+            manifest["cache"]["hits" if cache_hit else "misses"] += 1
+            audio_parts.append(audio_bytes)
+            chunk_paths.append(cache_path or _write_temp_part(output_path, index, audio_bytes))
         output_path.write_bytes(b"".join(audio_parts))
+        if postprocess == "ffmpeg":
+            _postprocess_audio(
+                output_path=output_path,
+                source_parts=chunk_paths if silence_ms > 0 else [],
+                silence_ms=silence_ms,
+                loudness_target=loudness_target,
+            )
     else:
         segment_parts = _render_segment_parts(
             api_key=api_key,
@@ -312,8 +394,21 @@ def render_audio_script(
             parts_dir=parts_dir,
             force=force,
             pause_style=pause_style,
+            text_normalization=text_normalization,
+            voice_settings=voice_settings,
+            cache_dir=cache_dir,
+            use_cache=use_cache,
+            continuity_context=continuity_context,
+            cache_stats=manifest["cache"],
         )
         manifest["parts"] = [_repo_relative(part) for part in segment_parts]
+        if postprocess == "ffmpeg":
+            _postprocess_audio(
+                output_path=output_path,
+                source_parts=segment_parts if silence_ms > 0 else [],
+                silence_ms=silence_ms,
+                loudness_target=loudness_target,
+            )
 
     manifest["bytes"] = output_path.stat().st_size
     _write_manifest(manifest_path, manifest)
@@ -354,6 +449,20 @@ def _extract_segments(
             )
             current_speaker = match.group("speaker").strip()
             current_lines = [match.group("text").strip()]
+            continue
+        heading_match = SPEAKER_HEADING_PATTERN.match(line)
+        if heading_match and heading_match.group("speaker").strip() in voice_map:
+            _append_segment(
+                segments,
+                current_speaker,
+                current_lines,
+                voice_map,
+                max_segment_chars,
+                pronunciation_map,
+                pause_after_ms,
+            )
+            current_speaker = heading_match.group("speaker").strip()
+            current_lines = []
             continue
         if current_speaker is not None:
             current_lines.append(line)
@@ -407,10 +516,11 @@ def _with_episode_bookends(
     voice_map: dict[str, dict[str, str]],
     pronunciation_map: dict[str, str],
     intro_text: str | None,
+    cast_intro: bool,
     outro_text: str | None,
     pause_after_ms: int,
 ) -> list[AudioSegment]:
-    if intro_text is None and outro_text is None:
+    if intro_text is None and not cast_intro and outro_text is None:
         return segments
     moderator = voice_map["Moderator"]
     rendered: list[AudioSegment] = []
@@ -428,6 +538,22 @@ def _with_episode_bookends(
                 pause_after_ms=pause_after_ms,
             )
         )
+    if cast_intro:
+        cast_text = _render_cast_intro(segments, voice_map)
+        if cast_text:
+            rendered.append(
+                AudioSegment(
+                    speaker="Moderator",
+                    voice=moderator["voice"],
+                    voice_id=moderator["voice_id"],
+                    text=_clean_audio_text(
+                        cast_text,
+                        pronunciation_map=pronunciation_map,
+                    ),
+                    kind="cast_intro",
+                    pause_after_ms=pause_after_ms,
+                )
+            )
     rendered.extend(segments)
     if outro_text:
         rendered.append(
@@ -444,6 +570,31 @@ def _with_episode_bookends(
             )
         )
     return rendered
+
+
+def _render_cast_intro(
+    segments: list[AudioSegment],
+    voice_map: dict[str, dict[str, str]],
+) -> str:
+    seen: list[str] = []
+    for segment in segments:
+        if segment.speaker == "Moderator" or segment.speaker in seen:
+            continue
+        seen.append(segment.speaker)
+    if not seen:
+        return ""
+    roles = [
+        f"{voice_map[speaker]['voice']} will read {speaker}" for speaker in seen
+    ]
+    if len(roles) == 1:
+        cast = roles[0]
+    else:
+        cast = ", ".join(roles[:-1]) + f", and {roles[-1]}"
+    moderator_voice = voice_map["Moderator"]["voice"]
+    return (
+        f"I am {moderator_voice}, moderating. {cast}. "
+        "The voices are assigned for presentation and are not the models' own voices."
+    )
 
 
 def _clean_audio_text(text: str, *, pronunciation_map: dict[str, str]) -> str:
@@ -485,6 +636,17 @@ def _load_pronunciations(path: Path | None) -> dict[str, str]:
     return {str(key): str(value) for key, value in raw.items()}
 
 
+def _load_voice_settings(path: Path | None) -> dict[str, Any]:
+    if path is None:
+        return {}
+    raw = json.loads(path.read_text())
+    if "voice_settings" in raw:
+        raw = raw["voice_settings"]
+    if not isinstance(raw, dict):
+        raise ValueError(f"Voice settings file must contain a JSON object: {path}")
+    return raw
+
+
 def _apply_pronunciations(text: str, pronunciation_map: dict[str, str]) -> str:
     for original, replacement in sorted(
         pronunciation_map.items(),
@@ -495,11 +657,21 @@ def _apply_pronunciations(text: str, pronunciation_map: dict[str, str]) -> str:
     return text
 
 
-def _validate_render_options(*, mode: str, pause_style: str) -> None:
+def _validate_render_options(
+    *,
+    mode: str,
+    pause_style: str,
+    text_normalization: str,
+    postprocess: str,
+) -> None:
     if mode not in {"dialogue", "segments"}:
         raise ValueError("Audio render mode must be 'dialogue' or 'segments'")
     if pause_style not in {"none", "ssml"}:
         raise ValueError("Pause style must be 'none' or 'ssml'")
+    if text_normalization not in {"auto", "on", "off"}:
+        raise ValueError("Text normalization must be 'auto', 'on', or 'off'")
+    if postprocess not in {"none", "ffmpeg"}:
+        raise ValueError("Postprocess must be 'none' or 'ffmpeg'")
 
 
 def _chunk_segments(
@@ -533,6 +705,12 @@ def _render_segment_parts(
     parts_dir: Path | None,
     force: bool,
     pause_style: str,
+    text_normalization: str,
+    voice_settings: dict[str, Any],
+    cache_dir: Path,
+    use_cache: bool,
+    continuity_context: bool,
+    cache_stats: dict[str, Any],
 ) -> list[Path]:
     parts_dir = parts_dir or output_path.with_suffix("").with_name(
         f"{output_path.stem}.parts"
@@ -548,16 +726,46 @@ def _render_segment_parts(
                 pause_ms=int(segment.get("pause_after_ms", 0) or 0),
                 pause_style=pause_style,
             )
-            part_path.write_bytes(
-                _create_tts_audio(
+            previous_text = (
+                segments[index - 2].get("text", "") if continuity_context and index > 1 else None
+            )
+            next_text = (
+                segments[index].get("text", "")
+                if continuity_context and index < len(segments)
+                else None
+            )
+            payload = {
+                "endpoint": "tts",
+                "text": text,
+                "voice_id": segment["voice_id"],
+                "model_id": script.get("tts_model_id", DEFAULT_TTS_MODEL),
+                "output_format": output_format,
+                "enable_ssml": pause_style == "ssml",
+                "text_normalization": text_normalization,
+                "voice_settings": voice_settings,
+                "previous_text": previous_text,
+                "next_text": next_text,
+            }
+            audio_bytes, _cache_path, cache_hit = _cached_audio(
+                cache_dir=cache_dir,
+                use_cache=use_cache,
+                force=force,
+                payload=payload,
+                create_audio=lambda: _create_tts_audio(
                     api_key=api_key,
                     text=text,
                     voice_id=segment["voice_id"],
                     model_id=script.get("tts_model_id", DEFAULT_TTS_MODEL),
                     output_format=output_format,
                     enable_ssml=pause_style == "ssml",
-                )
+                    text_normalization=text_normalization,
+                    voice_settings=voice_settings,
+                    previous_text=previous_text,
+                    next_text=next_text,
+                ),
             )
+            cache_stats["hits" if cache_hit else "misses"] += 1
+            part_path.write_bytes(audio_bytes)
         part_paths.append(part_path)
     output_path.write_bytes(b"".join(part.read_bytes() for part in part_paths))
     return part_paths
@@ -576,11 +784,20 @@ def _create_dialogue_audio(
     inputs: list[dict[str, str]],
     model_id: str,
     output_format: str,
+    text_normalization: str,
+    voice_settings: dict[str, Any],
 ) -> bytes:
     query = urlencode({"output_format": output_format})
+    body: dict[str, Any] = {
+        "inputs": inputs,
+        "model_id": model_id,
+        "apply_text_normalization": text_normalization,
+    }
+    if voice_settings:
+        body["settings"] = voice_settings
     request = Request(
         f"https://api.elevenlabs.io/v1/text-to-dialogue?{query}",
-        data=json.dumps({"inputs": inputs, "model_id": model_id}).encode("utf-8"),
+        data=json.dumps(body).encode("utf-8"),
         headers={
             "Content-Type": "application/json",
             "xi-api-key": api_key,
@@ -605,11 +822,25 @@ def _create_tts_audio(
     model_id: str,
     output_format: str,
     enable_ssml: bool,
+    text_normalization: str,
+    voice_settings: dict[str, Any],
+    previous_text: str | None,
+    next_text: str | None,
 ) -> bytes:
     query = urlencode({"output_format": output_format})
-    body: dict[str, Any] = {"text": text, "model_id": model_id}
+    body: dict[str, Any] = {
+        "text": text,
+        "model_id": model_id,
+        "apply_text_normalization": text_normalization,
+    }
     if enable_ssml:
         body["enable_ssml_parsing"] = True
+    if voice_settings:
+        body["voice_settings"] = voice_settings
+    if previous_text:
+        body["previous_text"] = previous_text
+    if next_text:
+        body["next_text"] = next_text
     request = Request(
         f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}?{query}",
         data=json.dumps(body).encode("utf-8"),
@@ -627,6 +858,149 @@ def _create_tts_audio(
         raise ValueError(
             f"ElevenLabs TTS request failed with HTTP {exc.code}: {detail}"
         ) from exc
+
+
+def _cached_audio(
+    *,
+    cache_dir: Path,
+    use_cache: bool,
+    force: bool,
+    payload: dict[str, Any],
+    create_audio: Any,
+) -> tuple[bytes, Path | None, bool]:
+    if not use_cache:
+        return create_audio(), None, False
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    cache_key = _cache_key(payload)
+    audio_path = cache_dir / f"{cache_key}.mp3"
+    metadata_path = cache_dir / f"{cache_key}.json"
+    if audio_path.is_file() and not force:
+        return audio_path.read_bytes(), audio_path, True
+    audio_bytes = create_audio()
+    audio_path.write_bytes(audio_bytes)
+    metadata = {
+        "cache_key": cache_key,
+        "created_at": datetime.now(UTC).isoformat(),
+        "characters": _payload_character_count(payload),
+        "payload": payload,
+    }
+    metadata_path.write_text(json.dumps(metadata, indent=2) + "\n")
+    return audio_bytes, audio_path, False
+
+
+def _cache_key(payload: dict[str, Any]) -> str:
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _payload_character_count(payload: dict[str, Any]) -> int:
+    if "text" in payload:
+        return len(payload["text"])
+    return sum(len(item.get("text", "")) for item in payload.get("inputs", []))
+
+
+def _write_temp_part(output_path: Path, index: int, audio_bytes: bytes) -> Path:
+    parts_dir = output_path.with_suffix("").with_name(f"{output_path.stem}.chunks")
+    parts_dir.mkdir(parents=True, exist_ok=True)
+    part_path = parts_dir / f"{index:04d}-chunk.mp3"
+    part_path.write_bytes(audio_bytes)
+    return part_path
+
+
+def _postprocess_audio(
+    *,
+    output_path: Path,
+    source_parts: list[Path],
+    silence_ms: int,
+    loudness_target: float,
+) -> None:
+    ffmpeg = shutil.which("ffmpeg")
+    if ffmpeg is None:
+        raise ValueError("ffmpeg is required for audio postprocess but was not found")
+    with tempfile.TemporaryDirectory() as temp_dir_name:
+        temp_dir = Path(temp_dir_name)
+        source_path = output_path
+        if source_parts and silence_ms > 0:
+            source_path = _concat_with_silence(
+                ffmpeg=ffmpeg,
+                source_parts=source_parts,
+                silence_ms=silence_ms,
+                temp_dir=temp_dir,
+            )
+        normalized_path = temp_dir / "normalized.mp3"
+        subprocess.run(
+            [
+                ffmpeg,
+                "-y",
+                "-i",
+                str(source_path),
+                "-af",
+                f"loudnorm=I={loudness_target}:TP=-1.5:LRA=11",
+                str(normalized_path),
+            ],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        output_path.write_bytes(normalized_path.read_bytes())
+
+
+def _concat_with_silence(
+    *,
+    ffmpeg: str,
+    source_parts: list[Path],
+    silence_ms: int,
+    temp_dir: Path,
+) -> Path:
+    silence_path = temp_dir / "silence.mp3"
+    duration = max(silence_ms, 0) / 1000
+    subprocess.run(
+        [
+            ffmpeg,
+            "-y",
+            "-f",
+            "lavfi",
+            "-i",
+            f"anullsrc=channel_layout=mono:sample_rate=44100",
+            "-t",
+            f"{duration:.3f}",
+            "-q:a",
+            "9",
+            "-acodec",
+            "libmp3lame",
+            str(silence_path),
+        ],
+        check=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    concat_list = temp_dir / "concat.txt"
+    lines: list[str] = []
+    for index, part in enumerate(source_parts):
+        lines.append(f"file '{part.resolve()}'")
+        if index < len(source_parts) - 1:
+            lines.append(f"file '{silence_path.resolve()}'")
+    concat_list.write_text("\n".join(lines) + "\n")
+    output = temp_dir / "with-silence.mp3"
+    subprocess.run(
+        [
+            ffmpeg,
+            "-y",
+            "-f",
+            "concat",
+            "-safe",
+            "0",
+            "-i",
+            str(concat_list),
+            "-c",
+            "copy",
+            str(output),
+        ],
+        check=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    return output
 
 
 def _write_manifest(path: Path | None, manifest: dict[str, Any]) -> None:

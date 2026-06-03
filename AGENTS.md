@@ -59,6 +59,7 @@ ai-roundtables index
 ```
 
 Use `"moderator_turns": "between_rounds"` in a config when the published format needs visible moderator prompts between participant rounds.
+Use `"participant_order": "rotate_by_round"` when a multi-round discussion should avoid the same participant always answering first.
 
 ## Coding Style & Naming Conventions
 

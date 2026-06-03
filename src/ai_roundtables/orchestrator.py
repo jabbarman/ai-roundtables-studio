@@ -82,6 +82,7 @@ class DraftOrchestrator:
             turns=raw.get("turns", 1),
             moderator_turns=raw.get("moderator_turns", "none"),
             audio_intent=raw.get("audio_intent", "none"),
+            participant_order=raw.get("participant_order", "fixed"),
         )
 
     def _validate_config(self, raw: dict) -> None:
@@ -131,7 +132,7 @@ class DraftOrchestrator:
                         model=config.moderator.model,
                     )
                 )
-            for participant in config.participants:
+            for participant in self._participants_for_turn(config, turn_number):
                 participant_prompt = self._read_text(participant.prompt_file)
                 prompt = self._compose_prompt(
                     moderator_prompt=moderator_prompt,
@@ -168,6 +169,7 @@ class DraftOrchestrator:
             "turns": config.turns,
             "moderator_turns": config.moderator_turns,
             "audio_intent": config.audio_intent,
+            "participant_order": config.participant_order,
             "moderator": asdict(config.moderator),
             "participants": [asdict(participant) for participant in config.participants],
             "config_snapshot": config.config_snapshot,
@@ -214,7 +216,7 @@ class DraftOrchestrator:
                         "content": response_text,
                     }
                 )
-            for participant in config.participants:
+            for participant in self._participants_for_turn(config, turn_number):
                 participant_prompt = self._read_text(participant.prompt_file)
                 prompt = self._compose_prompt(
                     moderator_prompt=moderator_prompt,
@@ -256,6 +258,7 @@ class DraftOrchestrator:
             "turns": config.turns,
             "moderator_turns": config.moderator_turns,
             "audio_intent": config.audio_intent,
+            "participant_order": config.participant_order,
             "moderator": asdict(config.moderator),
             "participants": [asdict(participant) for participant in config.participants],
             "config_snapshot": config.config_snapshot,
@@ -351,6 +354,15 @@ class DraftOrchestrator:
                 f"   Notes: {notes or 'none'}"
             )
         return "\n".join(rendered)
+
+    def _participants_for_turn(
+        self, config: RoundtableConfig, turn_number: int
+    ) -> list[ParticipantConfig]:
+        participants = list(config.participants)
+        if config.participant_order != "rotate_by_round" or not participants:
+            return participants
+        offset = (turn_number - 1) % len(participants)
+        return participants[offset:] + participants[:offset]
 
     def _render_audio_context(self, config: RoundtableConfig) -> str:
         if config.audio_intent != "podcast_adaptable":

@@ -47,6 +47,7 @@
   },
   "moderator_turns": "between_rounds",
   "audio_intent": "podcast_adaptable",
+  "participant_order": "rotate_by_round",
   "participants": [
     {
       "name": "OpenAI",

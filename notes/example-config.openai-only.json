@@ -39,5 +39,6 @@
     "Keep the prose energetic and readable."
   ],
   "audio_intent": "podcast_adaptable",
+  "participant_order": "rotate_by_round",
   "turns": 2
 }

@@ -191,6 +191,13 @@
         "none",
         "podcast_adaptable"
       ]
+    },
+    "participant_order": {
+      "type": "string",
+      "enum": [
+        "fixed",
+        "rotate_by_round"
+      ]
     }
   },
   "additionalProperties": false

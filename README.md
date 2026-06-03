@@ -110,6 +110,14 @@ Configs can enable visible moderator turns with:
 
 When enabled, the moderator contributes an opening or follow-up before each participant round. Keep `"moderator_turns": "none"` or omit it for participant-only transcripts.
 
+Configs can rotate participant order by round with:
+
+```json
+"participant_order": "rotate_by_round"
+```
+
+Use the default `"fixed"` order when the transcript needs a stable speaking sequence.
+
 ## Provider Setup
 
 You can use this repo in stages.

@@ -147,6 +147,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--pronunciations",
         help="JSON replacement map for audio pronunciation cleanup.",
     )
+    audio_script_parser.add_argument(
+        "--no-cast-intro",
+        action="store_true",
+        help="Skip the automatic moderator cast introduction.",
+    )
 
     audio_render_parser = subparsers.add_parser(
         "audio-render",
@@ -199,6 +204,49 @@ def build_parser() -> argparse.ArgumentParser:
         choices=["none", "ssml"],
         help="How to apply pause metadata during segment rendering.",
     )
+    audio_render_parser.add_argument(
+        "--text-normalization",
+        default="auto",
+        choices=["auto", "on", "off"],
+        help="ElevenLabs text normalization mode.",
+    )
+    audio_render_parser.add_argument(
+        "--voice-settings",
+        help="JSON voice settings file to pass to ElevenLabs.",
+    )
+    audio_render_parser.add_argument(
+        "--cache-dir",
+        default="audio/cache",
+        help="Directory for content-addressed audio cache.",
+    )
+    audio_render_parser.add_argument(
+        "--no-cache",
+        action="store_true",
+        help="Disable content-addressed audio cache.",
+    )
+    audio_render_parser.add_argument(
+        "--no-continuity-context",
+        action="store_true",
+        help="Do not send previous_text/next_text in segment TTS mode.",
+    )
+    audio_render_parser.add_argument(
+        "--postprocess",
+        default="none",
+        choices=["none", "ffmpeg"],
+        help="Optional postprocess pass.",
+    )
+    audio_render_parser.add_argument(
+        "--silence-ms",
+        type=int,
+        default=0,
+        help="Silence to insert between rendered chunks/segments during ffmpeg postprocess.",
+    )
+    audio_render_parser.add_argument(
+        "--loudness-target",
+        type=float,
+        default=-19.0,
+        help="LUFS target for ffmpeg loudness normalization.",
+    )
 
     audio_build_parser = subparsers.add_parser(
         "audio-build",
@@ -228,6 +276,7 @@ def build_parser() -> argparse.ArgumentParser:
     audio_build_parser.add_argument("--outro")
     audio_build_parser.add_argument("--pause-after-ms", type=int, default=450)
     audio_build_parser.add_argument("--pronunciations")
+    audio_build_parser.add_argument("--no-cast-intro", action="store_true")
     audio_build_parser.add_argument("--output-format", default="mp3_44100_128")
     audio_build_parser.add_argument("--chunk-chars", type=int, default=1800)
     audio_build_parser.add_argument(
@@ -242,6 +291,22 @@ def build_parser() -> argparse.ArgumentParser:
         default="none",
         choices=["none", "ssml"],
     )
+    audio_build_parser.add_argument(
+        "--text-normalization",
+        default="auto",
+        choices=["auto", "on", "off"],
+    )
+    audio_build_parser.add_argument("--voice-settings")
+    audio_build_parser.add_argument("--cache-dir", default="audio/cache")
+    audio_build_parser.add_argument("--no-cache", action="store_true")
+    audio_build_parser.add_argument("--no-continuity-context", action="store_true")
+    audio_build_parser.add_argument(
+        "--postprocess",
+        default="none",
+        choices=["none", "ffmpeg"],
+    )
+    audio_build_parser.add_argument("--silence-ms", type=int, default=0)
+    audio_build_parser.add_argument("--loudness-target", type=float, default=-19.0)
     return parser
 
 
@@ -305,6 +370,7 @@ def main() -> int:
                 if args.pronunciations
                 else None,
                 voice_profile=args.voice_profile,
+                cast_intro=not args.no_cast_intro,
             )
             print(
                 f"Audio script written to {args.output} "
@@ -324,6 +390,16 @@ def main() -> int:
                 manifest_path=Path(args.manifest) if args.manifest else None,
                 force=args.force,
                 pause_style=args.pause_style,
+                text_normalization=args.text_normalization,
+                voice_settings_path=Path(args.voice_settings)
+                if args.voice_settings
+                else None,
+                cache_dir=Path(args.cache_dir),
+                use_cache=not args.no_cache,
+                continuity_context=not args.no_continuity_context,
+                postprocess=args.postprocess,
+                silence_ms=args.silence_ms,
+                loudness_target=args.loudness_target,
             )
             print(json.dumps(manifest, indent=2))
             return 0
@@ -343,6 +419,7 @@ def main() -> int:
                 if args.pronunciations
                 else None,
                 voice_profile=args.voice_profile,
+                cast_intro=not args.no_cast_intro,
                 output_format=args.output_format,
                 chunk_chars=args.chunk_chars,
                 mode=args.mode,
@@ -350,6 +427,16 @@ def main() -> int:
                 manifest_path=Path(args.manifest) if args.manifest else None,
                 force=args.force,
                 pause_style=args.pause_style,
+                text_normalization=args.text_normalization,
+                voice_settings_path=Path(args.voice_settings)
+                if args.voice_settings
+                else None,
+                cache_dir=Path(args.cache_dir),
+                use_cache=not args.no_cache,
+                continuity_context=not args.no_continuity_context,
+                postprocess=args.postprocess,
+                silence_ms=args.silence_ms,
+                loudness_target=args.loudness_target,
             )
             print(json.dumps(manifest, indent=2))
             return 0

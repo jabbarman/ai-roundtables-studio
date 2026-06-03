@@ -54,3 +54,4 @@ class RoundtableConfig:
     turns: int = 1
     moderator_turns: str = "none"
     audio_intent: str = "none"
+    participant_order: str = "fixed"

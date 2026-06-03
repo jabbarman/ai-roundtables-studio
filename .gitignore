@@ -21,6 +21,9 @@ runs/edited/**
 !runs/edited/README.md
 audio/exports/**
 !audio/exports/.gitkeep
+audio/cache/**
+!audio/cache/.gitkeep
+!audio/cache/README.md
 scratch/**
 !scratch/.gitkeep
 !scratch/README.md
