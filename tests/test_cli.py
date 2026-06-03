@@ -36,7 +36,7 @@ def test_cli_version(monkeypatch, capsys) -> None:
         cli.main()
 
     assert exc.value.code == 0
-    assert "ai-roundtables 0.6.0" in capsys.readouterr().out
+    assert "ai-roundtables 0.7.0" in capsys.readouterr().out
 
 
 def test_cli_eval_returns_zero_for_valid_draft_run(
