@@ -7,6 +7,8 @@ written piece.
 
 ## Voice Map
 
+The intended production profile is:
+
 | Role | Provider label | ElevenLabs voice | Editorial function |
 | --- | --- | --- | --- |
 | Moderator / Narrator | Moderator | Charlotte | Listener orientation, transitions, clarification |
@@ -14,11 +16,36 @@ written piece.
 | Google / Gemini | Google | Josh | Balanced systems framing and reliable collaboration |
 | Anthropic / Claude | Anthropic | Serena | Weighted uncertainty and epistemic honesty |
 
+On plans where shared or professional library voices are unavailable through the
+API, use `--voice-profile free-check` to render a pipeline check with premade
+fallback voices.
+
 ## Working Directories
 
 - `audio/scripts/`: audio-ready scripts derived from reviewed transcripts.
 - `audio/manifests/`: voice assignments, source transcript paths, and export metadata.
 - `audio/exports/`: generated audio files. Contents are ignored except `.gitkeep`.
+
+## Commands
+
+Create a short check script from a published roundtable:
+
+```bash
+ai-roundtables audio-script published/explain-reasoning-or-conclusions.md \
+  --output audio/scripts/explain-reasoning-sample.json \
+  --max-segments 5 \
+  --max-segment-chars 360 \
+  --voice-profile intended
+```
+
+Render the script through ElevenLabs:
+
+```bash
+ai-roundtables audio-render audio/scripts/explain-reasoning-sample.json \
+  --output audio/exports/explain-reasoning-sample.mp3
+```
+
+For a no-upgrade API check, create the script with `--voice-profile free-check`.
 
 ## Adaptation Principles
 

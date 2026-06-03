@@ -4,6 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
+from .audio import create_audio_script, render_audio_script
 from .editorial import (
     check_published,
     promote_run,
@@ -101,6 +102,60 @@ def build_parser() -> argparse.ArgumentParser:
         default="published/INDEX.md",
         help="Index markdown path to write.",
     )
+
+    audio_script_parser = subparsers.add_parser(
+        "audio-script",
+        help="Create an audio-ready script JSON from a published roundtable.",
+    )
+    audio_script_parser.add_argument("published_file", help="Published markdown path.")
+    audio_script_parser.add_argument(
+        "--output",
+        required=True,
+        help="Audio script JSON path to write.",
+    )
+    audio_script_parser.add_argument(
+        "--max-segments",
+        type=int,
+        help="Limit script generation to the first N speaker turns.",
+    )
+    audio_script_parser.add_argument(
+        "--max-segment-chars",
+        type=int,
+        help="Trim each speaker turn to a sentence boundary near this length.",
+    )
+    audio_script_parser.add_argument(
+        "--voice-profile",
+        default="intended",
+        choices=["intended", "free-check"],
+        help="Voice assignment profile to use.",
+    )
+
+    audio_render_parser = subparsers.add_parser(
+        "audio-render",
+        help="Render an audio script through ElevenLabs.",
+    )
+    audio_render_parser.add_argument("script", help="Audio script JSON path.")
+    audio_render_parser.add_argument(
+        "--output",
+        required=True,
+        help="MP3 output path to write.",
+    )
+    audio_render_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Validate the script and print a render manifest without calling ElevenLabs.",
+    )
+    audio_render_parser.add_argument(
+        "--output-format",
+        default="mp3_44100_128",
+        help="ElevenLabs output format.",
+    )
+    audio_render_parser.add_argument(
+        "--chunk-chars",
+        type=int,
+        default=1800,
+        help="Approximate maximum characters per dialogue request.",
+    )
     return parser
 
 
@@ -149,6 +204,31 @@ def main() -> int:
         if args.command == "index":
             write_published_index(Path(args.published_dir), Path(args.output))
             print(f"Published index written to {args.output}")
+            return 0
+
+        if args.command == "audio-script":
+            script = create_audio_script(
+                Path(args.published_file),
+                output_path=Path(args.output),
+                max_segments=args.max_segments,
+                max_segment_chars=args.max_segment_chars,
+                voice_profile=args.voice_profile,
+            )
+            print(
+                f"Audio script written to {args.output} "
+                f"({len(script.segments)} segments)"
+            )
+            return 0
+
+        if args.command == "audio-render":
+            manifest = render_audio_script(
+                Path(args.script),
+                output_path=Path(args.output),
+                dry_run=args.dry_run,
+                output_format=args.output_format,
+                chunk_chars=args.chunk_chars,
+            )
+            print(json.dumps(manifest, indent=2))
             return 0
     except ConfigError as exc:
         parser.exit(1, f"{exc}\n")

@@ -1,0 +1,64 @@
+{
+  "source": "published/explain-reasoning-or-conclusions.md",
+  "title": "Should AI Systems Explain Their Reasoning, or Only Their Conclusions?",
+  "generated_at": "2026-06-03T09:56:46.185721+00:00",
+  "model_id": "eleven_v3",
+  "voice_map": {
+    "Moderator": {
+      "voice": "Alice",
+      "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+      "source": "premade",
+      "description": "Clear listener orientation fallback for API checks"
+    },
+    "OpenAI": {
+      "voice": "Daniel",
+      "voice_id": "onwK4e9ZLuTAKqWW03F9",
+      "source": "premade",
+      "description": "Measured synthesis and structured conclusions"
+    },
+    "Google": {
+      "voice": "Eric",
+      "voice_id": "cjVigY5qzO86Huf0OWal",
+      "source": "premade",
+      "description": "Smooth, trustworthy systems-framing fallback"
+    },
+    "Anthropic": {
+      "voice": "Matilda",
+      "voice_id": "XrExE9yKIg1WjnnlVkGX",
+      "source": "premade",
+      "description": "Professional uncertainty fallback"
+    }
+  },
+  "segments": [
+    {
+      "speaker": "Moderator",
+      "voice": "Alice",
+      "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+      "text": "Let us not start from \"more explanation is better,\" because the packet cuts against that. NIST treats explainability as one trustworthiness attribute among several; the Model Spec and reasoning guide distinguish hidden chain-of-thought from summaries; Anthropic warns that visible reasoning may be unfaithful."
+    },
+    {
+      "speaker": "OpenAI",
+      "voice": "Daniel",
+      "voice_id": "onwK4e9ZLuTAKqWW03F9",
+      "text": "Raw reasoning is the dangerous default. Not because it is dramatic, but because it can become a transparency ritual that looks honest while being misleading. A visible chain of thought may not faithfully report why the model produced the answer. If you expose it as the true inner cause, you risk persuasive rationalization, not auditability."
+    },
+    {
+      "speaker": "Anthropic",
+      "voice": "Matilda",
+      "voice_id": "XrExE9yKIg1WjnnlVkGX",
+      "text": "The objection about curated summaries has more bite than that. If the provider controls what gets surfaced as a reasoning summary, you have moved the trust problem upstream, not solved it. Now the question is whether the summary itself is cherry-picked."
+    },
+    {
+      "speaker": "Google",
+      "voice": "Eric",
+      "voice_id": "cjVigY5qzO86Huf0OWal",
+      "text": "We are treating explanation format as the main event, but it is only one component of the interface. Often what users need is not a narrative explanation at all. It is structured evidence.\nFor medical advice, a doctor does not need to know how the model \"reasoned.\" She needs to know what evidence it weighed: this lab value, that symptom, this guideline."
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Alice",
+      "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+      "text": "Good. There is a live split now. OpenAI says brief summary plus uncertainty can be useful. Anthropic says that may relocate the trust problem. Google says stop telling stories and show structured evidence.\nPick one case: a model denies a mortgage application. What exactly should the applicant see on screen?"
+    }
+  ]
+}
