@@ -3,7 +3,12 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from ai_roundtables.audio import build_audio_script, render_audio_script
+from ai_roundtables import audio
+from ai_roundtables.audio import (
+    build_and_render_audio,
+    build_audio_script,
+    render_audio_script,
+)
 
 
 def test_build_audio_script_extracts_roundtable_segments(tmp_path: Path) -> None:
@@ -42,6 +47,7 @@ Done.
     assert script.segments[1].speaker == "OpenAI"
     assert "https://example.com" not in script.segments[1].text
     assert "a source" in script.segments[1].text
+    assert script.to_dict()["estimated_characters"] > 0
 
 
 def test_build_audio_script_can_use_free_check_profile(tmp_path: Path) -> None:
@@ -80,6 +86,35 @@ def test_build_audio_script_can_trim_segments_at_sentence_boundary(
     assert script.segments[0].text == "First sentence."
 
 
+def test_build_audio_script_can_add_bookends_and_pronunciations(
+    tmp_path: Path,
+) -> None:
+    published = tmp_path / "published.md"
+    pronunciations = tmp_path / "pronunciations.json"
+    pronunciations.write_text(json.dumps({"replacements": {"AI": "A I"}}))
+    published.write_text(
+        """---
+title: Pronunciation Test
+---
+
+## Roundtable
+
+**Moderator:** AI systems?
+"""
+    )
+
+    script = build_audio_script(
+        published,
+        intro_text="Welcome to {title}.",
+        outro_text="End of {title}.",
+        pronunciation_path=pronunciations,
+    )
+
+    assert [segment.kind for segment in script.segments] == ["intro", "turn", "outro"]
+    assert script.segments[1].text == "A I systems?"
+    assert script.pronunciation_map == {"AI": "A I"}
+
+
 def test_audio_render_dry_run_returns_manifest(tmp_path: Path) -> None:
     script = tmp_path / "script.json"
     script.write_text(
@@ -106,4 +141,104 @@ def test_audio_render_dry_run_returns_manifest(tmp_path: Path) -> None:
 
     assert manifest["segments"] == 1
     assert manifest["characters"] == 6
+    assert manifest["estimated_requests"] == 1
     assert manifest["dry_run"] is True
+
+
+def test_audio_render_writes_manifest_on_dry_run(tmp_path: Path) -> None:
+    script = tmp_path / "script.json"
+    manifest_path = tmp_path / "manifest.json"
+    script.write_text(
+        json.dumps(
+            {
+                "model_id": "eleven_v3",
+                "segments": [
+                    {
+                        "speaker": "Moderator",
+                        "voice": "Charlotte",
+                        "voice_id": "voice-1",
+                        "text": "Hello.",
+                    }
+                ],
+            }
+        )
+    )
+
+    render_audio_script(
+        script,
+        output_path=tmp_path / "sample.mp3",
+        dry_run=True,
+        manifest_path=manifest_path,
+    )
+
+    assert json.loads(manifest_path.read_text())["dry_run"] is True
+
+
+def test_audio_render_segments_reuses_existing_parts(
+    tmp_path: Path, monkeypatch
+) -> None:
+    script = tmp_path / "script.json"
+    script.write_text(
+        json.dumps(
+            {
+                "model_id": "eleven_v3",
+                "segments": [
+                    {
+                        "speaker": "Moderator",
+                        "voice": "Charlotte",
+                        "voice_id": "voice-1",
+                        "text": "Hello.",
+                    },
+                    {
+                        "speaker": "OpenAI",
+                        "voice": "Daniel",
+                        "voice_id": "voice-2",
+                        "text": "There.",
+                    },
+                ],
+            }
+        )
+    )
+    calls: list[str] = []
+
+    def fake_tts_audio(**kwargs: str) -> bytes:
+        calls.append(kwargs["voice_id"])
+        return kwargs["voice_id"].encode()
+
+    monkeypatch.setattr(audio, "_load_elevenlabs_api_key", lambda: "test-key")
+    monkeypatch.setattr(audio, "_create_tts_audio", fake_tts_audio)
+
+    output = tmp_path / "sample.mp3"
+    manifest = render_audio_script(script, output_path=output, mode="segments")
+    assert output.read_bytes() == b"voice-1voice-2"
+    assert manifest["mode"] == "segments"
+    assert len(manifest["parts"]) == 2
+    assert calls == ["voice-1", "voice-2"]
+
+    calls.clear()
+    render_audio_script(script, output_path=output, mode="segments")
+    assert calls == []
+
+
+def test_build_and_render_audio_dry_run_writes_script(tmp_path: Path) -> None:
+    published = tmp_path / "published.md"
+    published.write_text(
+        """# Build Test
+
+## Roundtable
+
+**Moderator:** First question?
+"""
+    )
+
+    manifest = build_and_render_audio(
+        published,
+        script_path=tmp_path / "script.json",
+        output_path=tmp_path / "sample.mp3",
+        dry_run=True,
+        max_segments=1,
+    )
+
+    assert (tmp_path / "script.json").is_file()
+    assert manifest["dry_run"] is True
+    assert manifest["segments"] == 1

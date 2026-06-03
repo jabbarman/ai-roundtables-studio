@@ -25,6 +25,7 @@ fallback voices.
 - `audio/scripts/`: audio-ready scripts derived from reviewed transcripts.
 - `audio/manifests/`: voice assignments, source transcript paths, and export metadata.
 - `audio/exports/`: generated audio files. Contents are ignored except `.gitkeep`.
+- `audio/pronunciations.json`: repository-level text replacements for common pronunciation fixes.
 
 ## Commands
 
@@ -35,17 +36,39 @@ ai-roundtables audio-script published/explain-reasoning-or-conclusions.md \
   --output audio/scripts/explain-reasoning-sample.json \
   --max-segments 5 \
   --max-segment-chars 360 \
-  --voice-profile intended
+  --voice-profile intended \
+  --pronunciations audio/pronunciations.json \
+  --intro "This is {title}, an A I roundtable." \
+  --outro "That was {title}."
 ```
 
 Render the script through ElevenLabs:
 
 ```bash
 ai-roundtables audio-render audio/scripts/explain-reasoning-sample.json \
-  --output audio/exports/explain-reasoning-sample.mp3
+  --output audio/exports/explain-reasoning-sample.mp3 \
+  --manifest audio/manifests/explain-reasoning-sample.render.json
 ```
 
 For a no-upgrade API check, create the script with `--voice-profile free-check`.
+
+Build the script and MP3 in one step:
+
+```bash
+ai-roundtables audio-build published/explain-reasoning-or-conclusions.md \
+  --script-output audio/scripts/explain-reasoning-sample.json \
+  --output audio/exports/explain-reasoning-sample.mp3 \
+  --manifest audio/manifests/explain-reasoning-sample.render.json \
+  --voice-profile intended \
+  --pronunciations audio/pronunciations.json
+```
+
+Use `audio-render --mode segments` when you want retryable per-speaker MP3
+parts. Existing part files are reused unless `--force` is set.
+
+Pause metadata is stored on each segment. `--pause-style ssml` can append SSML
+break tags during per-segment rendering with compatible ElevenLabs models; Eleven
+v3 does not support SSML breaks, so the default is `--pause-style none`.
 
 ## Adaptation Principles
 

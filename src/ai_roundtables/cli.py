@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from .audio import create_audio_script, render_audio_script
+from .audio import build_and_render_audio, create_audio_script, render_audio_script
 from .editorial import (
     check_published,
     promote_run,
@@ -129,6 +129,24 @@ def build_parser() -> argparse.ArgumentParser:
         choices=["intended", "free-check"],
         help="Voice assignment profile to use.",
     )
+    audio_script_parser.add_argument(
+        "--intro",
+        help="Optional moderator intro text. Use {title} for the roundtable title.",
+    )
+    audio_script_parser.add_argument(
+        "--outro",
+        help="Optional moderator outro text. Use {title} for the roundtable title.",
+    )
+    audio_script_parser.add_argument(
+        "--pause-after-ms",
+        type=int,
+        default=450,
+        help="Pause metadata to attach after each segment.",
+    )
+    audio_script_parser.add_argument(
+        "--pronunciations",
+        help="JSON replacement map for audio pronunciation cleanup.",
+    )
 
     audio_render_parser = subparsers.add_parser(
         "audio-render",
@@ -155,6 +173,74 @@ def build_parser() -> argparse.ArgumentParser:
         type=int,
         default=1800,
         help="Approximate maximum characters per dialogue request.",
+    )
+    audio_render_parser.add_argument(
+        "--mode",
+        default="dialogue",
+        choices=["dialogue", "segments"],
+        help="Render as multi-speaker dialogue chunks or retryable per-segment files.",
+    )
+    audio_render_parser.add_argument(
+        "--parts-dir",
+        help="Directory for per-segment MP3 parts when --mode segments is used.",
+    )
+    audio_render_parser.add_argument(
+        "--manifest",
+        help="Path to write a render manifest JSON.",
+    )
+    audio_render_parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Regenerate existing per-segment parts.",
+    )
+    audio_render_parser.add_argument(
+        "--pause-style",
+        default="none",
+        choices=["none", "ssml"],
+        help="How to apply pause metadata during segment rendering.",
+    )
+
+    audio_build_parser = subparsers.add_parser(
+        "audio-build",
+        help="Create an audio script and optionally render it in one command.",
+    )
+    audio_build_parser.add_argument("published_file", help="Published markdown path.")
+    audio_build_parser.add_argument(
+        "--script-output",
+        required=True,
+        help="Audio script JSON path to write.",
+    )
+    audio_build_parser.add_argument(
+        "--output",
+        required=True,
+        help="MP3 output path to write.",
+    )
+    audio_build_parser.add_argument("--manifest", help="Render manifest JSON path.")
+    audio_build_parser.add_argument("--dry-run", action="store_true")
+    audio_build_parser.add_argument("--max-segments", type=int)
+    audio_build_parser.add_argument("--max-segment-chars", type=int)
+    audio_build_parser.add_argument(
+        "--voice-profile",
+        default="intended",
+        choices=["intended", "free-check"],
+    )
+    audio_build_parser.add_argument("--intro")
+    audio_build_parser.add_argument("--outro")
+    audio_build_parser.add_argument("--pause-after-ms", type=int, default=450)
+    audio_build_parser.add_argument("--pronunciations")
+    audio_build_parser.add_argument("--output-format", default="mp3_44100_128")
+    audio_build_parser.add_argument("--chunk-chars", type=int, default=1800)
+    audio_build_parser.add_argument(
+        "--mode",
+        default="dialogue",
+        choices=["dialogue", "segments"],
+    )
+    audio_build_parser.add_argument("--parts-dir")
+    audio_build_parser.add_argument("--force", action="store_true")
+    audio_build_parser.add_argument(
+        "--pause-style",
+        default="none",
+        choices=["none", "ssml"],
     )
     return parser
 
@@ -212,6 +298,12 @@ def main() -> int:
                 output_path=Path(args.output),
                 max_segments=args.max_segments,
                 max_segment_chars=args.max_segment_chars,
+                intro_text=args.intro,
+                outro_text=args.outro,
+                pause_after_ms=args.pause_after_ms,
+                pronunciation_path=Path(args.pronunciations)
+                if args.pronunciations
+                else None,
                 voice_profile=args.voice_profile,
             )
             print(
@@ -227,6 +319,37 @@ def main() -> int:
                 dry_run=args.dry_run,
                 output_format=args.output_format,
                 chunk_chars=args.chunk_chars,
+                mode=args.mode,
+                parts_dir=Path(args.parts_dir) if args.parts_dir else None,
+                manifest_path=Path(args.manifest) if args.manifest else None,
+                force=args.force,
+                pause_style=args.pause_style,
+            )
+            print(json.dumps(manifest, indent=2))
+            return 0
+
+        if args.command == "audio-build":
+            manifest = build_and_render_audio(
+                Path(args.published_file),
+                script_path=Path(args.script_output),
+                output_path=Path(args.output),
+                dry_run=args.dry_run,
+                max_segments=args.max_segments,
+                max_segment_chars=args.max_segment_chars,
+                intro_text=args.intro,
+                outro_text=args.outro,
+                pause_after_ms=args.pause_after_ms,
+                pronunciation_path=Path(args.pronunciations)
+                if args.pronunciations
+                else None,
+                voice_profile=args.voice_profile,
+                output_format=args.output_format,
+                chunk_chars=args.chunk_chars,
+                mode=args.mode,
+                parts_dir=Path(args.parts_dir) if args.parts_dir else None,
+                manifest_path=Path(args.manifest) if args.manifest else None,
+                force=args.force,
+                pause_style=args.pause_style,
             )
             print(json.dumps(manifest, indent=2))
             return 0
