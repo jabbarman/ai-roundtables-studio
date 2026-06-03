@@ -64,6 +64,7 @@ def test_load_config_and_build_turn_plan(tmp_path: Path) -> None:
 
     assert config.slug == "test-roundtable"
     assert config.turns == 2
+    assert config.audio_intent == "none"
     assert config.source_packet == []
     assert config.config_snapshot["slug"] == "test-roundtable"
     assert [participant.name for participant in config.participants] == [
@@ -90,6 +91,7 @@ def test_write_draft_run_writes_manifest_and_stub(tmp_path: Path) -> None:
     assert manifest["slug"] == "test-roundtable"
     assert manifest["source_packet"] == []
     assert manifest["moderator_turns"] == "none"
+    assert manifest["audio_intent"] == "none"
     assert manifest["run"]["mode"] == "draft"
     assert manifest["run"]["slug"] == "test-roundtable"
     assert manifest["run"]["package_version"]
@@ -135,6 +137,26 @@ def test_write_draft_run_can_include_visible_moderator_turns(
         "Anthropic",
     ]
     assert "### Moderator" in transcript
+
+
+def test_audio_intent_adds_listener_guidance_to_prompts(tmp_path: Path) -> None:
+    config_path = write_fixture_repo(tmp_path)
+    raw = json.loads(config_path.read_text())
+    raw["audio_intent"] = "podcast_adaptable"
+    raw["moderator_turns"] = "between_rounds"
+    config_path.write_text(json.dumps(raw))
+    output_dir = tmp_path / "runs" / "raw" / "audio-draft"
+    orchestrator = DraftOrchestrator(repo_root=tmp_path)
+
+    config = orchestrator.load_config(config_path)
+    orchestrator.write_draft_run(config, output_dir)
+
+    manifest = json.loads((output_dir / "manifest.json").read_text())
+    prompts = [record["prompt"] for record in manifest["planned_turn_records"]]
+    assert manifest["audio_intent"] == "podcast_adaptable"
+    assert config.audio_intent == "podcast_adaptable"
+    assert any("may later become an audio roundtable" in prompt for prompt in prompts)
+    assert any("listener-facing clarification" in prompt for prompt in prompts)
 
 
 def test_run_live_skips_participants_without_keys(

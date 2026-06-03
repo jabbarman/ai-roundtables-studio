@@ -45,6 +45,16 @@ Use these selectively:
 - "What would make your answer dangerous advice?"
 - "Name the tradeoff, not just the value."
 
+## Listener Orientation
+
+Some transcripts may later become audio. When that intent is declared, keep the exchange intelligible for a listener who cannot reread:
+
+- Name the active dispute before going deeper.
+- Ask for a one-sentence clarification when a participant makes a dense claim.
+- Mark transitions from principle to consequence.
+- Keep listener-facing interjections brief and substantive.
+- Do not become a chatty host or add performance cues.
+
 ## Audience Reminder
 
 The reader is smart and curious, but not necessarily a specialist. If the conversation becomes too academic, steer it back toward clarity and stakes.

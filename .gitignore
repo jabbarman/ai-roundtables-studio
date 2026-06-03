@@ -19,3 +19,5 @@ runs/raw/**
 runs/edited/**
 !runs/edited/.gitkeep
 !runs/edited/README.md
+audio/exports/**
+!audio/exports/.gitkeep

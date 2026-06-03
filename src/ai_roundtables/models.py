@@ -53,3 +53,4 @@ class RoundtableConfig:
     editorial_goals: list[str] = field(default_factory=list)
     turns: int = 1
     moderator_turns: str = "none"
+    audio_intent: str = "none"

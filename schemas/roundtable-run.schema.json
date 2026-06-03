@@ -184,6 +184,13 @@
         "none",
         "between_rounds"
       ]
+    },
+    "audio_intent": {
+      "type": "string",
+      "enum": [
+        "none",
+        "podcast_adaptable"
+      ]
     }
   },
   "additionalProperties": false

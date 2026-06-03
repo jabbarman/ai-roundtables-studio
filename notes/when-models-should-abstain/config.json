@@ -36,6 +36,7 @@
     "name": "Moderator",
     "prompt_file": "prompts/moderator.md"
   },
+  "audio_intent": "podcast_adaptable",
   "participants": [
     {
       "name": "OpenAI",

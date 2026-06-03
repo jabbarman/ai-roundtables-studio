@@ -46,6 +46,7 @@
     "output_tokens": 384
   },
   "moderator_turns": "between_rounds",
+  "audio_intent": "podcast_adaptable",
   "participants": [
     {
       "name": "OpenAI",

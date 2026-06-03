@@ -81,6 +81,7 @@ class DraftOrchestrator:
             editorial_goals=raw.get("editorial_goals", []),
             turns=raw.get("turns", 1),
             moderator_turns=raw.get("moderator_turns", "none"),
+            audio_intent=raw.get("audio_intent", "none"),
         )
 
     def _validate_config(self, raw: dict) -> None:
@@ -166,6 +167,7 @@ class DraftOrchestrator:
             "editorial_goals": config.editorial_goals,
             "turns": config.turns,
             "moderator_turns": config.moderator_turns,
+            "audio_intent": config.audio_intent,
             "moderator": asdict(config.moderator),
             "participants": [asdict(participant) for participant in config.participants],
             "config_snapshot": config.config_snapshot,
@@ -253,6 +255,7 @@ class DraftOrchestrator:
             "editorial_goals": config.editorial_goals,
             "turns": config.turns,
             "moderator_turns": config.moderator_turns,
+            "audio_intent": config.audio_intent,
             "moderator": asdict(config.moderator),
             "participants": [asdict(participant) for participant in config.participants],
             "config_snapshot": config.config_snapshot,
@@ -290,6 +293,7 @@ class DraftOrchestrator:
             f"Brief: {config.brief}\n"
             f"Source packet:\n{self._render_source_packet(config)}\n"
             f"Editorial goals: {', '.join(config.editorial_goals) or 'none provided'}\n"
+            f"Audio adaptation intent:\n{self._render_audio_context(config)}\n"
             f"Conversation so far:\n{transcript_text}\n\n"
             "Write only this participant's next contribution. Keep it between 120 and 220 words unless the prompt clearly demands brevity."
         )
@@ -326,6 +330,7 @@ class DraftOrchestrator:
             f"Brief: {config.brief}\n"
             f"Source packet:\n{self._render_source_packet(config)}\n"
             f"Editorial goals: {', '.join(config.editorial_goals) or 'none provided'}\n"
+            f"Audio adaptation intent:\n{self._render_audio_context(config)}\n"
             f"Conversation so far:\n{transcript_text}\n\n"
             f"{role_instruction} Write only the moderator's next contribution. "
             "Keep it between 60 and 120 words."
@@ -346,6 +351,17 @@ class DraftOrchestrator:
                 f"   Notes: {notes or 'none'}"
             )
         return "\n".join(rendered)
+
+    def _render_audio_context(self, config: RoundtableConfig) -> str:
+        if config.audio_intent != "podcast_adaptable":
+            return "No audio adaptation intent declared."
+        return (
+            "This transcript may later become an audio roundtable. Keep the prose "
+            "clear when heard once: use compact transitions, explain dense terms "
+            "plainly, and let the moderator ask brief listener-facing clarification "
+            "questions when needed. Do not add banter, stage directions, or podcast "
+            "performance."
+        )
 
     def _render_stub(
         self, config: RoundtableConfig, plan: list[TurnRecord]

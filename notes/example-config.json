@@ -38,5 +38,6 @@
     "Use at least two concrete examples.",
     "Avoid academic drift."
   ],
+  "audio_intent": "podcast_adaptable",
   "turns": 2
 }
