@@ -303,6 +303,35 @@ def test_audio_render_uses_content_addressed_cache(
     assert (tmp_path / "second.mp3").read_bytes() == b"audio"
 
 
+def test_concat_with_silence_decodes_fades_and_joins_once(
+    tmp_path: Path, monkeypatch
+) -> None:
+    calls = []
+
+    def fake_run(command, **kwargs):
+        calls.append(command)
+        Path(command[-1]).write_bytes(b"joined")
+
+    monkeypatch.setattr(audio.subprocess, "run", fake_run)
+
+    output = audio._concat_with_silence(
+        ffmpeg="/usr/bin/ffmpeg",
+        source_parts=[tmp_path / "first.mp3", tmp_path / "second.mp3"],
+        silence_ms=550,
+        temp_dir=tmp_path,
+    )
+
+    assert output.suffix == ".wav"
+    assert output.read_bytes() == b"joined"
+    assert len(calls) == 1
+    command = calls[0]
+    filter_graph = command[command.index("-filter_complex") + 1]
+    assert "afade=t=in:st=0:d=0.020" in filter_graph
+    assert "anullsrc=r=44100:cl=mono:d=0.550" in filter_graph
+    assert "concat=n=3:v=0:a=1[out]" in filter_graph
+    assert command[command.index("-c:a") + 1] == "pcm_s16le"
+
+
 def test_build_and_render_audio_dry_run_writes_script(tmp_path: Path) -> None:
     published = tmp_path / "published.md"
     published.write_text(

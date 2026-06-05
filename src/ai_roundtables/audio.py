@@ -26,6 +26,7 @@ DEFAULT_PAUSE_AFTER_MS = 450
 DEFAULT_TEXT_NORMALIZATION = "auto"
 DEFAULT_CACHE_DIR = Path("audio/cache")
 DEFAULT_LOUDNESS_TARGET = -19.0
+SEGMENT_EDGE_FADE_SECONDS = 0.02
 
 INTENDED_VOICE_MAP = {
     "Moderator": {
@@ -960,50 +961,45 @@ def _concat_with_silence(
     silence_ms: int,
     temp_dir: Path,
 ) -> Path:
-    silence_path = temp_dir / "silence.mp3"
     duration = max(silence_ms, 0) / 1000
-    subprocess.run(
-        [
-            ffmpeg,
-            "-y",
-            "-f",
-            "lavfi",
-            "-i",
-            f"anullsrc=channel_layout=mono:sample_rate=44100",
-            "-t",
-            f"{duration:.3f}",
-            "-q:a",
-            "9",
-            "-acodec",
-            "libmp3lame",
-            str(silence_path),
-        ],
-        check=True,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
-    concat_list = temp_dir / "concat.txt"
-    lines: list[str] = []
+    command = [ffmpeg, "-y"]
+    filter_parts: list[str] = []
+    sequence: list[str] = []
     for index, part in enumerate(source_parts):
-        lines.append(f"file '{part.resolve()}'")
+        command.extend(["-i", str(part)])
+        audio_label = f"a{index}"
+        filter_parts.append(
+            f"[{index}:a]aresample=44100,"
+            "aformat=sample_fmts=fltp:channel_layouts=mono,"
+            f"afade=t=in:st=0:d={SEGMENT_EDGE_FADE_SECONDS:.3f},"
+            "areverse,"
+            f"afade=t=in:st=0:d={SEGMENT_EDGE_FADE_SECONDS:.3f},"
+            f"areverse[{audio_label}]"
+        )
+        sequence.append(f"[{audio_label}]")
         if index < len(source_parts) - 1:
-            lines.append(f"file '{silence_path.resolve()}'")
-    concat_list.write_text("\n".join(lines) + "\n")
-    output = temp_dir / "with-silence.mp3"
-    subprocess.run(
+            silence_label = f"s{index}"
+            filter_parts.append(
+                f"anullsrc=r=44100:cl=mono:d={duration:.3f}[{silence_label}]"
+            )
+            sequence.append(f"[{silence_label}]")
+    filter_parts.append(
+        "".join(sequence) + f"concat=n={len(sequence)}:v=0:a=1[out]"
+    )
+    output = temp_dir / "with-silence.wav"
+    command.extend(
         [
-            ffmpeg,
-            "-y",
-            "-f",
-            "concat",
-            "-safe",
-            "0",
-            "-i",
-            str(concat_list),
-            "-c",
-            "copy",
+            "-filter_complex",
+            ";".join(filter_parts),
+            "-map",
+            "[out]",
+            "-c:a",
+            "pcm_s16le",
             str(output),
-        ],
+        ]
+    )
+    subprocess.run(
+        command,
         check=True,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
