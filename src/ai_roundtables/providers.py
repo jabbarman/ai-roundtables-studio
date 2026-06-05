@@ -2,11 +2,15 @@ from __future__ import annotations
 
 import json
 import os
+import time
 from dataclasses import dataclass
 from urllib.parse import quote
 from urllib import error, request
 
 from .models import ParticipantConfig
+
+RETRYABLE_HTTP_STATUS_CODES = frozenset({429, 500, 502, 503, 504})
+RETRY_DELAYS_SECONDS = (1.0, 2.0, 4.0, 8.0)
 
 
 @dataclass(slots=True)
@@ -18,6 +22,38 @@ class ProviderResponse:
 class ProviderAdapter:
     def generate(self, participant: ParticipantConfig, prompt: str) -> ProviderResponse:
         raise NotImplementedError
+
+
+def request_json(
+    api_request: request.Request,
+    provider_name: str,
+    timeout: int = 120,
+) -> tuple[dict | None, ProviderResponse | None]:
+    for attempt in range(len(RETRY_DELAYS_SECONDS) + 1):
+        try:
+            with request.urlopen(api_request, timeout=timeout) as response:
+                return json.loads(response.read().decode("utf-8")), None
+        except error.HTTPError as exc:
+            detail = exc.read().decode("utf-8", errors="replace")
+            if (
+                exc.code in RETRYABLE_HTTP_STATUS_CODES
+                and attempt < len(RETRY_DELAYS_SECONDS)
+            ):
+                time.sleep(RETRY_DELAYS_SECONDS[attempt])
+                continue
+            return None, ProviderResponse(
+                f"[{provider_name} request failed with HTTP {exc.code}. "
+                f"Details: {detail}]",
+                "error_http",
+            )
+        except error.URLError as exc:
+            return None, ProviderResponse(
+                f"[{provider_name} request failed before a response was received: "
+                f"{exc.reason}]",
+                "error_network",
+            )
+
+    raise AssertionError("Provider retry loop exited unexpectedly")
 
 
 class PlaceholderProviderAdapter(ProviderAdapter):
@@ -64,21 +100,11 @@ class OpenAIResponsesAdapter(ProviderAdapter):
             },
             method="POST",
         )
-        try:
-            with request.urlopen(api_request, timeout=120) as response:
-                response_json = json.loads(response.read().decode("utf-8"))
-        except error.HTTPError as exc:
-            detail = exc.read().decode("utf-8", errors="replace")
-            return ProviderResponse(
-                f"[OpenAI request failed with HTTP {exc.code}. Details: {detail}]",
-                "error_http",
-            )
-        except error.URLError as exc:
-            return ProviderResponse(
-                f"[OpenAI request failed before a response was received: {exc.reason}]",
-                "error_network",
-            )
+        response_json, request_error = request_json(api_request, "OpenAI")
+        if request_error:
+            return request_error
 
+        assert response_json is not None
         text = extract_openai_text(response_json)
         if not text:
             return ProviderResponse(
@@ -116,21 +142,11 @@ class AnthropicMessagesAdapter(ProviderAdapter):
             },
             method="POST",
         )
-        try:
-            with request.urlopen(api_request, timeout=120) as response:
-                response_json = json.loads(response.read().decode("utf-8"))
-        except error.HTTPError as exc:
-            detail = exc.read().decode("utf-8", errors="replace")
-            return ProviderResponse(
-                f"[Anthropic request failed with HTTP {exc.code}. Details: {detail}]",
-                "error_http",
-            )
-        except error.URLError as exc:
-            return ProviderResponse(
-                f"[Anthropic request failed before a response was received: {exc.reason}]",
-                "error_network",
-            )
+        response_json, request_error = request_json(api_request, "Anthropic")
+        if request_error:
+            return request_error
 
+        assert response_json is not None
         text = extract_anthropic_text(response_json)
         if not text:
             return ProviderResponse(
@@ -182,21 +198,11 @@ class GeminiGenerateContentAdapter(ProviderAdapter):
             },
             method="POST",
         )
-        try:
-            with request.urlopen(api_request, timeout=120) as response:
-                response_json = json.loads(response.read().decode("utf-8"))
-        except error.HTTPError as exc:
-            detail = exc.read().decode("utf-8", errors="replace")
-            return ProviderResponse(
-                f"[Gemini request failed with HTTP {exc.code}. Details: {detail}]",
-                "error_http",
-            )
-        except error.URLError as exc:
-            return ProviderResponse(
-                f"[Gemini request failed before a response was received: {exc.reason}]",
-                "error_network",
-            )
+        response_json, request_error = request_json(api_request, "Gemini")
+        if request_error:
+            return request_error
 
+        assert response_json is not None
         text = extract_gemini_text(response_json)
         if not text:
             return ProviderResponse(

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+from io import BytesIO
 import json
+from urllib.error import HTTPError
 
 from ai_roundtables.models import ParticipantConfig
 from ai_roundtables.providers import (
@@ -225,3 +227,74 @@ def test_gemini_adapter_posts_to_generate_content_api(monkeypatch) -> None:
     }
     assert "Prompt text" in captured["body"]["contents"][0]["parts"][0]["text"]
     assert captured["key"] == "test-key"
+
+
+def test_gemini_adapter_retries_temporary_http_errors(monkeypatch) -> None:
+    attempts = 0
+    delays = []
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, traceback):
+            return None
+
+        def read(self) -> bytes:
+            return json.dumps(
+                {"candidates": [{"content": {"parts": [{"text": "Recovered"}]}}]}
+            ).encode("utf-8")
+
+    def fake_urlopen(api_request, timeout):
+        nonlocal attempts
+        attempts += 1
+        if attempts < 3:
+            raise HTTPError(
+                api_request.full_url,
+                503,
+                "Unavailable",
+                {},
+                BytesIO(b'{"error":{"status":"UNAVAILABLE"}}'),
+            )
+        return FakeResponse()
+
+    monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+    monkeypatch.setattr("ai_roundtables.providers.request.urlopen", fake_urlopen)
+    monkeypatch.setattr(
+        "ai_roundtables.providers.time.sleep", lambda delay: delays.append(delay)
+    )
+
+    response = GeminiGenerateContentAdapter().generate(
+        participant("google"), "Prompt text"
+    )
+
+    assert response.status == "completed"
+    assert response.text == "Recovered"
+    assert attempts == 3
+    assert delays == [1.0, 2.0]
+
+
+def test_gemini_adapter_does_not_retry_non_transient_http_errors(monkeypatch) -> None:
+    attempts = 0
+
+    def fake_urlopen(api_request, timeout):
+        nonlocal attempts
+        attempts += 1
+        raise HTTPError(
+            api_request.full_url,
+            400,
+            "Bad Request",
+            {},
+            BytesIO(b'{"error":{"status":"INVALID_ARGUMENT"}}'),
+        )
+
+    monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+    monkeypatch.setattr("ai_roundtables.providers.request.urlopen", fake_urlopen)
+
+    response = GeminiGenerateContentAdapter().generate(
+        participant("google"), "Prompt text"
+    )
+
+    assert response.status == "error_http"
+    assert "HTTP 400" in response.text
+    assert attempts == 1
