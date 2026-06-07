@@ -7,10 +7,10 @@
   "pronunciation_map": {},
   "voice_map": {
     "Moderator": {
-      "voice": "Charlotte",
-      "voice_id": "rhS7yjXTU4uIlRxXhNW7",
-      "source": "shared",
-      "description": "Listener orientation, transitions, clarification"
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "source": "premade",
+      "description": "Mature British listener orientation and clarification"
     },
     "OpenAI": {
       "voice": "Daniel",
@@ -25,9 +25,9 @@
       "description": "Balanced systems framing and reliable collaboration"
     },
     "Anthropic": {
-      "voice": "Serena",
-      "voice_id": "ZbKehTnuETNa9LsAnRO8",
-      "source": "shared",
+      "voice": "Matilda",
+      "voice_id": "XrExE9yKIg1WjnnlVkGX",
+      "source": "premade",
       "description": "Weighted uncertainty and epistemic honesty"
     }
   },
@@ -35,16 +35,16 @@
   "segments": [
     {
       "speaker": "Moderator",
-      "voice": "Charlotte",
-      "voice_id": "rhS7yjXTU4uIlRxXhNW7",
-      "text": "I am Charlotte, moderating. Daniel will read OpenAI, Serena will read Anthropic, and Josh will read Google. The voices are assigned for presentation and are not the models' own voices.",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "I am Lily, moderating. Daniel will read OpenAI, Matilda will read Anthropic, and Josh will read Google. The voices are assigned for presentation and are not the models' own voices.",
       "kind": "cast_intro",
       "pause_after_ms": 450
     },
     {
       "speaker": "Moderator",
-      "voice": "Charlotte",
-      "voice_id": "rhS7yjXTU4uIlRxXhNW7",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
       "text": "Let us not start from \"more explanation is better,\" because the packet cuts against that. NIST treats explainability as one trustworthiness attribute among several; the Model Spec and reasoning guide distinguish hidden chain-of-thought from summaries; Anthropic warns that visible reasoning may be unfaithful.",
       "kind": "turn",
       "pause_after_ms": 450
@@ -59,8 +59,8 @@
     },
     {
       "speaker": "Anthropic",
-      "voice": "Serena",
-      "voice_id": "ZbKehTnuETNa9LsAnRO8",
+      "voice": "Matilda",
+      "voice_id": "XrExE9yKIg1WjnnlVkGX",
       "text": "The objection about curated summaries has more bite than that. If the provider controls what gets surfaced as a reasoning summary, you have moved the trust problem upstream, not solved it. Now the question is whether the summary itself is cherry-picked.",
       "kind": "turn",
       "pause_after_ms": 450
@@ -75,8 +75,8 @@
     },
     {
       "speaker": "Moderator",
-      "voice": "Charlotte",
-      "voice_id": "rhS7yjXTU4uIlRxXhNW7",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
       "text": "Good. There is a live split now. OpenAI says brief summary plus uncertainty can be useful. Anthropic says that may relocate the trust problem. Google says stop telling stories and show structured evidence.\nPick one case: a model denies a mortgage application. What exactly should the applicant see on screen?",
       "kind": "turn",
       "pause_after_ms": 450

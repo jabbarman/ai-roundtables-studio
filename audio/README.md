@@ -11,10 +11,10 @@ The intended production profile is:
 
 | Role | Provider label | ElevenLabs voice | Editorial function |
 | --- | --- | --- | --- |
-| Moderator / Narrator | Moderator | Charlotte | Listener orientation, transitions, clarification |
+| Moderator / Narrator | Moderator | Lily | Mature British listener orientation and clarification |
 | OpenAI / ChatGPT | OpenAI | Daniel | Measured synthesis and structured conclusions |
 | Google / Gemini | Google | Josh | Balanced systems framing and reliable collaboration |
-| Anthropic / Claude | Anthropic | Serena | Weighted uncertainty and epistemic honesty |
+| Anthropic / Claude | Anthropic | Matilda | Weighted uncertainty and epistemic honesty |
 
 On plans where shared or professional library voices are unavailable through the
 API, use `--voice-profile free-check` to render a pipeline check with premade
@@ -89,7 +89,7 @@ normalization. This requires `ffmpeg` on the host.
 
 - Keep the published markdown as the source of truth.
 - Disclose that voices are assigned presentation choices, not emergent model identities.
-- Let Charlotte add brief listener-facing orientation where the transcript needs it.
+- Let Lily add brief listener-facing orientation where the transcript needs it.
 - Avoid rewriting arguments for drama, banter, or artificial podcast rhythm.
 - Keep technical clarification light: explain the hinge of a claim, then return to the exchange.
 
