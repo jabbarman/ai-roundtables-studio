@@ -30,10 +30,10 @@ SEGMENT_EDGE_FADE_SECONDS = 0.02
 
 INTENDED_VOICE_MAP = {
     "Moderator": {
-        "voice": "Charlotte",
-        "voice_id": "rhS7yjXTU4uIlRxXhNW7",
-        "source": "shared",
-        "description": "Listener orientation, transitions, clarification",
+        "voice": "Lily",
+        "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+        "source": "premade",
+        "description": "Mature British listener orientation and clarification",
     },
     "OpenAI": {
         "voice": "Daniel",
@@ -48,9 +48,9 @@ INTENDED_VOICE_MAP = {
         "description": "Balanced systems framing and reliable collaboration",
     },
     "Anthropic": {
-        "voice": "Serena",
-        "voice_id": "ZbKehTnuETNa9LsAnRO8",
-        "source": "shared",
+        "voice": "Matilda",
+        "voice_id": "XrExE9yKIg1WjnnlVkGX",
+        "source": "premade",
         "description": "Weighted uncertainty and epistemic honesty",
     },
 }

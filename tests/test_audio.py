@@ -45,7 +45,7 @@ Done.
     assert script.segments[0].speaker == "Moderator"
     assert script.segments[0].kind == "cast_intro"
     assert "Daniel will read OpenAI" in script.segments[0].text
-    assert script.segments[0].voice == "Charlotte"
+    assert script.segments[0].voice == "Lily"
     assert script.segments[2].speaker == "OpenAI"
     assert "https://example.com" not in script.segments[2].text
     assert "a source" in script.segments[2].text
