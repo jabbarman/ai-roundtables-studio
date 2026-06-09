@@ -66,6 +66,8 @@ def evaluate_run(run_dir: Path) -> RunEvaluation:
     if manifest.get("moderator_turns") == "between_rounds":
         records_per_turn += 1
     expected_records = manifest.get("turns", 0) * records_per_turn
+    if manifest.get("moderator_closing_summary"):
+        expected_records += 1
     if expected_records and len(records) != expected_records:
         issues.append(
             f"Expected {expected_records} turn records, found {len(records)}"

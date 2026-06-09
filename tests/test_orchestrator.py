@@ -180,9 +180,75 @@ def test_audio_intent_adds_listener_guidance_to_prompts(tmp_path: Path) -> None:
     manifest = json.loads((output_dir / "manifest.json").read_text())
     prompts = [record["prompt"] for record in manifest["planned_turn_records"]]
     assert manifest["audio_intent"] == "podcast_adaptable"
+    assert manifest["moderator_closing_summary"] is True
     assert config.audio_intent == "podcast_adaptable"
     assert any("may later become an audio roundtable" in prompt for prompt in prompts)
     assert any("listener-facing clarification" in prompt for prompt in prompts)
+    assert len(manifest["planned_turn_records"]) == 7
+    assert manifest["planned_turn_records"][-1]["speaker"] == "Moderator"
+    assert (
+        "closing synthesis"
+        in manifest["planned_turn_records"][-1]["prompt"].lower()
+    )
+
+
+def test_audio_intent_without_visible_moderator_does_not_add_closing(
+    tmp_path: Path,
+) -> None:
+    config_path = write_fixture_repo(tmp_path)
+    raw = json.loads(config_path.read_text())
+    raw["audio_intent"] = "podcast_adaptable"
+    config_path.write_text(json.dumps(raw))
+    output_dir = tmp_path / "runs" / "raw" / "audio-without-moderator"
+    orchestrator = DraftOrchestrator(repo_root=tmp_path)
+
+    config = orchestrator.load_config(config_path)
+    orchestrator.write_draft_run(config, output_dir)
+
+    manifest = json.loads((output_dir / "manifest.json").read_text())
+    assert manifest["moderator_closing_summary"] is False
+    assert len(manifest["planned_turn_records"]) == 4
+
+
+def test_run_live_adds_moderator_closing_after_final_participant(
+    tmp_path: Path, monkeypatch
+) -> None:
+    config_path = write_fixture_repo(tmp_path)
+    raw = json.loads(config_path.read_text())
+    raw["audio_intent"] = "podcast_adaptable"
+    raw["moderator_turns"] = "between_rounds"
+    raw["turns"] = 1
+    config_path.write_text(json.dumps(raw))
+    output_dir = tmp_path / "runs" / "raw" / "audio-closing-live"
+    orchestrator = DraftOrchestrator(repo_root=tmp_path)
+
+    def fake_generate(participant, prompt):
+        if "closing synthesis" in prompt.lower():
+            assert "OpenAI [completed]" in prompt
+            assert "Anthropic [completed]" in prompt
+            return (
+                "The participants agreed that the pipeline needs explicit evidence. "
+                "They disagreed about how much automation should be trusted. "
+                "The practical conclusion was to retain a human review gate.",
+                "completed",
+            )
+        return (f"{participant.name} response " * 30, "completed")
+
+    monkeypatch.setattr(orchestrator, "_generate_response", fake_generate)
+
+    config = orchestrator.load_config(config_path)
+    orchestrator.run_live(config, output_dir)
+
+    manifest = json.loads((output_dir / "manifest.json").read_text())
+    records = manifest["executed_turn_records"]
+    assert manifest["moderator_closing_summary"] is True
+    assert [record["speaker"] for record in records] == [
+        "Moderator",
+        "OpenAI",
+        "Anthropic",
+        "Moderator",
+    ]
+    assert "practical conclusion" in records[-1]["response"]
 
 
 def test_run_live_skips_participants_without_keys(

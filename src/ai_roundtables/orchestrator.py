@@ -149,6 +149,18 @@ class DraftOrchestrator:
                         model=participant.model,
                     )
                 )
+        if self._includes_moderator_closing(config):
+            records.append(
+                TurnRecord(
+                    speaker=config.moderator.name,
+                    prompt=self._compose_moderator_closing_prompt(
+                        moderator_prompt=moderator_prompt,
+                        config=config,
+                    ),
+                    provider=config.moderator.provider,
+                    model=config.moderator.model,
+                )
+            )
         return records
 
     def write_draft_run(self, config: RoundtableConfig, output_dir: Path) -> None:
@@ -168,6 +180,7 @@ class DraftOrchestrator:
             "editorial_goals": config.editorial_goals,
             "turns": config.turns,
             "moderator_turns": config.moderator_turns,
+            "moderator_closing_summary": self._includes_moderator_closing(config),
             "audio_intent": config.audio_intent,
             "participant_order": config.participant_order,
             "moderator": asdict(config.moderator),
@@ -244,6 +257,33 @@ class DraftOrchestrator:
                     }
                 )
 
+        if self._includes_moderator_closing(config):
+            prompt = self._compose_moderator_closing_prompt(
+                moderator_prompt=moderator_prompt,
+                config=config,
+                transcript_entries=transcript_entries,
+            )
+            moderator_participant = self._moderator_as_participant(config)
+            record = TurnRecord(
+                speaker=config.moderator.name,
+                prompt=prompt,
+                provider=config.moderator.provider,
+                model=config.moderator.model,
+            )
+            response_text, status = self._generate_response(
+                moderator_participant, prompt
+            )
+            record.response = response_text
+            record.status = status
+            completed_records.append(record)
+            transcript_entries.append(
+                {
+                    "speaker": config.moderator.name,
+                    "status": status,
+                    "content": response_text,
+                }
+            )
+
         manifest = {
             "run": self._run_metadata(config, output_dir, "live"),
             "slug": config.slug,
@@ -257,6 +297,7 @@ class DraftOrchestrator:
             "editorial_goals": config.editorial_goals,
             "turns": config.turns,
             "moderator_turns": config.moderator_turns,
+            "moderator_closing_summary": self._includes_moderator_closing(config),
             "audio_intent": config.audio_intent,
             "participant_order": config.participant_order,
             "moderator": asdict(config.moderator),
@@ -339,6 +380,34 @@ class DraftOrchestrator:
             "Keep it between 60 and 120 words."
         )
 
+    def _compose_moderator_closing_prompt(
+        self,
+        *,
+        moderator_prompt: str,
+        config: RoundtableConfig,
+        transcript_entries: list[dict[str, str]] | None = None,
+    ) -> str:
+        transcript_text = self._render_context(transcript_entries or [])
+        return (
+            f"{moderator_prompt.strip()}\n\n"
+            f"Roundtable title: {config.title}\n"
+            f"Topic: {config.topic}\n"
+            f"Audience: {config.audience}\n"
+            f"Format: {config.format}\n"
+            f"Brief: {config.brief}\n"
+            f"Source packet:\n{self._render_source_packet(config)}\n"
+            f"Editorial goals: {', '.join(config.editorial_goals) or 'none provided'}\n"
+            f"Audio adaptation intent:\n{self._render_audio_context(config)}\n"
+            f"Completed conversation:\n{transcript_text}\n\n"
+            "Close the roundtable for a reader or listener. State briefly what the "
+            "participants agreed on, identify the central unresolved disagreement, "
+            "and name the strongest practical conclusion or decision rule that "
+            "survived the exchange. If no conclusion was reached, say so plainly. "
+            "Do not introduce new evidence, ask another question, thank the "
+            "participants, or manufacture consensus. Write only the moderator's "
+            "closing synthesis. Keep it between 80 and 140 words."
+        )
+
     def _render_source_packet(self, config: RoundtableConfig) -> str:
         if not config.source_packet:
             return "No source packet provided."
@@ -363,6 +432,12 @@ class DraftOrchestrator:
             return participants
         offset = (turn_number - 1) % len(participants)
         return participants[offset:] + participants[:offset]
+
+    def _includes_moderator_closing(self, config: RoundtableConfig) -> bool:
+        return (
+            config.moderator_turns == "between_rounds"
+            and config.audio_intent == "podcast_adaptable"
+        )
 
     def _render_audio_context(self, config: RoundtableConfig) -> str:
         if config.audio_intent != "podcast_adaptable":
