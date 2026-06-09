@@ -77,6 +77,11 @@ text, voice ID, model, output format, text normalization mode, voice settings,
 pronunciation replacements, and continuity context. Use `--no-cache` to disable
 it or `--force` to regenerate matching cached content.
 
+By default, the audio script inserts brief Lily announcements before each
+participant's first-round response. Later rounds are left uninterrupted. Use
+`--no-speaker-cues` only when a production does not need that initial listener
+orientation.
+
 Pause metadata is stored on each segment. `--pause-style ssml` can append SSML
 break tags during per-segment rendering with compatible ElevenLabs models; Eleven
 v3 does not support SSML breaks, so the default is `--pause-style none`.
@@ -90,6 +95,8 @@ normalization. This requires `ffmpeg` on the host.
 - Keep the published markdown as the source of truth.
 - Disclose that voices are assigned presentation choices, not emergent model identities.
 - Let Lily add brief listener-facing orientation where the transcript needs it.
+- For podcast-adaptable runs with visible moderator turns, close with a short
+  moderator synthesis of agreement, unresolved disagreement, and practical conclusions.
 - Avoid rewriting arguments for drama, banter, or artificial podcast rhythm.
 - Keep technical clarification light: explain the hinge of a claim, then return to the exchange.
 
