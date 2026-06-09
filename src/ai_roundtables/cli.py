@@ -152,6 +152,11 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Skip the automatic moderator cast introduction.",
     )
+    audio_script_parser.add_argument(
+        "--no-speaker-cues",
+        action="store_true",
+        help="Skip moderator announcements before first-round participant turns.",
+    )
 
     audio_render_parser = subparsers.add_parser(
         "audio-render",
@@ -277,6 +282,7 @@ def build_parser() -> argparse.ArgumentParser:
     audio_build_parser.add_argument("--pause-after-ms", type=int, default=450)
     audio_build_parser.add_argument("--pronunciations")
     audio_build_parser.add_argument("--no-cast-intro", action="store_true")
+    audio_build_parser.add_argument("--no-speaker-cues", action="store_true")
     audio_build_parser.add_argument("--output-format", default="mp3_44100_128")
     audio_build_parser.add_argument("--chunk-chars", type=int, default=1800)
     audio_build_parser.add_argument(
@@ -371,6 +377,7 @@ def main() -> int:
                 else None,
                 voice_profile=args.voice_profile,
                 cast_intro=not args.no_cast_intro,
+                speaker_cues=not args.no_speaker_cues,
             )
             print(
                 f"Audio script written to {args.output} "
@@ -420,6 +427,7 @@ def main() -> int:
                 else None,
                 voice_profile=args.voice_profile,
                 cast_intro=not args.no_cast_intro,
+                speaker_cues=not args.no_speaker_cues,
                 output_format=args.output_format,
                 chunk_chars=args.chunk_chars,
                 mode=args.mode,

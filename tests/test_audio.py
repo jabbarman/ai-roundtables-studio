@@ -41,14 +41,16 @@ Done.
     script = build_audio_script(published, max_segments=2)
 
     assert script.title == "Audio Test"
-    assert len(script.segments) == 3
+    assert len(script.segments) == 4
     assert script.segments[0].speaker == "Moderator"
     assert script.segments[0].kind == "cast_intro"
     assert "Daniel will read OpenAI" in script.segments[0].text
     assert script.segments[0].voice == "Lily"
-    assert script.segments[2].speaker == "OpenAI"
-    assert "https://example.com" not in script.segments[2].text
-    assert "a source" in script.segments[2].text
+    assert script.segments[2].kind == "speaker_cue"
+    assert script.segments[2].text == "First up is OpenAI."
+    assert script.segments[3].speaker == "OpenAI"
+    assert "https://example.com" not in script.segments[3].text
+    assert "a source" in script.segments[3].text
     assert script.to_dict()["estimated_characters"] > 0
 
 
@@ -69,7 +71,7 @@ First answer.
 """
     )
 
-    script = build_audio_script(published, cast_intro=False)
+    script = build_audio_script(published, cast_intro=False, speaker_cues=False)
 
     assert [segment.speaker for segment in script.segments] == ["Moderator", "OpenAI"]
     assert script.segments[0].text == "First question?"
@@ -87,7 +89,11 @@ def test_build_audio_script_can_use_free_check_profile(tmp_path: Path) -> None:
 """
     )
 
-    script = build_audio_script(published, voice_profile="free-check")
+    script = build_audio_script(
+        published,
+        voice_profile="free-check",
+        speaker_cues=False,
+    )
 
     assert script.segments[0].speaker == "Moderator"
     assert script.segments[0].voice == "Alice"
@@ -107,7 +113,11 @@ def test_build_audio_script_can_trim_segments_at_sentence_boundary(
 """
     )
 
-    script = build_audio_script(published, max_segment_chars=20)
+    script = build_audio_script(
+        published,
+        max_segment_chars=20,
+        speaker_cues=False,
+    )
 
     assert script.segments[1].text == "First sentence."
 
@@ -134,11 +144,67 @@ title: Pronunciation Test
         intro_text="Welcome to {title}.",
         outro_text="End of {title}.",
         pronunciation_path=pronunciations,
+        speaker_cues=False,
     )
 
     assert [segment.kind for segment in script.segments] == ["intro", "turn", "outro"]
     assert script.segments[1].text == "A I systems?"
     assert script.pronunciation_map == {"AI": "A I"}
+
+
+def test_build_audio_script_adds_cues_only_to_first_round(tmp_path: Path) -> None:
+    published = tmp_path / "published.md"
+    published.write_text(
+        """# Audio Test
+
+## Roundtable
+
+## Moderator
+
+Opening question.
+
+## OpenAI
+
+First answer.
+
+## Anthropic
+
+Second answer.
+
+## Google
+
+Third answer.
+
+## Moderator
+
+Follow-up question.
+
+## Anthropic
+
+Fourth answer.
+"""
+    )
+
+    script = build_audio_script(published, cast_intro=False)
+
+    assert [
+        (segment.speaker, segment.kind, segment.text)
+        for segment in script.segments
+    ] == [
+        ("Moderator", "turn", "Opening question."),
+        ("Moderator", "speaker_cue", "First up is OpenAI."),
+        ("OpenAI", "turn", "First answer."),
+        ("Moderator", "speaker_cue", "And now, Anthropic."),
+        ("Anthropic", "turn", "Second answer."),
+        (
+            "Moderator",
+            "speaker_cue",
+            "And finally for this opening round, Google.",
+        ),
+        ("Google", "turn", "Third answer."),
+        ("Moderator", "turn", "Follow-up question."),
+        ("Anthropic", "turn", "Fourth answer."),
+    ]
 
 
 def test_audio_render_dry_run_returns_manifest(tmp_path: Path) -> None:

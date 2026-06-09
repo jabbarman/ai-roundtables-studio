@@ -151,6 +151,7 @@ def create_audio_script(
     pronunciation_path: Path | None = None,
     voice_profile: str = "intended",
     cast_intro: bool = True,
+    speaker_cues: bool = True,
 ) -> AudioScript:
     script = build_audio_script(
         published_path,
@@ -162,6 +163,7 @@ def create_audio_script(
         pronunciation_path=pronunciation_path,
         voice_profile=voice_profile,
         cast_intro=cast_intro,
+        speaker_cues=speaker_cues,
     )
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(script.to_dict(), indent=2) + "\n")
@@ -179,6 +181,7 @@ def build_audio_script(
     pronunciation_path: Path | None = None,
     voice_profile: str = "intended",
     cast_intro: bool = True,
+    speaker_cues: bool = True,
 ) -> AudioScript:
     voice_map = _voice_map_for_profile(voice_profile)
     pronunciation_map = _load_pronunciations(pronunciation_path)
@@ -193,6 +196,13 @@ def build_audio_script(
     )
     if max_segments is not None:
         segments = segments[:max_segments]
+    if speaker_cues:
+        segments = _with_first_round_speaker_cues(
+            segments,
+            voice_map=voice_map,
+            pronunciation_map=pronunciation_map,
+            pause_after_ms=pause_after_ms,
+        )
     segments = _with_episode_bookends(
         title=title,
         segments=segments,
@@ -228,6 +238,7 @@ def build_and_render_audio(
     pronunciation_path: Path | None = None,
     voice_profile: str = "intended",
     cast_intro: bool = True,
+    speaker_cues: bool = True,
     output_format: str = DEFAULT_OUTPUT_FORMAT,
     chunk_chars: int = DEFAULT_CHUNK_CHARS,
     mode: str = "dialogue",
@@ -255,6 +266,7 @@ def build_and_render_audio(
         pronunciation_path=pronunciation_path,
         voice_profile=voice_profile,
         cast_intro=cast_intro,
+        speaker_cues=speaker_cues,
     )
     return render_audio_script(
         script_path,
@@ -571,6 +583,77 @@ def _with_episode_bookends(
             )
         )
     return rendered
+
+
+def _with_first_round_speaker_cues(
+    segments: list[AudioSegment],
+    *,
+    voice_map: dict[str, dict[str, str]],
+    pronunciation_map: dict[str, str],
+    pause_after_ms: int,
+) -> list[AudioSegment]:
+    first_moderator_index = next(
+        (
+            index
+            for index, segment in enumerate(segments)
+            if segment.speaker == "Moderator" and segment.kind == "turn"
+        ),
+        None,
+    )
+    if first_moderator_index is None:
+        return segments
+
+    first_round_end = next(
+        (
+            index
+            for index in range(first_moderator_index + 1, len(segments))
+            if segments[index].speaker == "Moderator"
+        ),
+        len(segments),
+    )
+    participant_indexes = [
+        index
+        for index in range(first_moderator_index + 1, first_round_end)
+        if segments[index].speaker != "Moderator"
+    ]
+    if not participant_indexes:
+        return segments
+
+    moderator = voice_map["Moderator"]
+    cue_by_index: dict[int, AudioSegment] = {}
+    for position, segment_index in enumerate(participant_indexes):
+        speaker = segments[segment_index].speaker
+        cue_by_index[segment_index] = AudioSegment(
+            speaker="Moderator",
+            voice=moderator["voice"],
+            voice_id=moderator["voice_id"],
+            text=_clean_audio_text(
+                _speaker_cue_text(
+                    speaker,
+                    position=position,
+                    total=len(participant_indexes),
+                ),
+                pronunciation_map=pronunciation_map,
+            ),
+            kind="speaker_cue",
+            pause_after_ms=pause_after_ms,
+        )
+
+    rendered: list[AudioSegment] = []
+    for index, segment in enumerate(segments):
+        cue = cue_by_index.get(index)
+        if cue:
+            rendered.append(cue)
+        rendered.append(segment)
+    return rendered
+
+
+def _speaker_cue_text(speaker: str, *, position: int, total: int) -> str:
+    if position == 0:
+        return f"First up is {speaker}."
+    if position == total - 1 and total > 2:
+        return f"And finally for this opening round, {speaker}."
+    return f"And now, {speaker}."
 
 
 def _render_cast_intro(
