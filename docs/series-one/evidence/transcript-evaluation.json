@@ -1,0 +1,11 @@
+{
+  "run_dir": "runs/raw/when-should-you-trust-an-ai-answer-001",
+  "passed": true,
+  "mode": "live",
+  "record_count": 13,
+  "status_counts": {
+    "completed": 13
+  },
+  "issues": [],
+  "warnings": []
+}

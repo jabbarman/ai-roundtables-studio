@@ -7,5 +7,5 @@ model_slate:
   anthropic: claude-opus-4-8
   google: gemini-3.1-pro-preview
 current_episode: when-should-you-trust-an-ai-answer
-next_step: run and evaluate the live three-provider calibration transcript
+next_step: validate the published edition and render the enhanced podcast audio
 push_policy: local_commits_only
