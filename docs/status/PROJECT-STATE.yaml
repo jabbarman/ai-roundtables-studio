@@ -1,11 +1,11 @@
 project: series-one
-stage: calibration-production
-status: in_progress
+stage: calibration-review
+status: awaiting_user_review
 updated: 2026-06-15
 model_slate:
   openai: gpt-5.5
   anthropic: claude-opus-4-8
   google: gemini-3.1-pro-preview
 current_episode: when-should-you-trust-an-ai-answer
-next_step: validate the published edition and render the enhanced podcast audio
+next_step: user listens to the calibration episode and approves or rejects it as the series baseline
 push_policy: local_commits_only

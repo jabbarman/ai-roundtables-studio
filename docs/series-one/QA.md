@@ -8,5 +8,5 @@
 | Transcript | Provider completion and structural evaluation | `evidence/transcript-evaluation.json` | Pass |
 | Editorial | Clarity, disagreement, evidence, speaker distinction | `evidence/editorial-review.md` | Pass |
 | Published | Metadata, provenance, source links, and editorial note | `evidence/published-check.md` | Pass |
-| Audio | Script validation, MP3 render, loudness and duration | Pending manifest | Pending |
+| Audio | Script validation, MP3 render, loudness and duration | `evidence/audio-validation.md` | Pass |
 | Gate | User accepts calibration as series baseline | Sign-off record | Pending |

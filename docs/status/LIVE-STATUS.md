@@ -1,12 +1,11 @@
 # Live Status
 
-Series One calibration is in progress. All 13 live turns completed, the raw run
-passes automated evaluation, and the transcript passes editorial review.
+Series One calibration production is complete. All 13 live turns completed, the
+published edition passes editorial checks, and the enhanced audio passes
+technical inspection.
 
-Next executable step:
-
-```bash
-ai-roundtables check published/when-should-you-trust-an-ai-answer.md
-```
+Next executable step: the user listens to
+`/home/joseph/Public/when-should-you-trust-an-ai-answer.mp3` and approves or
+rejects it as the production baseline for the remaining five episodes.
 
 GitHub pushes remain disabled by the user's standing instruction.

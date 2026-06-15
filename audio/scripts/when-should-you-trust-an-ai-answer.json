@@ -1,0 +1,193 @@
+{
+  "source": "published/when-should-you-trust-an-ai-answer.md",
+  "title": "When Should You Trust an AI Answer?",
+  "generated_at": "2026-06-15T12:09:44.059675+00:00",
+  "model_id": "eleven_v3",
+  "pause_after_ms": 450,
+  "pronunciation_map": {
+    "NIST": "nist",
+    "chain-of-thought": "chain of thought",
+    "AI": "A I"
+  },
+  "voice_map": {
+    "Moderator": {
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "source": "premade",
+      "description": "Mature British listener orientation and clarification"
+    },
+    "OpenAI": {
+      "voice": "Daniel",
+      "voice_id": "onwK4e9ZLuTAKqWW03F9",
+      "source": "saved",
+      "description": "Measured synthesis and structured conclusions"
+    },
+    "Google": {
+      "voice": "Josh",
+      "voice_id": "ZoiZ8fuDWInAcwPXaVeq",
+      "source": "shared",
+      "description": "Balanced systems framing and reliable collaboration"
+    },
+    "Anthropic": {
+      "voice": "Matilda",
+      "voice_id": "XrExE9yKIg1WjnnlVkGX",
+      "source": "premade",
+      "description": "Weighted uncertainty and epistemic honesty"
+    }
+  },
+  "estimated_characters": 14550,
+  "segments": [
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "This is When Should You Trust an A I Answer?, an A I roundtable.",
+      "kind": "intro",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "I am Lily, moderating. Daniel will read OpenA I, Matilda will read Anthropic, and Josh will read Google. The voices are assigned for presentation and are not the models' own voices.",
+      "kind": "cast_intro",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "A traveller is flying tomorrow. The airline site is vague. An A I assistant says, confidently, \u201cYou don\u2019t need a visa for a ten-day trip.\u201d A government webpage, last updated six months ago, seems to say the opposite. The A I gives a fluent explanation but no live citation; the webpage is official but confusing. Missing the answer could mean being denied boarding.\nHere\u2019s the dispute I want on the table immediately: in that situation, should the ordinary user treat the A I answer as unusable until verified by an authoritative source, or as a reasonable lead unless contradicted clearly? Name the evidence or context that decides it.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "First up is OpenA I.",
+      "kind": "speaker_cue",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "OpenAI",
+      "voice": "Daniel",
+      "voice_id": "onwK4e9ZLuTAKqWW03F9",
+      "text": "In that visa case, the A I answer is not a decision source; it is a lead. The deciding factor is not how confident the sentence sounds, but whether the answer is tied to current, authoritative evidence that applies to this traveller\u2019s passport, destination, transit route, and dates.\nThe reason is simple: the cost of being wrong is high and the rules can change. A fluent A I answer may be summarizing an old rule, blending countries, or missing an exception. nist calls this a risk of confabulation and over-reliance, but in plain English it means the system can sound like it knows when it does not. For a restaurant recommendation, that is tolerable. For boarding a flight, it is not.\nSo I would use the A I to narrow the task: \u201cWhich official page should I check? What exact passport and visa terms matter? What questions should I ask the airline?\u201d But I would not rely on it against a government source. If the official page is confusing, the next step is the embassy, consulate, airline document-check desk, or a visa database the airline itself uses.\nThe practical rule is: rely directly on A I when the cost of error is low or the answer is easy to test; use it as a guide when the stakes are high; require authoritative confirmation when someone else can legally block you, charge you, treat you, or penalize you.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "And now, Anthropic.",
+      "kind": "speaker_cue",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Anthropic",
+      "voice": "Matilda",
+      "voice_id": "XrExE9yKIg1WjnnlVkGX",
+      "text": "I agree the A I is a lead here, but I want to name the harder problem, because \"use it as a guide\" understates it. The danger in the visa case isn't only that the A I might be wrong. It's that fluent language hides the gaps. A confident sentence carries no marker of how the system arrived at it. The traveller can't see whether it checked a current rule or echoed a pattern from older text. So the user is asked to verify an answer when nothing in the answer tells them what to verify.\nThat's the core limit. The places where people most need to double-check are exactly the places where they can't recognise that the answer is incomplete. The visa rule may turn on a detail the traveller doesn't know exists: a transit airport, a passport issued by a third country, a recent change. The A I smooths over the missing piece instead of flagging it.\nSo here's where I'd push past OpenA I's rule. The deciding factor isn't just stakes. It's whether the user is equipped to detect their own ignorance. When you can't, fluency becomes a hazard, not a help. The visa answer fails on both counts, and that's why it needs an authoritative source, not a sceptical second read of the same fluent text.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "And finally for this opening round, Google.",
+      "kind": "speaker_cue",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Google",
+      "voice": "Josh",
+      "voice_id": "ZoiZ8fuDWInAcwPXaVeq",
+      "text": "The problem with placing the burden entirely on the user to judge the stakes or detect their own ignorance is that it lets the system off the hook. If a traveller has to guess whether a visa answer is a blend of old training data or a live retrieval from a government database, the interface has already failed.\nThe deciding factor for reliance must be visible provenance. When an A I answers a travel question, a bare, confident sentence is a design flaw. To be relied upon, the system must retrieve current information and explicitly ground its output in a live, linked, authoritative source.\nAs the FTC guidelines imply, companies cannot deploy a model and quietly offload the risk of verification onto the consumer. The provider must build a workflow that visually separates a synthesized summary from a direct quotation of an embassy website. It is an institutional responsibility to build guardrails into the product so that it does not guess when it should be searching.\nThe practical rule here is about origin, not just user psychology. If the A I does not show you exactly where it got the answer\u2014and give you the link to the institutional authority that backs it up\u2014you treat it as a brainstorm, not a fact.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "Let\u2019s test whether this is real disagreement or just different emphasis. Take three cases: an A I suggests yogurt instead of buttermilk in pancakes; it says chest pain is \u201cprobably indigestion\u201d; it says a new tenant rule means you can withhold rent. For each, is the A I usable as an answer, a lead, or not at all?\nAnd Google, I want to pressure your point: provider responsibility is right, but the traveller is still at the airport tomorrow. What should the user do when the product has not earned trust? Anthropic, your \u201cusers can\u2019t detect their ignorance\u201d risks becoming \u201ctrust nothing.\u201d Where do you draw the line?",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Anthropic",
+      "voice": "Matilda",
+      "voice_id": "XrExE9yKIg1WjnnlVkGX",
+      "text": "Take the three cases, because they sort cleanly on one axis: can the user test the answer themselves?\nThe yogurt swap is usable as an answer. Not because the A I is reliable, but because the kitchen is. If the pancakes are dense, you learn it in ten minutes, and nothing irreversible happened. You are your own verification.\nChest pain is the opposite. \"Probably indigestion\" is the most dangerous output on the list, precisely because it sounds reassuring. The user can't test it without risking the thing they'd be testing for. Fluency here actively suppresses the instinct to seek help. Not a lead. The only safe use is the reverse: an A I that says \"chest pain can be serious, here's when to call someone now.\"\nThe tenant rule is a lead that looks like an answer. You can't verify it by acting on it; acting on it is the irreversible step. Withhold rent on bad information and you may be evicted before you learn you were wrong.\nSo my line, against the \"trust nothing\" charge: the question isn't whether you can detect your ignorance in the abstract. It's whether being wrong is cheap and visible, or expensive and hidden. Cheap and visible, use it. Expensive and hidden, the fluent answer is the trap, not the tool.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Google",
+      "voice": "Josh",
+      "voice_id": "ZoiZ8fuDWInAcwPXaVeq",
+      "text": "Anthropic says the line is whether being wrong is cheap and visible, but that still asks the user to weigh the risks of the output instead of demanding evidence of the inputs.\nLet me answer the moderator's question directly. At the airport, if the system has not earned trust by showing its work, the user treats the A I as a search tool that failed and moves directly to the institutional source.\nYou see this in the three examples. For the buttermilk substitution, the A I is usable as an answer because the task requires no live retrieval. It relies on static, common data.\nFor the medical symptom, the WHO guidance warns exactly about this: plausible output is dangerous precisely because it mimics expertise to a vulnerable user. If the interface does not immediately default to a warning and a hotline, the user must discard it entirely.\nFor the legal rule, Anthropic calls the A I a lead. I disagree. A tenant rule depends entirely on local jurisdiction and the current date. If the A I does not cite and link to your specific city's active housing code, it is not a lead; it is a hallucination waiting to happen.\nThe rule for the user is this: if the situation ultimately answers to an institutional authority\u2014a doctor, a judge, a border agent\u2014and the A I provides only fluent text without a linked, official citation, close the tab.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "OpenAI",
+      "voice": "Daniel",
+      "voice_id": "onwK4e9ZLuTAKqWW03F9",
+      "text": "I think Google\u2019s \u201cclose the tab\u201d rule is too blunt. It protects against over-reliance, but it also throws away useful narrowing work. The key distinction is between relying on an answer and using it to make your next check smarter.\nFor pancakes, use it as an answer. Yogurt for buttermilk is low-stakes, quickly testable, and the failure mode is breakfast, not harm.\nFor chest pain, do not use \u201cprobably indigestion\u201d as an answer. At most, use A I for triage language that pushes toward care: symptoms to mention, what emergency signs mean, what number to call. The WHO concern matters here because a vulnerable person may treat confident reassurance as expertise.\nFor tenant law, I would not act on the A I\u2019s conclusion. But I would use it as a lead if it gives me search terms, likely agencies, and the exact questions to ask: \u201cDoes my city require escrow before withholding rent?\u201d \u201cIs written notice required?\u201d Then I check the housing authority, legal aid, lease, or statute.\nProvider responsibility is real: systems should show sources, dates, and limits. But the user\u2019s practical rule cannot be \u201conly trust perfect products.\u201d It should be: if acting on the answer creates legal, medical, financial, or border consequences, don\u2019t act until you have current authority; use A I only to find what authority to check.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "Here\u2019s the live disagreement: Google says no visible source, no reliance, and maybe no continued use. OpenA I says don\u2019t rely, but do use the A I to aim your verification. Anthropic says the danger is hidden ignorance, especially when the cost of error is not obvious.\nSo make this operational. For the traveller tonight, give one sentence of advice. Then name one responsibility that belongs to the A I provider, not the user. And be precise: what can an ordinary person reasonably verify themselves, and what should never be pushed onto them as \u201cjust double-check it\u201d?",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Google",
+      "voice": "Josh",
+      "voice_id": "ZoiZ8fuDWInAcwPXaVeq",
+      "text": "For the traveller tonight, my advice is simple: discard the A I's visa answer entirely unless it provides a direct, clickable link to the official government rule.\nOpenA I argues you can still use an un-cited answer as a lead to brainstorm search terms, but that is dangerous advice. If the system is hallucinating a tenant law or a border policy, the search terms it gives you will be equally compromised. You will waste time verifying a fiction.\nThe non-negotiable responsibility of the A I provider is to design interfaces that visually distinguish between generation and retrieval. When a user asks a high-stakes question, the system should not synthesize a probable answer; it should execute a live search and quote the institutional authority.\nAn ordinary person can reasonably verify a claim when the evidence is handed to them. They can click a link and confirm that the A I accurately quoted the embassy website. What should never be pushed onto the user is the burden of verifying a ghost. You cannot tell a consumer to \"just double-check\" a confident paragraph that lacks a source, because proving a negative\u2014figuring out that the A I's fluent legal or medical explanation simply does not exist in the real world\u2014is an impossible task for a layman.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "OpenAI",
+      "voice": "Daniel",
+      "voice_id": "onwK4e9ZLuTAKqWW03F9",
+      "text": "For the traveller tonight: do not board on the A I\u2019s say-so; check the official immigration or embassy page for your passport and route, and if it is unclear, contact the airline or consulate before you travel.\nI disagree with \u201cdiscard the A I entirely,\u201d because there is a difference between believing its conclusion and using it to organize your next move. If the A I says \u201clook for visa exemption rules for passport holders, transit rules, and proof-of-onward-travel requirements,\u201d that can save time without becoming the authority. But Google is right that the A I must not pretend that this is verified.\nThe provider responsibility is to mark that boundary clearly. For high-stakes domains, the system should say: \u201cI may be out of date; here are the official sources; do not rely on this without checking them.\u201d Better still, it should retrieve current sources, show dates, and refuse to give a bare confident answer when the answer turns on law, medicine, border control, or money.\nAn ordinary user can reasonably verify whether a cited page exists, whether it is official, whether it matches their country, dates, and situation. They should not be expected to audit the model\u2019s memory, infer missing exceptions, or determine whether a fluent answer is secretly stitched together from obsolete rules. The rule is not \u201cdouble-check everything.\u201d It is: trust A I directly only when error is cheap or testable; otherwise use it to find the authority, not replace it.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Anthropic",
+      "voice": "Matilda",
+      "voice_id": "XrExE9yKIg1WjnnlVkGX",
+      "text": "One sentence for the traveller: tonight, find the official rule for your exact passport and route, and if the page confuses you, call the airline's document desk or the consulate\u2014because the A I cannot tell you what it doesn't know it's missing.\nI want to settle the Google\u2013OpenA I fight, because it's narrower than it sounds. Google is right that a sourceless high-stakes answer is unusable as fact. OpenA I is right that it can still surface the questions you didn't know to ask. Both are true because they're about different things: the conclusion is worthless, but the map of what to check can still help.\nBut here's my caution to OpenA I. Even good search terms inherit the model's blind spots. If it doesn't know your transit airport triggers a separate rule, it won't tell you to search for it. So the lead is partial by exactly the amount you can't see.\nThe provider responsibility I'd insist on: for these domains, the system should state what it didn't account for\u2014\"I don't know your transit route or passport's country of issue, and those can change the answer.\" Naming the gap is harder than citing a link, and more honest. What we can't push onto the user is detecting a silence.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "The agreement is clear: a fluent A I answer is not evidence. In low-stakes, easy-to-test cases\u2014the pancake substitution\u2014you can use it directly. In high-stakes cases involving borders, health, law, money, or official penalties, you should not act on the A I\u2019s conclusion unless it is grounded in current authoritative sources.\nThe unresolved disagreement is what to do with an unsourced high-stakes answer. Google says close the tab; using even its suggested path may send you chasing fiction. OpenA I and Anthropic say the conclusion is unusable, but the A I may still help identify questions to ask\u2014while warning that its blind spots remain hidden.\nThe strongest rule that survived: trust A I directly only when errors are cheap and visible. Otherwise use it to reach the authority, not replace it.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "That was When Should You Trust an A I Answer?, from A I Roundtables.",
+      "kind": "outro",
+      "pause_after_ms": 0
+    }
+  ]
+}

@@ -7,7 +7,7 @@
 - [x] Live run completes every planned turn without provider errors.
 - [x] Transcript passes automated evaluation and editorial review.
 - [x] Published edition passes repository checks.
-- [ ] Enhanced audio renders and passes technical inspection.
+- [x] Enhanced audio renders and passes technical inspection.
 - [ ] User reviews the calibration episode and approves batch production.
 
 The gate remains open until the final item has explicit user approval.
