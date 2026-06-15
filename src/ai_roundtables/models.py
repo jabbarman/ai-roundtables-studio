@@ -51,6 +51,7 @@ class RoundtableConfig:
     moderator: ModeratorConfig | None = None
     participants: list[ParticipantConfig] = field(default_factory=list)
     editorial_goals: list[str] = field(default_factory=list)
+    round_goals: list[str] = field(default_factory=list)
     turns: int = 1
     moderator_turns: str = "none"
     audio_intent: str = "none"

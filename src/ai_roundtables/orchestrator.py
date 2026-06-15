@@ -40,6 +40,7 @@ class DraftOrchestrator:
                 f"line {exc.lineno} column {exc.colno}: {exc.msg}"
             ) from exc
         self._validate_config(raw)
+        self._validate_round_goals(raw)
         self._validate_prompt_files(raw)
         moderator_raw = raw["moderator"]
         participants_raw = raw["participants"]
@@ -79,6 +80,7 @@ class DraftOrchestrator:
             moderator=moderator,
             participants=participants,
             editorial_goals=raw.get("editorial_goals", []),
+            round_goals=raw.get("round_goals", []),
             turns=raw.get("turns", 1),
             moderator_turns=raw.get("moderator_turns", "none"),
             audio_intent=raw.get("audio_intent", "none"),
@@ -111,6 +113,14 @@ class DraftOrchestrator:
             raise ConfigError(
                 "Invalid roundtable config:\n- missing prompt file(s): "
                 + ", ".join(missing)
+            )
+
+    def _validate_round_goals(self, raw: dict) -> None:
+        round_goals = raw.get("round_goals", [])
+        if round_goals and len(round_goals) != raw.get("turns", 1):
+            raise ConfigError(
+                "Invalid roundtable config:\n- round_goals must contain exactly "
+                "one entry per turn"
             )
 
     def build_turn_plan(self, config: RoundtableConfig) -> list[TurnRecord]:
@@ -178,6 +188,7 @@ class DraftOrchestrator:
             "brief": config.brief,
             "source_packet": config.source_packet,
             "editorial_goals": config.editorial_goals,
+            "round_goals": config.round_goals,
             "turns": config.turns,
             "moderator_turns": config.moderator_turns,
             "moderator_closing_summary": self._includes_moderator_closing(config),
@@ -295,6 +306,7 @@ class DraftOrchestrator:
             "brief": config.brief,
             "source_packet": config.source_packet,
             "editorial_goals": config.editorial_goals,
+            "round_goals": config.round_goals,
             "turns": config.turns,
             "moderator_turns": config.moderator_turns,
             "moderator_closing_summary": self._includes_moderator_closing(config),
@@ -337,6 +349,7 @@ class DraftOrchestrator:
             f"Brief: {config.brief}\n"
             f"Source packet:\n{self._render_source_packet(config)}\n"
             f"Editorial goals: {', '.join(config.editorial_goals) or 'none provided'}\n"
+            f"Goal for this round: {self._round_goal(config, turn_number)}\n"
             f"Audio adaptation intent:\n{self._render_audio_context(config)}\n"
             f"Conversation so far:\n{transcript_text}\n\n"
             "Write only this participant's next contribution. Keep it between 120 and 220 words unless the prompt clearly demands brevity."
@@ -374,6 +387,7 @@ class DraftOrchestrator:
             f"Brief: {config.brief}\n"
             f"Source packet:\n{self._render_source_packet(config)}\n"
             f"Editorial goals: {', '.join(config.editorial_goals) or 'none provided'}\n"
+            f"Goal for this round: {self._round_goal(config, turn_number)}\n"
             f"Audio adaptation intent:\n{self._render_audio_context(config)}\n"
             f"Conversation so far:\n{transcript_text}\n\n"
             f"{role_instruction} Write only the moderator's next contribution. "
@@ -432,6 +446,11 @@ class DraftOrchestrator:
             return participants
         offset = (turn_number - 1) % len(participants)
         return participants[offset:] + participants[:offset]
+
+    def _round_goal(self, config: RoundtableConfig, turn_number: int) -> str:
+        if not config.round_goals:
+            return "No round-specific goal provided."
+        return config.round_goals[turn_number - 1]
 
     def _includes_moderator_closing(self, config: RoundtableConfig) -> bool:
         return (

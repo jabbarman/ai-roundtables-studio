@@ -49,6 +49,10 @@ def write_fixture_repo(tmp_path: Path) -> Path:
             },
         ],
         "editorial_goals": ["Show disagreement."],
+        "round_goals": [
+            "Establish the competing positions.",
+            "Turn the disagreement into a practical rule.",
+        ],
         "turns": 2,
     }
     (tmp_path / "notes" / "config.json").write_text(json.dumps(config))
@@ -67,6 +71,10 @@ def test_load_config_and_build_turn_plan(tmp_path: Path) -> None:
     assert config.audio_intent == "none"
     assert config.participant_order == "fixed"
     assert config.source_packet == []
+    assert config.round_goals == [
+        "Establish the competing positions.",
+        "Turn the disagreement into a practical rule.",
+    ]
     assert config.config_snapshot["slug"] == "test-roundtable"
     assert [participant.name for participant in config.participants] == [
         "OpenAI",
@@ -76,6 +84,11 @@ def test_load_config_and_build_turn_plan(tmp_path: Path) -> None:
     assert config.participants[1].output_tokens is None
     assert len(plan) == 4
     assert "Roundtable title: Test Roundtable" in plan[0].prompt
+    assert "Goal for this round: Establish the competing positions." in plan[0].prompt
+    assert (
+        "Goal for this round: Turn the disagreement into a practical rule."
+        in plan[2].prompt
+    )
     assert "Conversation so far:\nNo prior turns yet." in plan[0].prompt
 
 
@@ -91,6 +104,10 @@ def test_write_draft_run_writes_manifest_and_stub(tmp_path: Path) -> None:
     transcript = (output_dir / "transcript.stub.md").read_text()
     assert manifest["slug"] == "test-roundtable"
     assert manifest["source_packet"] == []
+    assert manifest["round_goals"] == [
+        "Establish the competing positions.",
+        "Turn the disagreement into a practical rule.",
+    ]
     assert manifest["moderator_turns"] == "none"
     assert manifest["audio_intent"] == "none"
     assert manifest["participant_order"] == "fixed"
@@ -218,6 +235,7 @@ def test_run_live_adds_moderator_closing_after_final_participant(
     raw["audio_intent"] = "podcast_adaptable"
     raw["moderator_turns"] = "between_rounds"
     raw["turns"] = 1
+    raw["round_goals"] = raw["round_goals"][:1]
     config_path.write_text(json.dumps(raw))
     output_dir = tmp_path / "runs" / "raw" / "audio-closing-live"
     orchestrator = DraftOrchestrator(repo_root=tmp_path)
@@ -278,6 +296,7 @@ def test_run_live_skips_visible_moderator_without_key(
     raw = json.loads(config_path.read_text())
     raw["moderator_turns"] = "between_rounds"
     raw["turns"] = 1
+    raw["round_goals"] = raw["round_goals"][:1]
     config_path.write_text(json.dumps(raw))
     output_dir = tmp_path / "runs" / "raw" / "moderated-live"
     orchestrator = DraftOrchestrator(repo_root=tmp_path)
@@ -340,6 +359,26 @@ def test_load_config_rejects_missing_prompt_files(tmp_path: Path) -> None:
         raise AssertionError("Expected ConfigError")
 
     assert "missing prompt file(s): prompts/missing.md" in message
+
+
+def test_load_config_rejects_round_goal_count_that_does_not_match_turns(
+    tmp_path: Path,
+) -> None:
+    config_path = write_fixture_repo(tmp_path)
+    raw = json.loads(config_path.read_text())
+    raw["round_goals"] = ["Only one goal."]
+    config_path.write_text(json.dumps(raw))
+
+    orchestrator = DraftOrchestrator(repo_root=tmp_path)
+
+    try:
+        orchestrator.load_config(config_path)
+    except ConfigError as exc:
+        message = str(exc)
+    else:
+        raise AssertionError("Expected ConfigError")
+
+    assert "round_goals must contain exactly one entry per turn" in message
 
 
 def test_load_config_rejects_invalid_json(tmp_path: Path) -> None:
