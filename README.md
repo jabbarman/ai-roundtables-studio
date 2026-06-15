@@ -118,6 +118,16 @@ Configs can rotate participant order by round with:
 
 Use the default `"fixed"` order when the transcript needs a stable speaking sequence.
 
+Give each round a distinct editorial job with one goal per configured turn:
+
+```json
+"round_goals": [
+  "Establish the competing positions through a familiar situation.",
+  "Pressure-test those positions with counterexamples.",
+  "End with a practical rule and the unresolved disagreement."
+]
+```
+
 ## Provider Setup
 
 You can use this repo in stages.

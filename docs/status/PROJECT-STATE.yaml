@@ -1,0 +1,11 @@
+project: series-one
+stage: calibration-production
+status: in_progress
+updated: 2026-06-15
+model_slate:
+  openai: gpt-5.5
+  anthropic: claude-opus-4-8
+  google: gemini-3.1-pro-preview
+current_episode: when-should-you-trust-an-ai-answer
+next_step: run and evaluate the live three-provider calibration transcript
+push_policy: local_commits_only

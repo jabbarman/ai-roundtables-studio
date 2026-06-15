@@ -1,0 +1,84 @@
+{
+  "slug": "when-should-you-trust-an-ai-answer",
+  "title": "When Should You Trust an AI Answer?",
+  "date": "2026-06-15",
+  "audience": "intelligent_lay",
+  "format": "consensus_dissent",
+  "topic": "How should an ordinary user decide whether to rely on an AI answer, verify it, narrow the question, or seek a human or authoritative source?",
+  "brief": "Begin with a traveller receiving conflicting visa advice from an AI and a government webpage the night before departure. Distinguish fluency from evidence, low stakes from high stakes, and user verification from provider responsibility. Avoid the empty conclusion that users should double-check everything.",
+  "source_packet": [
+    {
+      "title": "NIST Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile",
+      "kind": "other",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
+      "notes": "Identifies confabulation, information integrity, human over-reliance, and evaluation as connected generative AI risks."
+    },
+    {
+      "title": "Generative AI Framework for UK Government",
+      "kind": "other",
+      "url": "https://www.gov.uk/government/publications/generative-ai-framework-for-hmg/generative-ai-framework-for-hmg-html",
+      "notes": "Emphasises verification, governance, proportionate human oversight, and responsibility for generated material."
+    },
+    {
+      "title": "WHO Guidance on Ethics and Governance of Large Multi-Modal Models",
+      "kind": "other",
+      "url": "https://www.who.int/publications/i/item/9789240084759",
+      "notes": "Provides a high-stakes example of why plausible output needs evidence, oversight, and attention to unequal user expertise."
+    },
+    {
+      "title": "FTC: Keep Your AI Claims in Check",
+      "kind": "other",
+      "url": "https://www.ftc.gov/business-guidance/blog/2023/02/keep-your-ai-claims-check",
+      "notes": "Challenges unsupported accuracy and capability claims, placing responsibility on organisations that market and deploy AI."
+    }
+  ],
+  "moderator": {
+    "name": "Moderator",
+    "prompt_file": "prompts/moderator.md",
+    "provider": "openai",
+    "model": "gpt-5.5",
+    "output_tokens": 800
+  },
+  "audio_intent": "podcast_adaptable",
+  "participant_order": "rotate_by_round",
+  "participants": [
+    {
+      "name": "OpenAI",
+      "provider": "openai",
+      "model": "gpt-5.5",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Pragmatic about useful reliance. Focus on checkable work, proportional verification, and answer designs that help users act without treating every response as suspect.",
+      "output_tokens": 900
+    },
+    {
+      "name": "Anthropic",
+      "provider": "anthropic",
+      "model": "claude-opus-4-8",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Focus on epistemic limits, the persuasive danger of fluent language, missing context, and cases where users cannot recognise that an answer is incomplete.",
+      "output_tokens": 900
+    },
+    {
+      "name": "Google",
+      "provider": "google",
+      "model": "gemini-3.1-pro-preview",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Take a systems view of provenance, retrieval, interface design, current information, institutional authority, and responsibility across the full user workflow.",
+      "output_tokens": 2048,
+      "thinking_tokens": 512
+    }
+  ],
+  "editorial_goals": [
+    "Make the central disagreement clear during the opening round.",
+    "Use familiar examples before introducing technical terminology.",
+    "Distinguish trusting an answer from using it as a lead or draft.",
+    "End with a practical rule more useful than double-check everything."
+  ],
+  "round_goals": [
+    "Use the visa scenario to state a clear initial position on what evidence or context should determine reliance. Explain the position in ordinary language.",
+    "Pressure-test the positions across a recipe substitution, a medical symptom, and a current legal or government rule. Challenge at least one claim made earlier.",
+    "Give the listener a short, practical decision rule. Identify what users can reasonably verify and what responsibility remains with AI providers and deploying institutions."
+  ],
+  "turns": 3,
+  "moderator_turns": "between_rounds"
+}
