@@ -149,20 +149,33 @@ def write_published_index(published_dir: Path, output_path: Path) -> None:
             continue
         entries.append((path, metadata))
 
-    lines = [
-        "# Published Roundtables",
-        "",
-        "| Date | Title | Models | Source Run |",
-        "| --- | --- | --- | --- |",
-    ]
+    lines = ["# Published Roundtables", ""]
+    grouped_entries: dict[str, list[tuple[Path, dict[str, Any]]]] = {}
     for path, metadata in entries:
-        models = metadata.get("models", {})
-        model_text = ", ".join(f"{key}: {value}" for key, value in models.items())
-        lines.append(
-            f"| {metadata.get('date', '')} | "
-            f"[{metadata.get('title', path.stem)}]({path.name}) | "
-            f"{model_text} | `{metadata.get('source_run', '')}` |"
+        series = metadata.get("series", "Other")
+        grouped_entries.setdefault(series, []).append((path, metadata))
+
+    for series in sorted(grouped_entries, key=_published_series_sort_key):
+        lines.extend(
+            [
+                f"## {series}",
+                "",
+                "| Date | Title | Models | Source Run |",
+                "| --- | --- | --- | --- |",
+            ]
         )
+        for path, metadata in sorted(
+            grouped_entries[series],
+            key=lambda item: (item[1].get("date", ""), item[1].get("title", "")),
+        ):
+            models = metadata.get("models", {})
+            model_text = ", ".join(f"{key}: {value}" for key, value in models.items())
+            lines.append(
+                f"| {metadata.get('date', '')} | "
+                f"[{metadata.get('title', path.stem)}]({path.name}) | "
+                f"{model_text} | `{metadata.get('source_run', '')}` |"
+            )
+        lines.append("")
     output_path.write_text("\n".join(lines).strip() + "\n")
 
 
@@ -227,6 +240,15 @@ def _models_from_manifest(manifest: dict[str, Any]) -> dict[str, str]:
     for participant in manifest.get("participants", []):
         models[participant["provider"]] = participant["model"]
     return models
+
+
+def _published_series_sort_key(series: str) -> tuple[int, str]:
+    priority = {
+        "Series One": 0,
+        "Pilot / Archive": 1,
+        "Other": 2,
+    }
+    return (priority.get(series, 99), series)
 
 
 def _repo_relative(path: Path) -> str:

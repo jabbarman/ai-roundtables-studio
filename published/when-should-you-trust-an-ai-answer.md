@@ -5,6 +5,7 @@ source_run: runs/raw/when-should-you-trust-an-ai-answer-001
 source_transcript: transcripts/when-should-you-trust-an-ai-answer.md
 format: consensus_dissent
 audience: intelligent_lay
+series: Series One
 models:
   moderator: gpt-5.5
   openai: gpt-5.5

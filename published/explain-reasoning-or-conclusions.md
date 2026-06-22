@@ -5,6 +5,7 @@ source_run: runs/raw/explain-reasoning-or-conclusions-002
 source_transcript: transcripts/explain-reasoning-or-conclusions.md
 format: consensus_dissent
 audience: intelligent_lay
+series: Pilot / Archive
 models:
   moderator: gpt-5.4
   openai: gpt-5.4

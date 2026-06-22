@@ -137,6 +137,7 @@ def test_write_published_index_lists_pieces(tmp_path: Path) -> None:
 title: "First"
 date: 2026-05-31
 source_run: runs/raw/first
+series: Series One
 models:
   openai: gpt-test
 ---
@@ -150,4 +151,5 @@ models:
     write_published_index(published_dir, output)
 
     assert "[First](first.md)" in output.read_text()
+    assert "## Series One" in output.read_text()
     assert "`runs/raw/first`" in output.read_text()

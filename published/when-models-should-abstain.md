@@ -5,6 +5,7 @@ source_run: runs/raw/when-models-should-abstain-002
 source_transcript: transcripts/when-models-should-abstain.md
 format: consensus_dissent
 audience: intelligent_lay
+series: Pilot / Archive
 models:
   openai: gpt-5.4
   anthropic: claude-sonnet-4-6
