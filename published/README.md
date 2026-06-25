@@ -2,6 +2,10 @@
 
 Reader-facing roundtables belong here.
 
+Published pieces are editorial/podcast content and are licensed under
+Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International
+unless a file states otherwise. See `../CONTENT-LICENSE.md`.
+
 `published/INDEX.md` separates current Series One pieces from earlier
 pilot/archive pieces. The pilot pieces remain useful as project history, but
 they may use older model slates, fewer moderator turns, or a less podcast-ready

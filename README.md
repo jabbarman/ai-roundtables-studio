@@ -143,3 +143,18 @@ You can use this repo in stages.
 - [docs/METHODOLOGY.md](docs/METHODOLOGY.md)
 - [schemas/roundtable-run.schema.json](schemas/roundtable-run.schema.json)
 - [prompts/moderator.md](prompts/moderator.md)
+
+## License
+
+This repository uses a split license.
+
+- Software, workflow tooling, prompts, tests, schemas, and project
+  documentation are licensed under the [Apache License 2.0](LICENSE).
+- Editorial and podcast content in `published/`, `transcripts/`, and `notes/`
+  is licensed under
+  [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International](CONTENT-LICENSE.md)
+  unless a file states otherwise.
+
+The Creative Commons content license permits non-commercial sharing with
+attribution, but does not permit sharing adapted versions without separate
+permission.
