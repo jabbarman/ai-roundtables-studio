@@ -1,0 +1,193 @@
+{
+  "source": "published/who-is-responsible-when-ai-gets-it-wrong.md",
+  "title": "Who Is Responsible When AI Gets It Wrong?",
+  "generated_at": "2026-06-30T19:22:57.884702+00:00",
+  "model_id": "eleven_v3",
+  "pause_after_ms": 450,
+  "pronunciation_map": {
+    "NIST": "nist",
+    "chain-of-thought": "chain of thought",
+    "AI": "A I"
+  },
+  "voice_map": {
+    "Moderator": {
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "source": "premade",
+      "description": "Mature British listener orientation and clarification"
+    },
+    "OpenAI": {
+      "voice": "Daniel",
+      "voice_id": "onwK4e9ZLuTAKqWW03F9",
+      "source": "saved",
+      "description": "Measured synthesis and structured conclusions"
+    },
+    "Google": {
+      "voice": "Josh",
+      "voice_id": "ZoiZ8fuDWInAcwPXaVeq",
+      "source": "shared",
+      "description": "Balanced systems framing and reliable collaboration"
+    },
+    "Anthropic": {
+      "voice": "Matilda",
+      "voice_id": "XrExE9yKIg1WjnnlVkGX",
+      "source": "premade",
+      "description": "Weighted uncertainty and epistemic honesty"
+    }
+  },
+  "estimated_characters": 15442,
+  "segments": [
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "This is Who Is Responsible When A I Gets It Wrong?, an A I roundtable.",
+      "kind": "intro",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "I am Lily, moderating. Daniel will read OpenA I, Matilda will read Anthropic, and Josh will read Google. The voices are assigned for presentation and are not the models' own voices.",
+      "kind": "cast_intro",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "A customer asks a company\u2019s chatbot, on the company\u2019s own website, whether they qualify for a refund or special fare. The chatbot says yes. The customer relies on it, spends money, and later the company says: sorry, the bot was wrong. That is close to what happened in the Air Canada case, where the company was held responsible for misleading information its chatbot provided.\nHere\u2019s the first dispute: should the default rule be that the company owns the mistake whenever it puts the chatbot in front of customers, or does the customer still have a duty to verify against the fine print? Don\u2019t give me \u201cshared responsibility\u201d yet. Pick a default.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "First up is OpenA I.",
+      "kind": "speaker_cue",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "OpenAI",
+      "voice": "Daniel",
+      "voice_id": "onwK4e9ZLuTAKqWW03F9",
+      "text": "The default should be that the company owns the mistake when the chatbot is speaking inside the company\u2019s own service channel about the company\u2019s own rules.\nBy \u201cowns,\u201d I don\u2019t mean every wrong answer becomes a giant lawsuit. I mean the company should honor the reasonable promise it created, fix the customer\u2019s position where possible, and absorb the ordinary cost of its own misleading interface. If an airline chatbot tells me I qualify for a bereavement fare, or a retailer chatbot says a return is still eligible, I should not have to treat that answer as a rumor and then audit the legal terms like a contract lawyer.\nThe customer still has some responsibility, but it is weaker and narrower. If the bot says something obviously absurd\u2014\u201call flights are free tomorrow\u201d\u2014verification is expected. If the stakes are unusually high, like a medical dosage or immigration filing, the user should seek a more authoritative source. But for routine consumer decisions, the organization chose to automate the front desk.\nThe harder question is upstream. The model provider may have built the engine, the product team may have wrapped it badly, and the deploying company may have failed to test or monitor it. But from the customer\u2019s point of view, the accountable party is the institution that put the bot between itself and the public.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "And now, Anthropic.",
+      "kind": "speaker_cue",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Anthropic",
+      "voice": "Matilda",
+      "voice_id": "XrExE9yKIg1WjnnlVkGX",
+      "text": "The default is right, but I want to name what makes it more than a customer-service nicety. The customer in the Air Canada case couldn't have audited the system even if he'd tried. He couldn't see the prompt, the training data, the version history, or whether the company had ever tested the bot on bereavement-fare questions. That asymmetry is the heart of it. When one party controls the interface, the information, and the record, the duty to get it right sits with that party\u2014not as charity, but because they're the only one positioned to catch the error.\nSo I'd push the default further than \"honor the reasonable promise.\" The deploying institution owes specific organizational duties: test the bot on the questions people actually ask, monitor for wrong answers, correct them quickly, disclose clearly when an answer isn't authoritative, and compensate when someone relies and loses. Those are different from a customer's ordinary habit of double-checking.\nHere's my disputable claim: even an \"obviously absurd\" answer doesn't fully shift blame back to the user if the company knew its bot produced absurd answers and shipped it anyway. Foreseeability cuts against the deployer, not the harmed person. The customer's duty to verify shouldn't quietly become a subsidy for the company's decision not to test.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "And finally for this opening round, Google.",
+      "kind": "speaker_cue",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Google",
+      "voice": "Josh",
+      "voice_id": "ZoiZ8fuDWInAcwPXaVeq",
+      "text": "The deploying company must own the relationship with the customer, but owning the relationship is not the same as owning the underlying failure. If an airline puts a chatbot on its homepage, it has to refund the user when the bot invents a fake policy. That is the necessary baseline.\nBut Anthropic stops too early by placing all the weight on the deployer's duty to test and foresee errors. Testing alone cannot solve this if the failure stems from a layer the deployer does not control. We have to look at the entire supply chain. A customer-facing chatbot usually involves a foundation model provider, a product integration team, and the deploying institution that provided the rulebook. \nIf the chatbot lied because the airline uploaded an outdated PDF to the knowledge base, the airline is entirely at fault. But what if the model ignored a perfectly clear system prompt and hallucinated a policy out of nowhere? \nHere is my claim: We cannot enforce responsibility at the deployment layer without mandatory traceability throughout the stack. The nist framework points to information integrity as a shared lifecycle control. If model providers shield their systems behind sweeping liability waivers, we are forcing non-technical companies to act as the ultimate insurers for generative A I failures. The deployer compensates the end user, but the model provider must be accountable to the deployer for baseline reliability.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "Let\u2019s test the fault line. Suppose an employer launches a benefits assistant. It tells a worker they\u2019re eligible for paid leave; they rely on it; HR later says no. Now change the case: a school uses an A I tool to flag students for investigation, or a hiring system screens out applicants. And finally, a hospital discharge tool gives unsafe follow-up advice.\nIn each case, who must compensate or correct first: the institution facing the person, or the vendor/model provider behind the system? Google, your traceability point risks delaying remedy while companies argue upstream. Anthropic, your deployer-first view risks making every institution the insurer for defects it cannot inspect. Name the tradeoff.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Anthropic",
+      "voice": "Matilda",
+      "voice_id": "XrExE9yKIg1WjnnlVkGX",
+      "text": "The tradeoff is between speed of remedy and accuracy of blame, and for the person harmed, speed has to win. So in all three cases the institution facing the person corrects or compensates first. The benefits assistant is the employer's. The school's investigation flag is the school's. The discharge advice is the hospital's. The injured worker, the flagged student, the discharged patient cannot wait while the hospital and its software vendor litigate whose layer failed.\nBut Google is right that someone has to be accountable to the institution, and here's where I'd sharpen it: the harms aren't symmetric, so the duties shouldn't be either. A wrong refund costs money you can return. A student wrongly flagged for investigation, or an applicant silently screened out, carries a mark they often never see and can't contest. That invisibility is the danger. The discharge case can kill someone.\nSo my disputable claim: where the person harmed can't even know a decision was made about them, \"compensate after\" isn't enough. The duty shifts earlier\u2014to test before deployment and to disclose that an automated judgment occurred at all. The EU A I Act treats hiring and essential services as high-risk for exactly this reason. The deeper the asymmetry, the less we should rely on the victim noticing the error.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Google",
+      "voice": "Josh",
+      "voice_id": "ZoiZ8fuDWInAcwPXaVeq",
+      "text": "Anthropic is right that the patient or the student must get immediate relief from the hospital or school, but relying entirely on those local institutions to catch every error is a dangerous illusion. \nHere is the tradeoff: if we make the deploying institution hold all the risk for complex systems they cannot inspect, we are asking local administrators to do the impossible. A regional hospital or a public school district does not have the technical capacity to aggressively test a foundation model for latent biases or rare medical hallucinations. \nAnthropic says the duty shifts to the deployer to test before deployment. I challenge that. For high-stakes workflows like medical discharge or automated hiring, testing cannot be a purely local burden. It must be systemic. The vendor packaging the A I and the provider building the model must face mandatory pre-deployment certification, much like the EU A I Act outlines for high-risk systems. \nWe cannot treat an A I hiring screen like a word processor, where the school just signs a software license and assumes the liability. If a vendor sells a clinical tool, that vendor must be legally required to provide continuous monitoring and a direct technical escalation channel. The hospital compensates the patient, but the vendor must be on the hook for the failure.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "OpenAI",
+      "voice": "Daniel",
+      "voice_id": "onwK4e9ZLuTAKqWW03F9",
+      "text": "The fastest remedy should come from the institution that used the system, but the deepest duty may sit elsewhere.\nTake the benefits assistant. If an employer\u2019s bot tells a worker, \u201cYou qualify for paid leave,\u201d the employer should not dock the worker later as if they gambled on a random website. The employer should correct the policy, make the worker whole for reasonable reliance, and then pursue the vendor if the tool failed.\nBut I resist turning every A I error into institutional strict liability. In a hospital discharge workflow, the clinician and hospital have a non-delegable duty to verify medical advice before it reaches the patient. That is different from a worker reading an HR chatbot. Ordinary users can be asked to notice absurdity; professionals in high-stakes roles must actively check.\nI also think Google is leaning too hard on certification. Certification helps, but it can become a paper shield. The practical map is this: the institution remedies first; the product maker must design for audit trails, uncertainty, escalation, and rollback; the model provider must support testing, monitoring, and incident investigation; and the user\u2019s duty scales with expertise and stakes.\nFor schools and hiring, the key remedy is not just compensation. It is notice and a meaningful chance to challenge the automated flag before it damages someone invisibly.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "Let\u2019s land this as a responsibility map, not a slogan. Assume four cases: refund chatbot, workplace benefits bot, school or hiring screen, hospital discharge advice.\nFor each layer, name the practical duty: user, deploying institution, product vendor, foundation model provider. Keep it concrete: verify, disclose, test, monitor, audit, escalate, compensate.\nAnd name the consequence of your disagreement. If Google is right, what new obligation must vendors or model providers carry before deployment? If Anthropic is right, what must institutions pay or fix even when the vendor caused the defect? If OpenA I is right, where exactly does professional verification become mandatory rather than optional?",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Google",
+      "voice": "Josh",
+      "voice_id": "ZoiZ8fuDWInAcwPXaVeq",
+      "text": "If we want a system that actually protects people, we have to tie legal and financial liability directly to the layer of technology that failed. Here is the concrete map.\nThe user's duty is to catch obvious anomalies, unless they are a professional\u2014like a clinician reviewing discharge advice\u2014in which case active verification is mandatory. \nThe deploying institution\u2014the airline, employer, or hospital\u2014owns the immediate remedy. They must compensate the harmed user, reinstate the wrongly denied benefit, or manually review the automated hiring flag. \nThe product vendor must design the interface for auditability, capturing exact logs of what was prompted and what was returned. \nThe foundation model provider must maintain baseline information integrity and support forensic tracing of errors.\nThe consequence of my view is a hard shift in vendor obligations. If I am right, model providers and product vendors can no longer use terms of service to push all risk onto local administrators. Before selling a medical or hiring tool, vendors must submit to pre-deployment certification and guarantee structural traceability. If a hospital discharge tool hallucinates a dangerous dosage, the vendor must legally supply the logs proving whether the hospital\u2019s prompt or the foundation model failed\u2014and the vendor must pay the damages if the core model broke its own safety constraints.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "OpenAI",
+      "voice": "Daniel",
+      "voice_id": "onwK4e9ZLuTAKqWW03F9",
+      "text": "I would separate \u201cwho fixes the harm now\u201d from \u201cwho absorbs the cost later.\u201d\nFor the refund chatbot and benefits bot, the user\u2019s duty is modest: don\u2019t rely on an answer that is facially crazy, and keep a record if the answer matters. The deploying institution must honor reasonable reliance, correct the rule going forward, monitor recurring errors, and make escalation to a human easy. The vendor must preserve logs and design the tool so uncertainty is visible, not hidden behind confident prose. The model provider must support evaluation and incident investigation, but usually should not be the customer\u2019s first target.\nFor hiring and school discipline, the user may not even know the A I acted. So the institution must disclose automated use, allow appeal, and prevent adverse action until a human review occurs. The vendor and model provider owe stronger auditability because silent harm is hard to repair.\nFor hospital discharge, professional verification becomes mandatory at the point where the output turns into care instructions. A patient can\u2019t be expected to audit medication advice. A clinician or hospital must check it before release, just as they would check a lab result or prescription. That does not excuse a vendor selling a dangerous tool, but it does mean high-stakes professional use cannot be treated like ordinary consumer reliance. Shared responsibility only works if the first remedy is fast and the later blame is traceable.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Anthropic",
+      "voice": "Matilda",
+      "voice_id": "XrExE9yKIg1WjnnlVkGX",
+      "text": "Let me give the map, but I want to add one thing both Google and OpenA I keep underweighting: who pays when no one can prove what failed.\nFor the refund and benefits cases, my map matches theirs\u2014institution remedies first, user catches only the obviously absurd. For hiring and school screening, the institution must disclose that an automated judgment happened, give a real appeal, and hold the adverse action until a human looks. For discharge, the clinician verifies before care, the vendor supports auditability, the model provider proves baseline integrity.\nBut here's the consequence of my view, stated plainly: if the vendor can't produce the logs to show whether its model or the hospital's prompt failed, that uncertainty is the vendor's risk, not the patient's. The party that controlled the record bears the cost of the missing record.\nAnd my disputable claim against OpenA I: \"don't rely on a facially crazy answer\" quietly shifts work back to people who often can't tell crazy from confident. A bereavement-fare rule isn't absurd on its face\u2014that's why the bot fooled the customer. The duty to make uncertainty visible sits with whoever wrote the confident prose, not with the person reading it once and acting.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "The agreement is not vague: the person harmed should not be sent into a maze of vendors, model providers, and fine print. The airline, employer, school, hospital, or agency that put the A I in front of them must correct the harm first\u2014refund, reinstate, review, disclose, or compensate.\nThe unresolved fight is where the cost and legal risk should ultimately land. Google stresses upstream traceability and vendor/model-provider obligations before deployment. Anthropic says missing logs and uncertainty should be charged to the party that controlled the system, not the victim. OpenA I draws a sharper line around professional settings: clinicians and other experts must verify before A I output becomes action.\nThe strongest rule that survives: remedy first at the institution facing the person; trace blame later through auditable records.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "That was Who Is Responsible When A I Gets It Wrong?, from A I Roundtables.",
+      "kind": "outro",
+      "pause_after_ms": 0
+    }
+  ]
+}

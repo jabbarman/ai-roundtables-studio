@@ -5,6 +5,7 @@
 | Date | Title | Models | Source Run |
 | --- | --- | --- | --- |
 | 2026-06-15 | [When Should You Trust an AI Answer?](when-should-you-trust-an-ai-answer.md) | moderator: gpt-5.5, openai: gpt-5.5, anthropic: claude-opus-4-8, google: gemini-3.1-pro-preview | `runs/raw/when-should-you-trust-an-ai-answer-001` |
+| 2026-07-02 | [Who Is Responsible When AI Gets It Wrong?](who-is-responsible-when-ai-gets-it-wrong.md) | moderator: gpt-5.5, openai: gpt-5.5, anthropic: claude-opus-4-8, google: gemini-3.1-pro-preview | `runs/raw/who-is-responsible-when-ai-gets-it-wrong-001` |
 
 ## Pilot / Archive
 

@@ -1,11 +1,13 @@
 # Live Status
 
-Series One calibration production is complete. All 13 live turns completed, the
-published edition passes editorial checks, and the enhanced audio passes
-technical inspection.
+Series One Episode 2 production is complete. The live run for **Who Is
+Responsible When AI Gets It Wrong?** completed all 13 moderator and participant
+turns, the published edition passes editorial checks, and the rendered podcast
+audio passes technical inspection.
 
 Next executable step: the user listens to
-`/home/joseph/Public/when-should-you-trust-an-ai-answer.mp3` and approves or
-rejects it as the production baseline for the remaining five episodes.
+`/home/joseph/Public/who-is-responsible-when-ai-gets-it-wrong.mp3` and approves
+or rejects it for Spotify publication.
 
-GitHub pushes remain disabled by the user's standing instruction.
+The next scheduled Series One episode is **Should an AI Have to Explain
+Itself?**
