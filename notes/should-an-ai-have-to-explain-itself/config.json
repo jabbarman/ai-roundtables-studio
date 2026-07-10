@@ -1,0 +1,90 @@
+{
+  "slug": "should-an-ai-have-to-explain-itself",
+  "title": "Should an AI Have to Explain Itself?",
+  "date": "2026-07-16",
+  "audience": "intelligent_lay",
+  "format": "consensus_dissent",
+  "topic": "When should an AI system explain its reasoning, summarize its basis, cite evidence, expose uncertainty, or simply give a conclusion with a way to check or challenge it?",
+  "brief": "Begin with a person receiving an AI-assisted mortgage denial, hiring rejection, or medical triage recommendation. The system offers a plausible explanation, but the person cannot tell whether it is evidence, a faithful summary, or a persuasive story generated after the fact. Avoid the shallow frame that more transparency is always better. Push the difference between explanation, evidence, uncertainty, and contestability.",
+  "source_packet": [
+    {
+      "title": "NIST AI Risk Management Framework 1.0",
+      "kind": "other",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-ai-rmf-10",
+      "notes": "Frames transparency, explainability, interpretability, accountability, reliability, and human oversight as connected trustworthiness attributes."
+    },
+    {
+      "title": "OpenAI Model Spec",
+      "kind": "other",
+      "url": "https://model-spec.openai.com/",
+      "notes": "Distinguishes hidden reasoning from user-facing answers and explains why raw internal reasoning is not the same thing as useful transparency."
+    },
+    {
+      "title": "OpenAI Reasoning Models Guide",
+      "kind": "other",
+      "url": "https://platform.openai.com/docs/guides/reasoning",
+      "notes": "Describes reasoning models and reasoning summaries, giving a concrete product example of summary-style explanation rather than raw chain-of-thought exposure."
+    },
+    {
+      "title": "Anthropic: Measuring Faithfulness in Chain-of-Thought Reasoning",
+      "kind": "other",
+      "url": "https://www.anthropic.com/research/measuring-faithfulness-in-chain-of-thought-reasoning",
+      "notes": "Raises the risk that visible chains of thought may not faithfully reflect why an answer was produced."
+    },
+    {
+      "title": "EU AI Act Overview",
+      "kind": "other",
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+      "notes": "Provides a risk-based frame for transparency and user rights in high-risk AI systems, including contexts where people need notice and contestability."
+    }
+  ],
+  "moderator": {
+    "name": "Moderator",
+    "prompt_file": "prompts/moderator.md",
+    "provider": "openai",
+    "model": "gpt-5.5",
+    "output_tokens": 800
+  },
+  "audio_intent": "podcast_adaptable",
+  "participant_order": "rotate_by_round",
+  "participants": [
+    {
+      "name": "OpenAI",
+      "provider": "openai",
+      "model": "gpt-5.5",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Pragmatic about useful explanations. Emphasise reasoning summaries, citations, tests, uncertainty, and task-specific evidence over raw hidden reasoning.",
+      "output_tokens": 900
+    },
+    {
+      "name": "Anthropic",
+      "provider": "anthropic",
+      "model": "claude-opus-4-8",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Cautious about persuasive rationalisation and unfaithful explanations. Prioritise calibrated uncertainty, faithfulness, and user protection over explanation theatre.",
+      "output_tokens": 900
+    },
+    {
+      "name": "Google",
+      "provider": "google",
+      "model": "gemini-3.1-pro-preview",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Systems-oriented. Focus on interface design, structured evidence, citations, thresholds, audit records, and appeal mechanisms across product contexts.",
+      "output_tokens": 2048,
+      "thinking_tokens": 512
+    }
+  ],
+  "editorial_goals": [
+    "Make the distinction between explanation, evidence, uncertainty, and contestability explicit.",
+    "Use concrete consumer, medical, coding, and high-stakes decision examples.",
+    "Force disagreement about whether explanations increase trust or merely persuasion.",
+    "End with a practical rule more useful than show your work."
+  ],
+  "round_goals": [
+    "Use the AI-assisted mortgage denial or hiring rejection scenario to state what the person should see on screen and why. Define explanation in ordinary language.",
+    "Pressure-test the positions across medical triage, coding help, research citations, and creative writing. Challenge at least one earlier claim.",
+    "Give the listener a practical rule: when to ask for explanation, when to ask for evidence, and when to demand a contestable record or human appeal."
+  ],
+  "turns": 3,
+  "moderator_turns": "between_rounds"
+}
