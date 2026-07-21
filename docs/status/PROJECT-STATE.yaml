@@ -1,11 +1,11 @@
 project: series-one
-stage: episode-3-review
+stage: episode-4-review
 status: awaiting_user_review
-updated: 2026-07-10
+updated: 2026-07-21
 model_slate:
   openai: gpt-5.5
   anthropic: claude-opus-4-8
   google: gemini-3.1-pro-preview
-current_episode: should-an-ai-have-to-explain-itself
-next_step: user listens to the Episode 3 podcast audio and approves or rejects it for Spotify publication
+current_episode: what-should-ai-be-allowed-to-know-about-you
+next_step: user listens to the Episode 4 podcast audio and approves or rejects it for Spotify publication
 push_policy: push_when_user_requests
