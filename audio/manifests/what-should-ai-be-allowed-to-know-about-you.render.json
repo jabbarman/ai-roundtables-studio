@@ -1,0 +1,49 @@
+{
+  "source_script": "audio/scripts/what-should-ai-be-allowed-to-know-about-you.json",
+  "output": "audio/exports/what-should-ai-be-allowed-to-know-about-you.mp3",
+  "model_id": "eleven_v3",
+  "output_format": "mp3_44100_128",
+  "mode": "segments",
+  "segments": 19,
+  "characters": 14981,
+  "estimated_requests": 19,
+  "chunks": 0,
+  "pause_style": "none",
+  "postprocess": "ffmpeg",
+  "silence_ms": 450,
+  "loudness_target": -19.0,
+  "text_normalization": "auto",
+  "voice_settings": {
+    "stability": 0.45,
+    "style": 0.1
+  },
+  "cache": {
+    "enabled": true,
+    "dir": "audio/cache",
+    "hits": 0,
+    "misses": 19
+  },
+  "dry_run": false,
+  "parts": [
+    "audio/exports/what-should-ai-be-allowed-to-know-about-you-parts/0001-moderator.mp3",
+    "audio/exports/what-should-ai-be-allowed-to-know-about-you-parts/0002-moderator.mp3",
+    "audio/exports/what-should-ai-be-allowed-to-know-about-you-parts/0003-moderator.mp3",
+    "audio/exports/what-should-ai-be-allowed-to-know-about-you-parts/0004-moderator.mp3",
+    "audio/exports/what-should-ai-be-allowed-to-know-about-you-parts/0005-openai.mp3",
+    "audio/exports/what-should-ai-be-allowed-to-know-about-you-parts/0006-moderator.mp3",
+    "audio/exports/what-should-ai-be-allowed-to-know-about-you-parts/0007-anthropic.mp3",
+    "audio/exports/what-should-ai-be-allowed-to-know-about-you-parts/0008-moderator.mp3",
+    "audio/exports/what-should-ai-be-allowed-to-know-about-you-parts/0009-google.mp3",
+    "audio/exports/what-should-ai-be-allowed-to-know-about-you-parts/0010-moderator.mp3",
+    "audio/exports/what-should-ai-be-allowed-to-know-about-you-parts/0011-anthropic.mp3",
+    "audio/exports/what-should-ai-be-allowed-to-know-about-you-parts/0012-google.mp3",
+    "audio/exports/what-should-ai-be-allowed-to-know-about-you-parts/0013-openai.mp3",
+    "audio/exports/what-should-ai-be-allowed-to-know-about-you-parts/0014-moderator.mp3",
+    "audio/exports/what-should-ai-be-allowed-to-know-about-you-parts/0015-google.mp3",
+    "audio/exports/what-should-ai-be-allowed-to-know-about-you-parts/0016-openai.mp3",
+    "audio/exports/what-should-ai-be-allowed-to-know-about-you-parts/0017-anthropic.mp3",
+    "audio/exports/what-should-ai-be-allowed-to-know-about-you-parts/0018-moderator.mp3",
+    "audio/exports/what-should-ai-be-allowed-to-know-about-you-parts/0019-moderator.mp3"
+  ],
+  "bytes": 16504416
+}

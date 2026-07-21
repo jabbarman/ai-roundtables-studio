@@ -1,0 +1,90 @@
+{
+  "slug": "what-should-ai-be-allowed-to-know-about-you",
+  "title": "What Should AI Be Allowed to Know About You?",
+  "date": "2026-07-30",
+  "audience": "intelligent_lay",
+  "format": "consensus_dissent",
+  "topic": "How much personal context should an AI system be allowed to remember, retrieve, combine, or infer before useful personalisation becomes surveillance?",
+  "brief": "Begin with a personal AI assistant connected to someone's email, calendar, documents, and past conversations. It usefully remembers dietary needs and work routines, then mentions a medical appointment, infers that the person may be trying to start a family, and uses an old salary document when giving career advice. The user never explicitly asked it to remember or infer those facts. Push beyond a simple convenience-versus-privacy frame toward purpose, retention, sensitive inference, expiry, and meaningful control.",
+  "source_packet": [
+    {
+      "title": "NIST Privacy Framework",
+      "kind": "other",
+      "url": "https://www.nist.gov/privacy-framework",
+      "notes": "Frames privacy risk as problems people may experience because of data processing across the full data lifecycle, with outcomes for governance, control, and communication."
+    },
+    {
+      "title": "ICO: Security and Data Minimisation in AI",
+      "kind": "other",
+      "url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/artificial-intelligence/guidance-on-ai-and-data-protection/how-should-we-assess-security-and-data-minimisation-in-ai/",
+      "notes": "States that AI systems should process only the personal data needed for a defined purpose, including at inference time."
+    },
+    {
+      "title": "ICO: Lawfulness in AI",
+      "kind": "other",
+      "url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/artificial-intelligence/guidance-on-ai-and-data-protection/how-do-we-ensure-lawfulness-in-ai/",
+      "notes": "Addresses lawful processing and AI-driven inferences, including inferences that may reveal sensitive categories of personal data."
+    },
+    {
+      "title": "ICO: Accuracy and Statistical Accuracy",
+      "kind": "other",
+      "url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/artificial-intelligence/guidance-on-ai-and-data-protection/what-do-we-need-to-know-about-accuracy-and-statistical-accuracy/",
+      "notes": "Treats inferences about people as personal data whose possible inaccuracy and impact must be considered and governed."
+    },
+    {
+      "title": "OpenAI Memory FAQ",
+      "kind": "other",
+      "url": "https://help.openai.com/en/articles/8590148-personalization-and-data-controls-faq",
+      "notes": "Provides a consumer-product example of memory, chat-history reference, temporary chats, review and deletion controls, and separate storage of chat and memory."
+    }
+  ],
+  "moderator": {
+    "name": "Moderator",
+    "prompt_file": "prompts/moderator.md",
+    "provider": "openai",
+    "model": "gpt-5.5",
+    "output_tokens": 800
+  },
+  "audio_intent": "podcast_adaptable",
+  "participant_order": "rotate_by_round",
+  "participants": [
+    {
+      "name": "OpenAI",
+      "provider": "openai",
+      "model": "gpt-5.5",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Pragmatic about useful personalisation with legible controls. Emphasise inspectable memory, temporary sessions, provenance, correction, deletion, and purpose-specific permission.",
+      "output_tokens": 900
+    },
+    {
+      "name": "Anthropic",
+      "provider": "anthropic",
+      "model": "claude-opus-4-8",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Cautious about consent theatre, sensitive inference, power asymmetry, and secondary use. Argue for hard limits, default expiry, and restraint even where users click agree.",
+      "output_tokens": 900
+    },
+    {
+      "name": "Google",
+      "provider": "google",
+      "model": "gemini-3.1-pro-preview",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Systems-oriented. Focus on data minimisation, context boundaries, access architecture, on-device or task-scoped processing, retention schedules, audit records, and organisational deployment.",
+      "output_tokens": 2048,
+      "thinking_tokens": 512
+    }
+  ],
+  "editorial_goals": [
+    "Distinguish information a person supplies from information a system retains, retrieves, combines, or infers.",
+    "Use concrete consumer and workplace scenarios rather than abstract privacy language.",
+    "Force disagreement about whether granular controls and consent are enough or whether some uses need hard limits.",
+    "End with a practical minimum-useful-context rule covering purpose, retention, inference, inspection, correction, deletion, and expiry."
+  ],
+  "round_goals": [
+    "Use the connected personal-assistant scenario to identify the first boundary violation. State what the assistant may use for the immediate task and what requires a separate choice.",
+    "Pressure-test the positions across medical patterns, salary documents, shopping inferences, workplace assistants, and temporary travel planning. Challenge whether consent and settings can meaningfully govern these uses.",
+    "Give the listener and product maker a practical rule for minimum useful context, sensitive inference, retention, provenance, correction, deletion, and default expiry."
+  ],
+  "turns": 3,
+  "moderator_turns": "between_rounds"
+}
