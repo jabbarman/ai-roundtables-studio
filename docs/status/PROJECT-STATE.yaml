@@ -1,11 +1,11 @@
 project: series-one
-stage: episode-5-planning
-status: ready_to_produce
+stage: episode-5-review
+status: awaiting_user_review
 updated: 2026-08-23
 model_slate:
   openai: gpt-5.5
   anthropic: claude-opus-4-8
   google: gemini-3.1-pro-preview
 current_episode: does-ai-make-us-more-capable-or-more-dependent
-next_step: produce the Episode 5 roundtable, audio, episode notes, and carousel prompt
+next_step: user listens to the Episode 5 podcast audio and approves or rejects it for Spotify publication
 push_policy: push_when_user_requests

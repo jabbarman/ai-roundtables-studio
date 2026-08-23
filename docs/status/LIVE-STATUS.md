@@ -1,11 +1,14 @@
 # Live Status
 
-Four of the six Series One episodes are published on Spotify. Episodes 3 and 4
-were verified on the live show page on 2026-08-23. Episode 4 appears on Spotify
-as **How much should an AI be allowed to know about you?**; the repository keeps
-the production title **What Should AI Be Allowed to Know About You?**
+Four of the six Series One episodes are published on Spotify, and Episode 5 is
+produced for review. The live run for **Does AI Make Us More Capable or More
+Dependent?** completed all 13 moderator and participant turns, the published
+edition passes editorial checks, and the rendered podcast audio passes technical
+inspection.
 
-Next executable step: produce Series One Episode 5, **Does AI Make Us More
-Capable or More Dependent?**
+Next executable step: the user listens to
+`/home/joseph/Public/does-ai-make-us-more-capable-or-more-dependent.mp3` and
+approves or rejects it for Spotify publication.
 
-Episode 6, **Who Should Control Powerful AI?**, remains at topic stage.
+Episode 6, **Who Should Control Powerful AI?**, is the final Series One episode
+and remains at topic stage.
