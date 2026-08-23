@@ -8,6 +8,7 @@
 | 2026-07-02 | [Who Is Responsible When AI Gets It Wrong?](who-is-responsible-when-ai-gets-it-wrong.md) | moderator: gpt-5.5, openai: gpt-5.5, anthropic: claude-opus-4-8, google: gemini-3.1-pro-preview | `runs/raw/who-is-responsible-when-ai-gets-it-wrong-001` |
 | 2026-07-16 | [Should an AI Have to Explain Itself?](should-an-ai-have-to-explain-itself.md) | moderator: gpt-5.5, openai: gpt-5.5, anthropic: claude-opus-4-8, google: gemini-3.1-pro-preview | `runs/raw/should-an-ai-have-to-explain-itself-001` |
 | 2026-07-30 | [What Should AI Be Allowed to Know About You?](what-should-ai-be-allowed-to-know-about-you.md) | moderator: gpt-5.5, openai: gpt-5.5, anthropic: claude-opus-4-8, google: gemini-3.1-pro-preview | `runs/raw/what-should-ai-be-allowed-to-know-about-you-001` |
+| 2026-08-13 | [Does AI Make Us More Capable or More Dependent?](does-ai-make-us-more-capable-or-more-dependent.md) | moderator: gpt-5.5, openai: gpt-5.5, anthropic: claude-opus-4-8, google: gemini-3.1-pro-preview | `runs/raw/does-ai-make-us-more-capable-or-more-dependent-001` |
 
 ## Pilot / Archive
 

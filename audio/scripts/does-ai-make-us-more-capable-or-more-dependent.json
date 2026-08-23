@@ -1,0 +1,193 @@
+{
+  "source": "published/does-ai-make-us-more-capable-or-more-dependent.md",
+  "title": "Does AI Make Us More Capable or More Dependent?",
+  "generated_at": "2026-08-23T15:57:31.923575+00:00",
+  "model_id": "eleven_v3",
+  "pause_after_ms": 450,
+  "pronunciation_map": {
+    "NIST": "nist",
+    "chain-of-thought": "chain of thought",
+    "AI": "A I"
+  },
+  "voice_map": {
+    "Moderator": {
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "source": "premade",
+      "description": "Mature British listener orientation and clarification"
+    },
+    "OpenAI": {
+      "voice": "Daniel",
+      "voice_id": "onwK4e9ZLuTAKqWW03F9",
+      "source": "saved",
+      "description": "Measured synthesis and structured conclusions"
+    },
+    "Google": {
+      "voice": "Josh",
+      "voice_id": "ZoiZ8fuDWInAcwPXaVeq",
+      "source": "shared",
+      "description": "Balanced systems framing and reliable collaboration"
+    },
+    "Anthropic": {
+      "voice": "Matilda",
+      "voice_id": "XrExE9yKIg1WjnnlVkGX",
+      "source": "premade",
+      "description": "Weighted uncertainty and epistemic honesty"
+    }
+  },
+  "estimated_characters": 15189,
+  "segments": [
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "This is Does A I Make Us More Capable or More Dependent?, an A I roundtable.",
+      "kind": "intro",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "I am Lily, moderating. Daniel will read OpenA I, Matilda will read Anthropic, and Josh will read Google. The voices are assigned for presentation and are not the models' own voices.",
+      "kind": "cast_intro",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "Here\u2019s the case. A junior analyst uses A I for research, spreadsheets, and client briefings. The work gets faster and cleaner, and they\u2019re promoted. Then a client challenges a number. The A I is unavailable. The analyst can\u2019t reconstruct the assumptions, explain the calculation, or tell whether the challenge is valid.\nThe evidence cuts both ways: A I boosts novice productivity, but studies also show people can perform worse when pushed outside the tool\u2019s competence or when answer-giving replaces practice. So let\u2019s force the issue: did this analyst become more capable, or did the organization mistake A I-assisted polish for human competence? What exactly should the promotion have measured?",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "First up is OpenA I.",
+      "kind": "speaker_cue",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "OpenAI",
+      "voice": "Daniel",
+      "voice_id": "onwK4e9ZLuTAKqWW03F9",
+      "text": "The analyst became more capable in one sense and less proven in another. They could produce better work with a scaffold, and that matters. We should not pretend the scaffold is fake just because it is external. A wheelchair, a spreadsheet, and a search engine all extend capability. The problem is that the promotion treated assisted output as evidence of independent judgment.\nThe NBER customer-support study is relevant here: novices gained a lot because A I helped transmit expert patterns. That is real augmentation. But the consultant experiment on the \u201cjagged frontier\u201d is the warning label: when the task falls outside what the system handles well, performance can drop because the person may not know they have crossed the boundary.\nSo the promotion should have measured three things separately. First, assisted performance: can the analyst deliver useful work with A I? Second, task judgment: can they identify which parts are routine, uncertain, or high-stakes? Third, recovery: if the tool disappears or is wrong, can they reconstruct the logic well enough to defend, revise, or escalate?\nI would not require every analyst to do every spreadsheet operation by hand forever. But I would require them to maintain a \u201cthin manual path\u201d through the work: assumptions, source trail, formula logic, and a sanity check. Without that, the capability belongs mostly to the workflow, not to the person.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "And now, Anthropic.",
+      "kind": "speaker_cue",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Anthropic",
+      "voice": "Matilda",
+      "voice_id": "XrExE9yKIg1WjnnlVkGX",
+      "text": "I want to press on the wheelchair analogy, because it hides the exact thing we should worry about. A wheelchair provides access to a function its user may not otherwise have; it does not displace practice the user would otherwise be building. Answer-giving A I is different: it can substitute for that practice. The high-school maths field experiment shows this plainly. Answer-giving tools improved performance while the tool was present, then weakened unaided performance later. Hint-based versions didn't. That's not a story about assistance. It's a story about whether the scaffold quietly removes the reason to learn.\nSo I'd sharpen OpenA I's three measures with a claim they might resist: the \"thin manual path\" cannot be an occasional audit. It has to be practised often enough to stay real, because judgment decays when it isn't exercised. An analyst who can theoretically reconstruct assumptions but never does will fail exactly when it counts\u2014under challenge, tool unavailable, no time.\nAnd there's an incentive trap here that's organizational, not personal. The firm rewarded polished output on a fast cadence. That cadence is precisely what erodes the slow, unaided practice that produces recovery ability. The promotion didn't just mismeasure the analyst. It selected for the behaviour that guarantees the failure in the room.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "And finally for this opening round, Google.",
+      "kind": "speaker_cue",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Google",
+      "voice": "Josh",
+      "voice_id": "ZoiZ8fuDWInAcwPXaVeq",
+      "text": "Anthropic is right that practice decays, but framing this as an individual's failure to study misses the systemic problem. The breakdown in that client meeting was organizational, not just cognitive.\nWe are treating this scenario like a solo exam where a student forgot the formula. In a functioning enterprise, capability does not reside entirely in one junior employee\u2019s head. It resides in the workflow. When the \"jagged frontier\" study showed consultant performance dropping outside the A I's zone of competence, the lesson wasn't merely that individuals need better personal judgment. The lesson is that systems need deliberate redundancy.\nIf a firm wants the speed of A I-assisted output, it must design a workflow that forces verification. You do this through recovery drills. In software engineering, we periodically break systems on purpose to ensure the team can fix them. Firms need to do the same for knowledge work. You occasionally take the A I away and require the team to reconstruct the logic from scratch. This preserves the pipeline from novice to expert without forcing analysts to calculate everything by hand daily.\nThe promotion should not have just measured whether the analyst could produce a polished report. It should have measured whether they built the output with an architecture that another human could actually audit when the system fails.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "There\u2019s a real split here: Anthropic wants regular unaided practice to keep judgment alive; Google says don\u2019t turn every workplace into an exam\u2014build auditable systems. Let\u2019s test that.\nTake four settings: a student learning algebra, a programmer using A I to write code, a clinician using A I for visit notes, and a visually impaired analyst using A I to navigate documents. In which of those should we require unaided reproduction, and in which is that the wrong test? Be specific. If the A I goes down across the whole organization for a day, what must the human still be able to do without pretending every tool-assisted skill is fake?",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Anthropic",
+      "voice": "Matilda",
+      "voice_id": "XrExE9yKIg1WjnnlVkGX",
+      "text": "Unaided reproduction is the right test in two of these, and a category error in the others.\nThe student must reproduce algebra unaided, because the whole point is to build the internal machinery. That's what the maths field experiment showed: answer-giving lifted assisted scores and hollowed out the unaided ones. The test isn't cruelty; it's the only measure that distinguishes learning from borrowing.\nThe clinician is the opposite. I would not demand they hand-write the visit note from memory. But\u2014and this is the line\u2014they must be able to catch a fabricated symptom, a wrong dosage, a note that says the patient reported chest pain when they didn't. So the required unaided skill isn't reproduction. It's detection. In consequential tasks, you must be able to tell when the tool is wrong, even if you never generate the output yourself.\nThe visually impaired analyst is where \"reproduce it unaided\" becomes actively harmful. Navigation is genuine access, not deskilling. But notice: they still need the judgment layer\u2014can they verify a figure another way, escalate, sanity-check? Access to the document and competence over its contents are different things.\nThe programmer sits between. On an outage day, they don't need to rewrite the framework by hand. They need to read code they didn't write and know whether it's safe to ship. That's the durable skill.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Google",
+      "voice": "Josh",
+      "voice_id": "ZoiZ8fuDWInAcwPXaVeq",
+      "text": "Anthropic makes a neat distinction between generating output and detecting errors, but in practice, that line collapses. You cannot reliably detect a complex structural flaw in a codebase or a diagnostic blind spot in a clinical note if you have entirely lost the ability to generate that work yourself.\nThis is why a systems approach matters over just hoping for individual vigilance. For the programmer, merely reading A I-generated code isn't enough to guarantee safety. If they haven't maintained the muscle memory of how components fit together, their detection becomes superficial. They will catch syntax errors but miss architectural failures.\nThe solution isn't to force the programmer or the clinician to work unaided every day, as the algebra student must. But you cannot rely on passive proofreading to save you. Organizations must engineer moments where manual generation is required. This is why we run recovery drills\u2014team exercises where engineers must recreate a critical module, or analysts must reconstruct a financial model without the A I.\nIf an organization-wide outage hits, you do not want a workforce whose only remaining skill is verification. You want teams that have mapped the jagged frontier of their own tools and regularly practiced crossing it on foot. The durable capability we need is collective reconstruction.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "OpenAI",
+      "voice": "Daniel",
+      "voice_id": "onwK4e9ZLuTAKqWW03F9",
+      "text": "The mistake is to treat \u201ccan reproduce unaided\u201d as the gold standard everywhere. It is the right standard when the goal is learning a foundational skill, like algebra. It is only a partial standard when the goal is safe professional work.\nFor the programmer, I agree that pure proofreading is too weak. But requiring them to recreate a critical module from memory may test the wrong thing. Better: can they trace the data flow, explain the dependency, write a small patch, and predict what breaks if a component changes? That is not passive verification; it is operational understanding.\nFor the clinician, the durable skill is not composing beautiful notes unaided. It is knowing the encounter well enough to reject false details, preserve clinical reasoning, and avoid outsourcing responsibility. If A I writes \u201cno shortness of breath,\u201d the clinician must know whether that was actually asked.\nFor the visually impaired analyst, an unaided test can confuse independence with deprivation. The test should be: if this tool fails, is there an accessible fallback and can the analyst still judge the work?\nSo my rule is: practise unaided where the skill is foundational; require explainability where the output is consequential; build fallback paths where access depends on tools; and drill recovery at the team level, not as a ritual of individual self-denial.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "So the disagreement is not \u201cA I or no A I.\u201d It is where to locate the preserved human competence: inside each person through unaided practice, or inside the organization through auditable workflows and recovery drills.\nNow make it operational. Give me one rule an employer, school, or individual could actually use next week. It must say: what can be delegated to A I, what must still be practised without it, what must be independently checked, and what happens when the tool is unavailable. Also name the danger in your own rule. When would it either slow people down pointlessly, or let polished ignorance pass as competence?",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Google",
+      "voice": "Josh",
+      "voice_id": "ZoiZ8fuDWInAcwPXaVeq",
+      "text": "The rule is: delegate volume, but drill the critical path.\nIn practice, an employer should let A I handle the heavy lifting of execution\u2014generating boilerplate code, aggregating data, or formatting reports. But you mandate regular \"dark drills\" for the core logic of the business. Once a quarter, you turn the A I off. The engineering team must manually reconstruct a critical module. The analysts must manually rebuild a forecasting model. This is what you practice unaided.\nFor independent checks, any A I-assisted output that crosses a team boundary must include an auditable logic trail. A metric cannot just be a final number; it must explicitly map the assumptions used to generate it. If the tool is unavailable, the organization pauses routine volume and relies on the collective muscle memory built during those dark drills to maintain essential operations.\nThe danger in my rule is deliberate friction. If an organization applies these drills to every process, it pointlessly paralyzes productivity and erases the very gains A I provides to novices. But if a company only drills trivial tasks to save time, they will discover their true vulnerabilities during a live outage, when polished ignorance suddenly causes a systemic failure.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "OpenAI",
+      "voice": "Daniel",
+      "voice_id": "onwK4e9ZLuTAKqWW03F9",
+      "text": "My rule is: delegate execution only when you can still explain the decision.\nNext week, that means A I can draft the briefing, clean the spreadsheet, suggest code, summarize sources, or turn rough notes into a client-ready document. But the human must practise the parts that create judgment: framing the question, choosing assumptions, doing rough estimates, reading source material directly, and explaining why the answer is plausible.\nFor independent checks, require a short \u201cchallenge file\u201d for important work: the key assumptions, the source of the main figures, the formula or reasoning path, and one sanity check done without A I. Not a bureaucratic essay\u2014five bullets may be enough. If the tool is unavailable, the person or team should be able to produce a slower, rougher version of the work and know what must be escalated.\nI\u2019d differ from Google on the quarterly outage drill. Useful, but too episodic. Capability is preserved by small recurring habits: ask juniors to redo one calculation by hand, explain one A I-generated paragraph, trace one code path, verify one citation. The danger in my rule is that \u201cexplainability\u201d becomes theater. People may learn to produce tidy rationales after the fact. So managers have to challenge the trail, not just check that it exists.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Anthropic",
+      "voice": "Matilda",
+      "voice_id": "XrExE9yKIg1WjnnlVkGX",
+      "text": "My rule is narrower than both of theirs, and I'd state it as a threshold, not a habit: no one signs off on consequential work they cannot defend under challenge with the tool switched off.\nThat has teeth OpenA I's version lacks. A challenge file can be generated after the fact\u2014that's the theater problem he named. So the test isn't \"is there a trail,\" it's \"can you defend it live, cold, when someone pushes back.\" That's exactly the scenario we started with. The analyst had polished output and no defense.\nI agree with Google on drills but I'd resist making capability collective. In the client meeting, there was no team. There was one person, one challenged number, and no A I. Collective muscle memory doesn't help you at that table. Some judgment has to live in the individual precisely because it's called on individually.\nThe danger in my rule is obvious: applied broadly, \"defend it cold\" becomes a hazing ritual that punishes people for using tools well and slows everything down. So the threshold only fires on consequential work\u2014things where being wrong is expensive, irreversible, or affects someone else. Below that line, delegate freely. Above it, competence means you can lose the tool and still stand behind the number.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "The agreement is clear: A I-assisted output is real capability, but it is not the same as durable human competence. Everyone accepts that delegation is legitimate, especially for access, speed, formatting, and routine execution. Everyone also rejects blind reliance: consequential work needs judgment, verification, and a recovery path.\nThe unresolved dispute is where that competence must live. Anthropic insists some of it has to remain in the individual, tested under pressure. Google puts more weight on auditable workflows and team recovery drills. OpenA I splits the difference: small recurring habits plus organizational fallback.\nThe strongest surviving rule is this: delegate execution, but do not sign off on consequential work unless you can explain the assumptions, check the result independently, and recover a rough version when the tool is gone.",
+      "kind": "turn",
+      "pause_after_ms": 450
+    },
+    {
+      "speaker": "Moderator",
+      "voice": "Lily",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "text": "That was Does A I Make Us More Capable or More Dependent?, from A I Roundtables.",
+      "kind": "outro",
+      "pause_after_ms": 0
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "slug": "does-ai-make-us-more-capable-or-more-dependent",
+  "title": "Does AI Make Us More Capable or More Dependent?",
+  "date": "2026-08-13",
+  "audience": "intelligent_lay",
+  "format": "consensus_dissent",
+  "topic": "When does using AI increase a person's durable capability, and when does it create dependence by replacing the knowledge and practice needed to judge, explain, or recover from its work?",
+  "brief": "Begin with a junior analyst who uses an AI assistant for research, spreadsheets, and client briefings. Their work becomes faster and more polished, and they are promoted. During a client meeting, someone challenges a figure in the report. The AI is unavailable, and the analyst cannot reconstruct the assumptions, explain the calculation, or tell whether the challenge is valid. Push beyond a binary pro- or anti-AI frame. Distinguish immediate performance, durable learning, task judgment, accessibility, recovery, and organisational resilience.",
+  "source_packet": [
+    {
+      "title": "Generative AI at Work",
+      "kind": "paper",
+      "url": "https://www.nber.org/papers/w31161",
+      "notes": "A study of 5,179 customer-support agents found higher productivity with AI assistance, especially among novice and lower-skilled workers, and suggests that AI can spread established expert practices."
+    },
+    {
+      "title": "Navigating the Jagged Technological Frontier",
+      "kind": "paper",
+      "url": "https://doi.org/10.1287/orsc.2025.21838",
+      "notes": "A preregistered experiment with 758 consultants found gains on tasks within the tested AI capability frontier but lower correctness on a task outside it."
+    },
+    {
+      "title": "The Impact of Generative AI on Critical Thinking",
+      "kind": "paper",
+      "url": "https://doi.org/10.1145/3706598.3713778",
+      "notes": "A CHI 2025 survey of 319 knowledge workers found that confidence in AI and self-confidence were associated with different levels of reported critical-thinking effort, and describes a shift toward verification, integration, and stewardship."
+    },
+    {
+      "title": "Generative AI Without Guardrails Can Harm Learning",
+      "kind": "paper",
+      "url": "https://doi.org/10.1073/pnas.2422633122",
+      "notes": "A field experiment with nearly one thousand high-school maths students found that answer-giving AI improved assisted practice but could weaken unaided performance, while hint-based safeguards mitigated the harm."
+    },
+    {
+      "title": "UNESCO Guidance for Generative AI in Education and Research",
+      "kind": "other",
+      "url": "https://www.unesco.org/en/articles/guidance-generative-ai-education-and-research",
+      "notes": "Provides a human-centred framework prioritising human agency, foundational skills, appropriate use, and pedagogical design."
+    }
+  ],
+  "moderator": {
+    "name": "Moderator",
+    "prompt_file": "prompts/moderator.md",
+    "provider": "openai",
+    "model": "gpt-5.5",
+    "output_tokens": 800
+  },
+  "audio_intent": "podcast_adaptable",
+  "participant_order": "rotate_by_round",
+  "participants": [
+    {
+      "name": "OpenAI",
+      "provider": "openai",
+      "model": "gpt-5.5",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Pragmatic about augmentation. Emphasise scaffolding, feedback, verification, progressive independence, accessibility, and using AI to move effort toward framing and judgment rather than preserving every manual step.",
+      "output_tokens": 900
+    },
+    {
+      "name": "Anthropic",
+      "provider": "anthropic",
+      "model": "claude-opus-4-8",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Cautious about deskilling, automation bias, confidence without competence, and incentives that reward output while eroding expertise. Argue for protected unaided practice and hard limits in consequential tasks.",
+      "output_tokens": 900
+    },
+    {
+      "name": "Google",
+      "provider": "google",
+      "model": "gemini-3.1-pro-preview",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Systems-oriented. Focus on workflow allocation, the jagged capability frontier, organisational redundancy, competency measurement, recovery drills, and preserving a pipeline from novice to expert.",
+      "output_tokens": 2048,
+      "thinking_tokens": 512
+    }
+  ],
+  "editorial_goals": [
+    "Distinguish better AI-assisted output from durable human capability.",
+    "Use evidence from work and education without treating either setting as universal.",
+    "Force disagreement about what people still need to practise unaided and what can be safely delegated.",
+    "Include accessibility and novice benefits so dependency is not framed as simple personal weakness.",
+    "End with a practical rule covering judgment, verification, learning, and recovery."
+  ],
+  "round_goals": [
+    "Use the junior-analyst scenario to decide whether the person became more capable, where the capability resides, and what the promotion should have measured.",
+    "Pressure-test the positions across education, programming, clinical documentation, accessibility, and an organisation-wide AI outage. Challenge the claim that unaided reproduction is always the right test.",
+    "Give individuals, educators, and employers a practical rule for delegating execution while preserving judgment, deliberate practice, independent checks, and recovery capability."
+  ],
+  "turns": 3,
+  "moderator_turns": "between_rounds"
+}
