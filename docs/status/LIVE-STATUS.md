@@ -1,13 +1,11 @@
 # Live Status
 
-Series One Episode 4 production is complete. The live run for **What Should AI
-Be Allowed to Know About You?** completed all 13 moderator and participant
-turns, the published edition passes editorial checks, and the rendered podcast
-audio passes technical inspection.
+Four of the six Series One episodes are published on Spotify. Episodes 3 and 4
+were verified on the live show page on 2026-08-23. Episode 4 appears on Spotify
+as **How much should an AI be allowed to know about you?**; the repository keeps
+the production title **What Should AI Be Allowed to Know About You?**
 
-Next executable step: the user listens to
-`/home/joseph/Public/what-should-ai-be-allowed-to-know-about-you.mp3` and approves
-or rejects it for Spotify publication.
+Next executable step: produce Series One Episode 5, **Does AI Make Us More
+Capable or More Dependent?**
 
-The next scheduled Series One episode is **Does AI Make Us More Capable or More
-Dependent?**
+Episode 6, **Who Should Control Powerful AI?**, remains at topic stage.
