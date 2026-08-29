@@ -20,7 +20,7 @@ arc from personal reliance to institutional control.
 | 2 | 2026-07-02 | Who Is Responsible When AI Gets It Wrong? | When an AI answer causes harm, what belongs to the user, the product maker, the deployer, or the institution using it? | Published on Spotify |
 | 3 | 2026-07-16 | Should an AI Have to Explain Itself? | When do explanations help users judge an answer, and when do they merely make a bad answer more persuasive? | Published on Spotify |
 | 4 | 2026-07-30 | What Should AI Be Allowed to Know About You? | How much personal context should an AI system remember or infer before helpfulness becomes surveillance? | Published on Spotify |
-| 5 | 2026-08-13 | Does AI Make Us More Capable or More Dependent? | When does AI extend judgement, and when does it quietly replace skills users still need? | Approved for Spotify publication |
+| 5 | 2026-08-13 | Does AI Make Us More Capable or More Dependent? | When does AI extend judgement, and when does it quietly replace skills users still need? | Published on Spotify |
 | 6 | 2026-08-27 | Who Should Control Powerful AI? | Which decisions about powerful AI should belong to labs, governments, users, markets, or independent institutions? | Topic only |
 
 ## Arc Notes

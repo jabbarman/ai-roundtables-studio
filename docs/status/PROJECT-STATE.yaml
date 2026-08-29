@@ -1,11 +1,11 @@
 project: series-one
-stage: episode-5-publication
-status: approved_to_publish
+stage: episode-6-planning
+status: ready_to_produce
 updated: 2026-08-29
 model_slate:
   openai: gpt-5.5
   anthropic: claude-opus-4-8
   google: gemini-3.1-pro-preview
-current_episode: does-ai-make-us-more-capable-or-more-dependent
-next_step: upload and schedule Episode 5 on Spotify using the approved audio and tracked description
+current_episode: who-should-control-powerful-ai
+next_step: produce the Episode 6 roundtable, audio, episode notes, and carousel prompt
 push_policy: push_when_user_requests
