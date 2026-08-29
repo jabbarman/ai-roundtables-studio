@@ -1,11 +1,11 @@
 project: series-one
-stage: episode-5-review
-status: awaiting_user_review
-updated: 2026-08-23
+stage: episode-5-publication
+status: approved_to_publish
+updated: 2026-08-29
 model_slate:
   openai: gpt-5.5
   anthropic: claude-opus-4-8
   google: gemini-3.1-pro-preview
 current_episode: does-ai-make-us-more-capable-or-more-dependent
-next_step: user listens to the Episode 5 podcast audio and approves or rejects it for Spotify publication
+next_step: upload and schedule Episode 5 on Spotify using the approved audio and tracked description
 push_policy: push_when_user_requests
