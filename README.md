@@ -141,6 +141,7 @@ You can use this repo in stages.
 
 - [docs/EDITORIAL.md](docs/EDITORIAL.md)
 - [docs/METHODOLOGY.md](docs/METHODOLOGY.md)
+- [docs/FUTURE-ENHANCEMENTS.md](docs/FUTURE-ENHANCEMENTS.md)
 - [schemas/roundtable-run.schema.json](schemas/roundtable-run.schema.json)
 - [prompts/moderator.md](prompts/moderator.md)
 
