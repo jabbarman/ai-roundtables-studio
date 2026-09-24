@@ -1,0 +1,91 @@
+{
+  "slug": "who-should-control-powerful-ai",
+  "title": "Who Should Control Powerful AI?",
+  "date": "2026-08-27",
+  "audience": "intelligent_lay",
+  "format": "consensus_dissent",
+  "topic": "Which decisions about powerful general-purpose AI should belong to laboratories, governments, users, markets, independent evaluators, or international institutions, and who should have authority to delay a release when evidence about public risk is contested?",
+  "brief": "Begin with an AI company preparing to release a substantially more capable model. It can complete long sequences of online work and is unusually effective at finding software vulnerabilities. Internal testing finds useful defensive applications, but also signs that safeguards can be bypassed. A rival is close to releasing a competing model, the government depends on voluntary access for its own tests, independent researchers cannot inspect the system fully, and businesses are already planning deployments. The company says delay could sacrifice benefits and hand the market to a less responsible rival. Ask who gets to decide whether release proceeds, what evidence they must disclose, who can impose conditions or stop deployment, and how any controller remains accountable.",
+  "source_packet": [
+    {
+      "title": "EU AI Act: General-Purpose AI Obligations",
+      "kind": "other",
+      "url": "https://digital-strategy.ec.europa.eu/en/faqs/guidelines-obligations-general-purpose-ai-providers",
+      "notes": "The European Commission explains that providers of general-purpose AI models face documentation, copyright, and downstream-information duties, while providers of models with systemic risk have additional evaluation, risk-mitigation, incident-reporting, and cybersecurity obligations. It illustrates binding, risk-tiered public oversight rather than either a blanket ban or pure self-regulation."
+    },
+    {
+      "title": "NIST AI Risk Management Framework Core",
+      "kind": "other",
+      "url": "https://airc.nist.gov/airmf-resources/airmf/5-sec-core/",
+      "notes": "NIST treats governance as continuous across the AI lifecycle and notes that independent review can mitigate internal bias and conflicts of interest. The framework is voluntary and use-case agnostic, showing both the value and limits of standards without enforcement authority."
+    },
+    {
+      "title": "UK AI Security Institute Frontier AI Trends Report",
+      "kind": "other",
+      "url": "https://www.aisi.gov.uk/frontier-ai-trends-report",
+      "notes": "The institute reports results from two years of government testing across domains including cyber, chemistry, and biology. It argues for rigorous independent evaluation and collaboration while warning that evaluation is a snapshot and does not by itself capture real-world impact."
+    },
+    {
+      "title": "OECD AI Principles",
+      "kind": "other",
+      "url": "https://www.oecd.org/en/topics/ai-principles.html",
+      "notes": "The OECD principles assign accountability according to actors' roles, context, and ability to act, and call for transparency, traceability, human oversight, robustness, and ongoing risk management. They support distributed responsibility without answering which institution should have final authority."
+    },
+    {
+      "title": "UN Independent International Scientific Panel on AI Preliminary Report",
+      "kind": "other",
+      "url": "https://www.un.org/independent-international-scientific-panel-ai/en/preliminary-report",
+      "notes": "The UN panel provides independent scientific assessment across regions and warns that safeguards may not keep pace with capability growth. It offers shared evidence for international deliberation, while scientific assessment remains distinct from democratic lawmaking and enforcement."
+    }
+  ],
+  "moderator": {
+    "name": "Moderator",
+    "prompt_file": "prompts/moderator.md",
+    "provider": "openai",
+    "model": "gpt-5.5",
+    "output_tokens": 800
+  },
+  "audio_intent": "podcast_adaptable",
+  "participant_order": "rotate_by_round",
+  "participants": [
+    {
+      "name": "OpenAI",
+      "provider": "openai",
+      "model": "gpt-5.5",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Argue for risk-based, polycentric governance. Laboratories should retain operational decisions inside enforceable public rules, disclose evidence to qualified evaluators, and face clear duties and liability. Resist both unaccountable self-regulation and a single regulator making every technical release decision.",
+      "output_tokens": 900
+    },
+    {
+      "name": "Anthropic",
+      "provider": "anthropic",
+      "model": "claude-opus-4-8",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Emphasise conflicts of interest, irreversible harms, and the democratic illegitimacy of firms setting society's risk tolerance. Argue that independent public authorities need mandatory access, pre-release evaluation, incident reporting, and power to delay or condition releases above a capability threshold.",
+      "output_tokens": 900
+    },
+    {
+      "name": "Google",
+      "provider": "google",
+      "model": "gemini-3.1-pro-preview",
+      "prompt_file": "prompts/participant.md",
+      "stance": "Take a systems and international view. Focus on interoperable standards, multiple oversight centres, deployment context, competition, regulatory capacity, open research, and cross-border coordination. Warn that a single national gatekeeper can become slow, captured, or ineffective against globally distributed development.",
+      "output_tokens": 2048,
+      "thinking_tokens": 512
+    }
+  ],
+  "editorial_goals": [
+    "Distinguish technical control over a model from legitimate authority to decide acceptable public risk.",
+    "Force a concrete decision about who may delay a contested model release and on what evidence.",
+    "Separate the roles of laboratories, independent evaluators, standards bodies, elected governments, courts, markets, users, and international institutions.",
+    "Address regulatory capture, state misuse, concentration of power, slow regulation, open models, and cross-border enforcement.",
+    "End with a practical governance rule that assigns power, evidence, challenge rights, and accountability according to risk."
+  ],
+  "round_goals": [
+    "Use the contested-release scenario to decide who has authority to proceed, delay, or impose conditions, and why that actor is more legitimate than the alternatives.",
+    "Pressure-test each proposal against regulatory capture, an authoritarian government demanding access, a smaller open-model developer, inconsistent national rules, and a genuinely beneficial release delayed by a false alarm.",
+    "Design a workable control arrangement for powerful AI: define thresholds, required evidence, independent access, time-limited powers, appeals, incident response, and the role left to users and markets."
+  ],
+  "turns": 3,
+  "moderator_turns": "between_rounds"
+}

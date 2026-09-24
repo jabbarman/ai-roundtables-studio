@@ -1,0 +1,3 @@
+This episode is about who should decide whether a powerful AI system is safe enough to release. It explores whether governments should restrict only dangerous uses or be able to pause the model itself, and how developers, independent evaluators and courts should share authority and accountability.
+
+The roundtable asks who should have the power to delay a release, what evidence that decision should require, and how oversight can protect the public without concentrating too much control in either companies or governments.

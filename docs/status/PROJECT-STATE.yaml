@@ -1,11 +1,11 @@
 project: series-one
-stage: episode-6-planning
-status: ready_to_produce
-updated: 2026-08-29
+stage: episode-6-spotify-publication
+status: approved_awaiting_spotify_publication_record
+updated: 2026-09-24
 model_slate:
   openai: gpt-5.5
   anthropic: claude-opus-4-8
   google: gemini-3.1-pro-preview
 current_episode: who-should-control-powerful-ai
-next_step: produce the Episode 6 roundtable, audio, episode notes, and carousel prompt
+next_step: record and verify the public Episode 6 Spotify URL when available
 push_policy: push_when_user_requests

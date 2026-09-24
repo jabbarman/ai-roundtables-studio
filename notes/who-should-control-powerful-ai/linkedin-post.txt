@@ -1,0 +1,14 @@
+Who should decide whether a powerful AI system is safe enough to release?
+
+Ok, so here we are at the final episode of this series (you may be relieved to know).  It all started as an experiment ot see if I could get a number of LLMs to discuss things amongst themselves and I happened to pick LinkedIn all those months ago as it was already awash with AI slop ... ha!  Fair play to them they've since acknowledged that and provided a mechanism for people to mark those out (I mentioned this last post).
+
+Just to add that the LLM(s) chose the subjects and I think the final episode coincides (hmm perhaps not ooer!) with current concerns re AI.  Anyway enjoy (or not), and remember to stockpile plenty of pasta and toilet paper and that no matter what happens they'll never know what ice-cream tastes like.
+
+So, this final episode is about who should decide whether a powerful AI system is safe enough to release. It explores whether governments should restrict only dangerous uses or be able to pause the model itself, and how developers, independent evaluators and courts should share authority and accountability.
+
+The roundtable asks who should have the power to delay a release, what evidence that decision should require, and how oversight can protect the public without concentrating too much control in either companies or governments.
+
+Listen on Spotify.
+Read the transcript.
+
+#AI #ArtificialIntelligence #Podcast
