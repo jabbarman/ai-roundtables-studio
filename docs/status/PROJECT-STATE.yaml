@@ -1,11 +1,11 @@
 project: series-one
-stage: episode-6-spotify-publication
-status: approved_awaiting_spotify_publication_record
+stage: series-one-complete
+status: complete
 updated: 2026-09-24
 model_slate:
   openai: gpt-5.5
   anthropic: claude-opus-4-8
   google: gemini-3.1-pro-preview
 current_episode: who-should-control-powerful-ai
-next_step: record and verify the public Episode 6 Spotify URL when available
+next_step: plan the next series and reassess the recorded future enhancements
 push_policy: push_when_user_requests
